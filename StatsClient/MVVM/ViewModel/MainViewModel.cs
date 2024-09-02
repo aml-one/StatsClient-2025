@@ -6207,6 +6207,8 @@ public class MainViewModel : ObservableObject
                         {
                             StartProgramUpdate();
                         }
+                        else
+                            AutoUpdateAtStart = true;
                     }));
                 }
             }
