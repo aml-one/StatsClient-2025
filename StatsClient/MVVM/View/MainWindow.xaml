@@ -323,8 +323,6 @@
                        Panel.ZIndex="50"
                        Width="220"
                        LastChildFill="False"
-                       Visibility="{Binding ShowUnitNumbers, Converter={StaticResource BoolToVisibilityConverter}}"
-                       d:Visibility="Visible"
                        Height="32">
                 
                 <core:OutlinedTextBlock Stroke="#333"
@@ -2106,7 +2104,7 @@
                                 <StackPanel Grid.Row="0"
                                             Grid.Column="0"
                                             Grid.ColumnSpan="2"
-                                            Visibility="{Binding CbSettingModuleFolderSubscription, Converter={StaticResource BoolToVisibilityConverter}}"
+                                            Visibility="{Binding CbSettingModulePendingDigitals, Converter={StaticResource BoolToVisibilityConverter}}"
                                             d:Visibility="Visible">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding PendingDigiCasesReplacementName}"
@@ -2126,7 +2124,7 @@
 
                                 <Grid Grid.Row="1"
                                       Grid.Column="0"
-                                      Visibility="{Binding CbSettingModuleFolderSubscription, Converter={StaticResource BoolToVisibilityConverter}}"
+                                      Visibility="{Binding CbSettingModulePendingDigitals, Converter={StaticResource BoolToVisibilityConverter}}"
                                       d:Visibility="Visible">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="35" />
@@ -2149,7 +2147,7 @@
                                 <Grid Grid.Row="1"
                                       Grid.Column="1"
                                       Margin="20,0,0,0"
-                                      Visibility="{Binding CbSettingModuleFolderSubscription, Converter={StaticResource BoolToVisibilityConverter}}"
+                                      Visibility="{Binding CbSettingModulePendingDigitals, Converter={StaticResource BoolToVisibilityConverter}}"
                                       d:Visibility="Visible">
 
                                     <Grid.RowDefinitions>
@@ -2436,18 +2434,9 @@
                                     <TextBlock Text="Infos"
                                                FontSize="26"
                                                FontWeight="Thin" />
-                                    <CheckBox Content="Show sent out unit numbers on top right"
-                                              Foreground="Azure"
-                                              VerticalAlignment="Top"
-                                              HorizontalAlignment="Left"
-                                              Cursor="Hand"
-                                              IsChecked="{Binding ShowUnitNumbers, Mode=TwoWay}"
-                                              Style="{StaticResource CircleCheckBox}"
-                                              Command="{Binding CbSettingShowUnitNumbersCommand}"
-                                              Margin="0,6,5,0" />
-
+                                    
                                     <CheckBox Content="Show bottom info bar"
-                                              Foreground="MistyRose"
+                                              Foreground="Azure"
                                               VerticalAlignment="Top"
                                               HorizontalAlignment="Left"
                                               Cursor="Hand"

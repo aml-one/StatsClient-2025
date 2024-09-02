@@ -255,16 +255,6 @@ public class MainViewModel : ObservableObject
         }
     }
     
-    private bool showUnitNumbers = false;
-    public bool ShowUnitNumbers
-    {
-        get => showUnitNumbers;
-        set
-        {
-            showUnitNumbers = value;
-            RaisePropertyChanged(nameof(ShowUnitNumbers));
-        }
-    }
     
     private bool showBottomInfoBar = false;
     public bool ShowBottomInfoBar
@@ -1879,7 +1869,6 @@ public class MainViewModel : ObservableObject
 
     #region Settings Tab RelayCommands
     public RelayCommand CbSettingGlassyEffectCommand { get; set; }
-    public RelayCommand CbSettingShowUnitNumbersCommand { get; set; }
     public RelayCommand CbSettingShowBottomInfoBarCommand { get; set; }
     public RelayCommand CbSettingShowDigiCasesCommand { get; set; }
     public RelayCommand CbSettingShowDigiDetailsCommand { get; set; }
@@ -2065,7 +2054,6 @@ public class MainViewModel : ObservableObject
         #endregion Folder Subscription RelayCommands
 
         CbSettingGlassyEffectCommand = new RelayCommand(o => CbSettingGlassyEffectMethod());
-        CbSettingShowUnitNumbersCommand = new RelayCommand(o => CbSettingShowUnitNumbersMethod());
         CbSettingShowBottomInfoBarCommand = new RelayCommand(o => CbSettingShowBottomInfoBarMethod());
         CbSettingShowDigiCasesCommand = new RelayCommand(o => CbSettingShowDigiCasesMethod());
         CbSettingShowDigiDetailsCommand = new RelayCommand(o => CbSettingShowDigiDetailsMethod());
@@ -3986,10 +3974,6 @@ public class MainViewModel : ObservableObject
         WriteLocalSetting("GlassyEffect", CbSettingGlassyEffect.ToString());
     }
     
-    private void CbSettingShowUnitNumbersMethod()
-    {
-        WriteLocalSetting("ShowUnitNumbers", ShowUnitNumbers.ToString());
-    }
     
     private void CbSettingShowBottomInfoBarMethod()
     {
@@ -5919,7 +5903,6 @@ public class MainViewModel : ObservableObject
             ServerFriendlyNameHelper = DatabaseOperations.GetServerName();
 
             _ = bool.TryParse(ReadLocalSetting("GlassyEffect"), out bool GlassyEffect);
-            _ = bool.TryParse(ReadLocalSetting("ShowUnitNumbers"), out bool showUnitNumbers);
             _ = bool.TryParse(ReadLocalSetting("ShowBottomInfoBar"), out bool showBottomInfoBar);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiDetails"), out bool showDigiDetails);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiCases"), out bool showDigiCases);
@@ -5947,7 +5930,6 @@ public class MainViewModel : ObservableObject
                 CbSettingIncludePendingDigiCasesInNewlyArrived = true;
 
             CbSettingGlassyEffect = GlassyEffect;
-            ShowUnitNumbers = showUnitNumbers;
             ShowBottomInfoBar = showBottomInfoBar;
             CbSettingShowDigiDetails = showDigiDetails;
             CbSettingShowDigiCases = showDigiCases;
