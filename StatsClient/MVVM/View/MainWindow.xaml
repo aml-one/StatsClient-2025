@@ -340,19 +340,27 @@
                                         d:Text="17"
                                         DockPanel.Dock="Right"
                                         Margin="0" />
-                
+
                 <core:OutlinedTextBlock Stroke="#333"
                                         StrokePosition="Outside"
                                         VerticalAlignment="Center"
                                         FontSize="16"
                                         FontWeight="SemiBold"
                                         Fill="Orange"
+                                        Cursor="Hand"
+                                        ToolTip="Click here to start updating.."
                                         StrokeThickness="1"
                                         Text="Update available!"
                                         Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
                                         d:Visibility="Visible"
                                         DockPanel.Dock="Right"
-                                        Margin="0,0,20,0" />
+                                        Margin="0,0,20,0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding StartProgramUpdateCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </core:OutlinedTextBlock>
             </DockPanel>
             <!--#endregion UNIT NUMBER DISPLAY -->
 

@@ -5461,7 +5461,7 @@ public class MainViewModel : ObservableObject
     private void StartProgramUpdate()
     {
         var Processes = Process.GetProcesses()
-                           .Where(pr => pr.ProcessName == "CaseCheckerUpdater");
+                           .Where(pr => pr.ProcessName == "StatsClientUpdater");
         foreach (var process in Processes)
         {
             process.Kill();
@@ -6221,7 +6221,7 @@ public class MainViewModel : ObservableObject
 
     private void UpdateCheckTimer_Tick(object? sender, EventArgs e)
     {
-        UpdateCheckTimer.Interval = new TimeSpan(1, 0, 0);
+        UpdateCheckTimer.Interval = new TimeSpan(0, 0, 5);
         LookForUpdate();
     }
 
@@ -6276,7 +6276,7 @@ public class MainViewModel : ObservableObject
             var p = new Process();
 
             p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = $"/c \"{LocalConfigFolderHelper}CaseCheckerUpdater.exe\"";
+            p.StartInfo.Arguments = $"/c \"{LocalConfigFolderHelper}StatsClientUpdater.exe\"";
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = true;
