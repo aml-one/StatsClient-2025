@@ -323,7 +323,7 @@
                        Width="220"
                        LastChildFill="False"
                        Height="32">
-                
+
                 <core:OutlinedTextBlock Stroke="#333"
                                         StrokePosition="Outside"
                                         VerticalAlignment="Center"
@@ -1511,7 +1511,6 @@
                                 </Grid>
 
                                 <StackPanel Grid.Row="2"
-                                            
                                             Orientation="Horizontal">
                                     <TextBlock Text="Indexed directories:"
                                                VerticalAlignment="Center"
@@ -2292,7 +2291,7 @@
                             <localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}" />
                         </TabItem>
 
-                        
+
                     </TabControl>
                 </TabItem>
                 <!--#endregion APPLICATIONS TAB -->
@@ -2343,7 +2342,7 @@
                                                            Foreground="Orange"
                                                            Margin="5,0,0,0" />
                                             </StackPanel>
-                                            
+
                                             <TextBlock Text="Software version:"
                                                        FontSize="12"
                                                        Margin="2,0,0,0" />
@@ -2356,7 +2355,7 @@
                                         </StackPanel>
                                     </DockPanel>
 
-                                    
+
                                     <CheckBox Content="Use glassy effect on window"
                                               Foreground="Beige"
                                               VerticalAlignment="Top"
@@ -2378,11 +2377,11 @@
                                                   Command="{Binding CbSettingStartAppMinimizedCommand}"
                                                   Margin="0,6,5,0" />
 
-                                        <TextBlock Text="(for Pan Color Check only)" 
+                                        <TextBlock Text="(for Pan Color Check only)"
                                                    Foreground="#BBB"
-                                                    FontSize="10"
+                                                   FontSize="10"
                                                    VerticalAlignment="Center"
-                                                   Margin="0,6,0,0"/>
+                                                   Margin="0,6,0,0" />
                                     </StackPanel>
 
                                     <TextBlock Text="Modules"
@@ -2398,7 +2397,7 @@
                                               Style="{StaticResource CircleCheckBox}"
                                               Command="{Binding CbSettingModuleAccountInfosCommand}"
                                               Margin="0,6,5,0" />
-                                    
+
                                     <CheckBox Content="Folder Subscription"
                                               Foreground="Beige"
                                               VerticalAlignment="Top"
@@ -2428,7 +2427,7 @@
                                               Style="{StaticResource CircleCheckBox}"
                                               Command="{Binding CbSettingModulePendingDigitalsCommand}"
                                               Margin="0,6,5,0" />
-                                    
+
                                     <CheckBox Content="Smart Order Names"
                                               Foreground="Beige"
                                               VerticalAlignment="Top"
@@ -2451,7 +2450,7 @@
                                     <TextBlock Text="Infos"
                                                FontSize="26"
                                                FontWeight="Thin" />
-                                    
+
                                     <CheckBox Content="Show bottom info bar"
                                               Foreground="Azure"
                                               VerticalAlignment="Top"
@@ -2966,16 +2965,15 @@
                 </StackPanel>
 
 
-                <DockPanel
-                            VerticalAlignment="Bottom"
-                            HorizontalAlignment="Left"
-                            MinWidth="220">
+                <DockPanel VerticalAlignment="Bottom"
+                           HorizontalAlignment="Left"
+                           MinWidth="220">
 
                     <StackPanel VerticalAlignment="Bottom"
                                 HorizontalAlignment="Center"
-                                Margin="0,0,15,0">
+                                Margin="-5,0,15,0">
                         <TextBox Width="60"
-                                 Height="22"
+                                 Height="20"
                                  d:Text="8000"
                                  IsTabStop="False"
                                  Background="{Binding PcPanColor}"
@@ -2993,9 +2991,9 @@
                             </TextBox.InputBindings>
                             <TextBox.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="{Binding OpenUpColorCheckWindowMenuItemTitle}" 
-                                              d:Header="Open up ColorCheck window" 
-                                              Click="MenuItemOpenUpColorCheckWindow_Click"/>
+                                    <MenuItem Header="{Binding OpenUpColorCheckWindowMenuItemTitle}"
+                                              d:Header="Open up ColorCheck window"
+                                              Click="MenuItemOpenUpColorCheckWindow_Click" />
                                 </ContextMenu>
                             </TextBox.ContextMenu>
                         </TextBox>
