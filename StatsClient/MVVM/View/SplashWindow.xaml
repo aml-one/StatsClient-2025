@@ -344,6 +344,16 @@
                        Margin="2,-5,0,0"
                        Foreground="White" />
         </Grid>
+        <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
+                   d:Text="v1"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   FontSize="9"
+                   Foreground="#FFF"
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Left" 
+                   Margin="2,0,2,1"/>
+        
         <TextBlock Text="Made by AmL"
                    Grid.Row="1"
                    Grid.Column="1"

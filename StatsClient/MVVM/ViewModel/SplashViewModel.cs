@@ -35,7 +35,18 @@ public class SplashViewModel : ObservableObject
             RaisePropertyChanged(nameof(LoadingText));
         }
     }
-    
+
+    private string softwareVersion = "0";
+    public string SoftwareVersion
+    {
+        get => softwareVersion;
+        set
+        {
+            softwareVersion = value;
+            RaisePropertyChanged(nameof(SoftwareVersion));
+        }
+    }
+
     private bool finishedWithServerConnectionCheck;
     public bool FinishedWithServerConnectionCheck
     {
