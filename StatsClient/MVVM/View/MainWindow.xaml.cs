@@ -11,6 +11,7 @@ using Button = System.Windows.Controls.Button;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.Functions;
 using System.Diagnostics;
+using System.Timers;
 
 namespace StatsClient.MVVM.View
 {
@@ -19,6 +20,7 @@ namespace StatsClient.MVVM.View
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        
         public static event PropertyChangedEventHandler? PropertyChangedStatic;
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -78,7 +80,11 @@ namespace StatsClient.MVVM.View
             tbSearch.PreviewKeyDown += new KeyEventHandler(HandleEsc);
 
             PanColorCheckWindowInstance = new();
+
+            
+            
         }
+
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
@@ -144,9 +150,11 @@ namespace StatsClient.MVVM.View
                 btnMaximize.Content = "▣";
             }
 
-            WriteLocalSetting("WindowWidth", Width.ToString());
-            WriteLocalSetting("WindowHeight", Height.ToString());
-            
+            if (WindowState != WindowState.Minimized)
+            {
+                WriteLocalSetting("WindowWidth", Width.ToString());
+                WriteLocalSetting("WindowHeight", Height.ToString());
+            }
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -199,7 +207,7 @@ namespace StatsClient.MVVM.View
         {
             if (PanColorCheckWindowInstance is not null)
             {
-                PanColorCheckWindowInstance.Owner = Instance;
+               // PanColorCheckWindowInstance.Owner = Instance;
 
                 if (IsWindowIsShown<PanColorCheckWindow>("panColorCheckWindow"))
                 {
@@ -229,20 +237,6 @@ namespace StatsClient.MVVM.View
         {
             if (e.Key == Key.Escape)
                 tbSearch.Clear();
-        }
-
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if (PanColorCheckWindowInstance is not null)
-            {
-                _ = bool.TryParse(ReadLocalSetting("ColorCheckWindowIsOpen"), out bool isColorCheckWindowOpen);
-
-                if (isColorCheckWindowOpen)
-                {
-                    PanColorCheckWindowInstance.WindowState = WindowState.Normal;
-                    PanColorCheckWindowInstance.Visibility = Visibility.Visible;
-                }
-            }
         }
     }
 }

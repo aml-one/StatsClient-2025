@@ -60,8 +60,8 @@ namespace StatsClient.MVVM.View
         }
 
         private void Window_Activated(object sender, EventArgs e)
-        {
-            PanColorCheckViewModel.StaticInstance.PcPanColor = "#777";
+        {   
+            PanColorCheckViewModel.StaticInstance.PcPanColor = "#777777";
         }
 
         private void Window_Deactivated(object sender, EventArgs e)

@@ -1626,6 +1626,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private bool cbSettingStartAppMinimized = false;
+    public bool CbSettingStartAppMinimized
+    {
+        get => cbSettingStartAppMinimized;
+        set
+        {
+            cbSettingStartAppMinimized = value;
+            RaisePropertyChanged(nameof(CbSettingStartAppMinimized));
+        }
+    }
+    
     private bool cbSettingShowEmptyPanCount = true;
     public bool CbSettingShowEmptyPanCount
     {
@@ -1869,6 +1880,7 @@ public class MainViewModel : ObservableObject
 
     #region Settings Tab RelayCommands
     public RelayCommand CbSettingGlassyEffectCommand { get; set; }
+    public RelayCommand CbSettingStartAppMinimizedCommand { get; set; }
     public RelayCommand CbSettingShowBottomInfoBarCommand { get; set; }
     public RelayCommand CbSettingShowDigiCasesCommand { get; set; }
     public RelayCommand CbSettingShowDigiDetailsCommand { get; set; }
@@ -2054,6 +2066,7 @@ public class MainViewModel : ObservableObject
         #endregion Folder Subscription RelayCommands
 
         CbSettingGlassyEffectCommand = new RelayCommand(o => CbSettingGlassyEffectMethod());
+        CbSettingStartAppMinimizedCommand = new RelayCommand(o => CbSettingStartAppMinimizedMethod());
         CbSettingShowBottomInfoBarCommand = new RelayCommand(o => CbSettingShowBottomInfoBarMethod());
         CbSettingShowDigiCasesCommand = new RelayCommand(o => CbSettingShowDigiCasesMethod());
         CbSettingShowDigiDetailsCommand = new RelayCommand(o => CbSettingShowDigiDetailsMethod());
@@ -3972,6 +3985,11 @@ public class MainViewModel : ObservableObject
     private void CbSettingGlassyEffectMethod()
     {
         WriteLocalSetting("GlassyEffect", CbSettingGlassyEffect.ToString());
+    }
+    
+    private void CbSettingStartAppMinimizedMethod()
+    {
+        WriteLocalSetting("StartAppMinimized", CbSettingStartAppMinimized.ToString());
     }
     
     
@@ -5903,6 +5921,7 @@ public class MainViewModel : ObservableObject
             ServerFriendlyNameHelper = DatabaseOperations.GetServerName();
 
             _ = bool.TryParse(ReadLocalSetting("GlassyEffect"), out bool GlassyEffect);
+            _ = bool.TryParse(ReadLocalSetting("StartAppMinimized"), out bool StartAppMinimized);
             _ = bool.TryParse(ReadLocalSetting("ShowBottomInfoBar"), out bool showBottomInfoBar);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiDetails"), out bool showDigiDetails);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiCases"), out bool showDigiCases);
@@ -5930,6 +5949,7 @@ public class MainViewModel : ObservableObject
                 CbSettingIncludePendingDigiCasesInNewlyArrived = true;
 
             CbSettingGlassyEffect = GlassyEffect;
+            CbSettingStartAppMinimized = StartAppMinimized;
             ShowBottomInfoBar = showBottomInfoBar;
             CbSettingShowDigiDetails = showDigiDetails;
             CbSettingShowDigiCases = showDigiCases;
@@ -5953,6 +5973,7 @@ public class MainViewModel : ObservableObject
 
             TriosInboxFolder = ThreeShapeDirectoryHelper + @"3ShapeCommunicate\Inbox";
 
+            
             if (Directory.Exists(TriosInboxFolder))
             {
                 fswTriosFolderWatcher.Path = TriosInboxFolder;
@@ -6039,9 +6060,11 @@ public class MainViewModel : ObservableObject
             PmSendToList = GetAllSendToEnties();
 
             if (isColorCheckWindowOpen)
-            {
                 MainWindow.Instance.ShowHidePanColorCheckWindow();
-            }
+            
+            if (StartAppMinimized)
+                MainWindow.Instance.WindowState = WindowState.Minimized;
+
         }));
     }
 

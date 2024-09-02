@@ -18,7 +18,6 @@
         Closing="Window_Closing"
         LocationChanged="Window_LocationChanged"
         SizeChanged="Window_SizeChanged"
-        StateChanged="Window_StateChanged"
         Title="Stats Client 2025"
         Height="550"
         d:Height="800"
@@ -2367,6 +2366,24 @@
                                               Style="{StaticResource CircleCheckBox}"
                                               Command="{Binding CbSettingGlassyEffectCommand}"
                                               Margin="0,6,5,0" />
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox Content="Start app minimized"
+                                                  Foreground="Beige"
+                                                  VerticalAlignment="Top"
+                                                  HorizontalAlignment="Left"
+                                                  Cursor="Hand"
+                                                  IsChecked="{Binding CbSettingStartAppMinimized, Mode=TwoWay}"
+                                                  Style="{StaticResource CircleCheckBox}"
+                                                  Command="{Binding CbSettingStartAppMinimizedCommand}"
+                                                  Margin="0,6,5,0" />
+
+                                        <TextBlock Text="(for Pan Color Check only)" 
+                                                   Foreground="#BBB"
+                                                    FontSize="10"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,6,0,0"/>
+                                    </StackPanel>
 
                                     <TextBlock Text="Modules"
                                                FontSize="26"
