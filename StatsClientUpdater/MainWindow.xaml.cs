@@ -160,6 +160,7 @@ namespace StatsClientUpdater
             shortcut.Description = "Stats Client 2025";
             shortcut.Hotkey = "Ctrl+Shift+S";
             shortcut.TargetPath = @$"{appFolder}StatsClient.exe";
+            shortcut.WorkingDirectory = appFolder;
             shortcut.Save();
         }
 

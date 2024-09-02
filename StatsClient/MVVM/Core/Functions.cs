@@ -15,7 +15,7 @@ namespace StatsClient.MVVM.Core;
 internal class Functions
 {
 
-    public static string GetAppVersion()
+    public static async Task<string> GetAppVersion()
     {
         var assembly = Assembly.GetExecutingAssembly();
         string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("version.txt"));
@@ -25,6 +25,8 @@ internal class Functions
         {
             versionResult = reader.ReadToEnd();
         }
+
+        await Task.Delay(10);
 
         return versionResult;
     }

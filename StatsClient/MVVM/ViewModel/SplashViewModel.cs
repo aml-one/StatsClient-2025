@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
+using static StatsClient.MVVM.Core.Functions;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -87,6 +88,7 @@ public class SplashViewModel : ObservableObject
 
     private void TimerCheckServerConnectionFirstTime_Tick(object? sender, EventArgs e)
     {
+        SoftwareVersion = GetAppVersion();
         timerCheckServerConnectionFirstTime.Stop();
         CheckStatsServerConnection();
     }

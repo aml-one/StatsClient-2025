@@ -2051,7 +2051,6 @@ public class MainViewModel : ObservableObject
             PmSavedPrescription = null;
         });
 
-        SoftwareVersion = GetAppVersion();
 
         #region Folder Subscription RelayCommands
         SelectTargetFolderCommand = new RelayCommand(o => SelectTargetFolder());
@@ -6018,6 +6017,8 @@ public class MainViewModel : ObservableObject
             else
                 BottomBarSize = 35;
 
+            SetAppVersion();
+
             ResetDigiSystemColors();
 
             FillUpEmptyPanNumberPanel();
@@ -6062,7 +6063,12 @@ public class MainViewModel : ObservableObject
         }));
     }
 
-    
+    private async void SetAppVersion()
+    {
+        SoftwareVersion = await GetAppVersion();
+        _ = double.TryParse(SoftwareVersion, out double appVersionDouble);
+        AppVersionDouble = appVersionDouble;
+    }
 
     public void InitialTasksAtApplicationStartup_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
     {
