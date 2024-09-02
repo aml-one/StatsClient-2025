@@ -79,6 +79,8 @@ public class SplashViewModel : ObservableObject
     {
         Instance = this;
 
+        _ = SetAppVersion();
+
         timerCheckServerConnectionFirstTime.Tick += TimerCheckServerConnectionFirstTime_Tick;
         timerCheckServerConnectionFirstTime.Interval = new TimeSpan(0, 0, 1);
 
@@ -86,9 +88,13 @@ public class SplashViewModel : ObservableObject
         CbSettingGlassyEffect = GlassyEffect;
     }
 
-    private async void TimerCheckServerConnectionFirstTime_Tick(object? sender, EventArgs e)
+    private async Task SetAppVersion()
     {
         SoftwareVersion = await GetAppVersion();
+    }
+
+    private void TimerCheckServerConnectionFirstTime_Tick(object? sender, EventArgs e)
+    {
         timerCheckServerConnectionFirstTime.Stop();
         CheckStatsServerConnection();
     }
