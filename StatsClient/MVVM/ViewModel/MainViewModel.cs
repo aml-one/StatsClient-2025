@@ -2629,7 +2629,7 @@ public class MainViewModel : ObservableObject
                     Button btn = new()
                     {
                         Tag = number,
-                        Margin = new Thickness(1),
+                        Margin = new Thickness(0),
                         Background = Brushes.Transparent,
                         Padding = new Thickness(0),
                         BorderThickness = new Thickness(0),
@@ -5462,8 +5462,11 @@ public class MainViewModel : ObservableObject
 
     private void StartProgramUpdate()
     {
+#if DEBUG
+        if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
+#endif
         var Processes = Process.GetProcesses()
-                           .Where(pr => pr.ProcessName == "StatsClientUpdater");
+                            .Where(pr => pr.ProcessName == "StatsClientUpdater");
         foreach (var process in Processes)
         {
             process.Kill();
@@ -6229,7 +6232,8 @@ public class MainViewModel : ObservableObject
     private void UpdateCheckTimer_Tick(object? sender, EventArgs e)
     {
         UpdateCheckTimer.Interval = new TimeSpan(0, 0, 5);
-        LookForUpdate();
+        if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+            LookForUpdate();
     }
 
 
@@ -6277,6 +6281,10 @@ public class MainViewModel : ObservableObject
 
     private void StartUpdaterApp()
     {
+#if DEBUG
+        if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
+#endif
+
         Thread.Sleep(3000);
         try
         {

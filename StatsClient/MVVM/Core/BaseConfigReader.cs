@@ -18,8 +18,8 @@ public class BaseConfigReader
 
         if (!File.Exists(Dir + "\\BaseSettings.Config"))
         {
-            MessageBox.Show("Could not find config file!\nPlease acquire a BaseSettings.Config file and place into the listed directory below.\n\nDir: " + Dir + "\n\nApplication will shutdown!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            SplashWindow.Instance.Close();
+            MessageBox.Show("Could not find config file!\nPlease acquire a BaseSettings.Config file and place it into the application folder.\n\nApplication will shutdown!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            SplashWindow.Instance.CloseApp();
             return "";
         }
 

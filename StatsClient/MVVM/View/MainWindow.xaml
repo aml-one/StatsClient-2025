@@ -2343,7 +2343,7 @@
                                                            Margin="5,0,0,0" />
                                             </StackPanel>
 
-                                            <TextBlock Text="Software version:"
+                                            <TextBlock Text="Current software version:"
                                                        FontSize="12"
                                                        Margin="2,0,0,0" />
                                             <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
@@ -2384,10 +2384,19 @@
                                                    Margin="0,6,0,0" />
                                     </StackPanel>
 
+                                </StackPanel>
+                            </Grid>
+                        </TabItem>
+                        
+                        <TabItem Header="Modules"
+                                 Style="{StaticResource applicationsTabItem}">
+                            <Grid Margin="10,0">
+                                <StackPanel Grid.Row="0">
+                                    
                                     <TextBlock Text="Modules"
-                                               FontSize="26"
-                                               FontWeight="Thin"
-                                               Margin="0,20,0,0" />
+                                                FontSize="26"
+                                                FontWeight="Thin" />
+
                                     <CheckBox Content="Account Infos"
                                               Foreground="Beige"
                                               VerticalAlignment="Top"
