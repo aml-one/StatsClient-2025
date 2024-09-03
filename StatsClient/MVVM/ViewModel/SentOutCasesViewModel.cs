@@ -1,15 +1,11 @@
 ﻿using StatsClient.MVVM.Core;
 using StatsClient.MVVM.Model;
-using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.DatabaseOperations;
 using System.Windows;
 using System.Timers;
-using System.Text.RegularExpressions;
 using System.Diagnostics;
 using StatsClient.MVVM.View;
 using System.Windows.Controls;
-using Newtonsoft.Json;
-using System.Net.Http;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -235,11 +231,10 @@ public partial class SentOutCasesViewModel : ObservableObject
                 _ = GetTheOrderInfos("both");
                 UpdateTimeColor = "LightGreen";
                 UpdateTimeOpacity = 1;
+                LastDBUpdate = ServerInfoModel.LastDBUpdate!;
             }
-
-        
+                    
             _ = GetServerInfo();
-            LastDBUpdate = ServerInfoModel.LastDBUpdate!;
 
             // creating panels corresponding to the number of designers
             if (!PanelsAddedalready)

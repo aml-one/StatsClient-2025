@@ -5465,6 +5465,8 @@ public class MainViewModel : ObservableObject
 #if DEBUG
         if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
 #endif
+        _MainWindow.Cursor = Cursors.Wait;
+
         var Processes = Process.GetProcesses()
                             .Where(pr => pr.ProcessName == "StatsClientUpdater");
         foreach (var process in Processes)
@@ -6202,16 +6204,24 @@ public class MainViewModel : ObservableObject
             {
                 if (!UpdateMessagePresented)
                 {
+#if DEBUG
+                    return;
+#endif
                     UpdateMessagePresented = true;
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        MessageBoxResult result = MessageBox.Show(_MainWindow, "New version available! Would you like to update the program to the new version?", "Stats Client - Update found", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        MessageBoxResult result = MessageBox.Show(_MainWindow, "New version available! Would you like to update the program to the new version?\nClick No to update an hour later instead.", "Stats Client - Update found", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (result == MessageBoxResult.Yes)
                         {
                             StartProgramUpdate();
                         }
                         else
+                        {
+                            UpdateCheckTimer.Stop();
+                            UpdateCheckTimer.Interval = new TimeSpan(0, 0, 60);
+                            UpdateCheckTimer.Start();
                             AutoUpdateAtStart = true;
+                        }
                     }));
                 }
             }
@@ -6231,9 +6241,11 @@ public class MainViewModel : ObservableObject
 
     private void UpdateCheckTimer_Tick(object? sender, EventArgs e)
     {
+#if DEBUG
+        if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
+#endif
         UpdateCheckTimer.Interval = new TimeSpan(0, 0, 5);
-        if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
-            LookForUpdate();
+        LookForUpdate();
     }
 
 
@@ -6304,6 +6316,7 @@ public class MainViewModel : ObservableObject
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MessageBox.Show(_MainWindow, ex.Message, "Stats Client - Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _MainWindow.Cursor = Cursors.Arrow;
             });
         }
     }
