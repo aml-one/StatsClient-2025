@@ -419,7 +419,7 @@ public partial class UserPanelViewModel : ObservableObject
         GettingOrderInfosNow = true;
         List<CheckedOutCasesModel> modelList = await GetCheckedOutCasesFromStatsDatabase(DesignerID);
 
-        if (SentOutCasesModel.All(modelList.Contains))
+        if (!SentOutCasesModel.All(modelList.Contains))
         {
             List<CheckedOutCasesModel> sortedModelList = [];
 
