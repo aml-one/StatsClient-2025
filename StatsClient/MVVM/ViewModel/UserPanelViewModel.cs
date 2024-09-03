@@ -340,6 +340,17 @@ public partial class UserPanelViewModel : ObservableObject
             RaisePropertyChanged(nameof(GettingOrderInfosNow));
         }
     }
+    
+    private bool firstQuery = true;
+    public bool FirstQuery
+    {
+        get => firstQuery;
+        set
+        {
+            firstQuery = value;
+            RaisePropertyChanged(nameof(FirstQuery));
+        }
+    }
 
     #endregion Properties
 
@@ -419,8 +430,9 @@ public partial class UserPanelViewModel : ObservableObject
         GettingOrderInfosNow = true;
         List<CheckedOutCasesModel> modelList = await GetCheckedOutCasesFromStatsDatabase(DesignerID);
 
-        if (!SentOutCasesModel.All(modelList.Contains))
+        if (!SentOutCasesModel.All(modelList.Contains) || FirstQuery)
         {
+            FirstQuery = false;
             List<CheckedOutCasesModel> sortedModelList = [];
 
             try
