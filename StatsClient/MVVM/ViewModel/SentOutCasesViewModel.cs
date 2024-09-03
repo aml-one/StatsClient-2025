@@ -6,6 +6,7 @@ using System.Timers;
 using System.Diagnostics;
 using StatsClient.MVVM.View;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -153,8 +154,8 @@ public partial class SentOutCasesViewModel : ObservableObject
     //    }
     //}
 
-    private List<CheckedOutCasesModel> sentOutCasesModel = [];
-    public List<CheckedOutCasesModel> SentOutCasesModel
+    private ObservableCollection<CheckedOutCasesModel> sentOutCasesModel = [];
+    public ObservableCollection<CheckedOutCasesModel> SentOutCasesModel
     {
         get => sentOutCasesModel;
         set
@@ -182,8 +183,6 @@ public partial class SentOutCasesViewModel : ObservableObject
         _timer.Start();
 
         _ = GetServerInfo();
-
-        _ = GetTheOrderInfos("both");
     }
 
 
@@ -194,13 +193,12 @@ public partial class SentOutCasesViewModel : ObservableObject
             if (LastDBUpdate != ServerInfoModel.LastDBUpdate && !ServerInfoModel.ServerIsWritingDatabase)
             {
                 LastDBUpdateLocalTime = DateTime.Now.ToString("MMM d - h:mm:ss tt");
-                _ = GetTheOrderInfos("both");
                 UpdateTimeColor = "LightGreen";
                 UpdateTimeOpacity = 1;
                 LastDBUpdate = ServerInfoModel.LastDBUpdate!;
             }
                     
-            _ = GetServerInfo();
+            await GetServerInfo();
 
             // creating panels corresponding to the number of designers
             if (!PanelsAddedalready)
@@ -229,10 +227,6 @@ public partial class SentOutCasesViewModel : ObservableObject
         }
     }
 
-    
-
-
-
     private async Task GetServerInfo()
     {
         try
@@ -243,22 +237,5 @@ public partial class SentOutCasesViewModel : ObservableObject
         {
             Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
         }
-    }
-
-    private async Task GetTheOrderInfos(string designerID)
-    {
-        List<CheckedOutCasesModel> modelList = [];
-
-        try
-        {
-            modelList = await GetCheckedOutCasesFromStatsDatabase(designerID);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-        }
-        
-
-        SentOutCasesModel = modelList;
     }
 }

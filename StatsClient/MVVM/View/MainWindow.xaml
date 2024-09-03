@@ -274,38 +274,49 @@
                         DockPanel.Dock="Top"
                         PreviewMouseDown="TitleBar_PreviewMouseDown">
 
+                    <Grid>
 
 
-                    <DockPanel LastChildFill="False">
+                        <DockPanel LastChildFill="False">
 
-                        <Image Source="/Images/stats_2025_Q512.png"
-                               Height="25"
-                               DockPanel.Dock="Bottom"
-                               Margin="1,5,5,9">
-                            <!--Image.BitmapEffect>
+                            <Image Source="/Images/stats_2025_Q512.png"
+                                   Height="25"
+                                   DockPanel.Dock="Bottom"
+                                   Margin="1,5,5,9">
+                                <!--Image.BitmapEffect>
                                 <DropShadowBitmapEffect Color="White"
                                                         Direction="270"
                                                         ShadowDepth="1"
                                                         Opacity="0.55"
                                                         Softness="2" />
                             </Image.BitmapEffect-->
-                        </Image>
+                            </Image>
 
 
-                        <core:OutlinedTextBlock Stroke="#333"
-                                                StrokePosition="Outside"
-                                                FontSize="24"
-                                                FontWeight="SemiBold"
-                                                Fill="WhiteSmoke"
-                                                StrokeThickness="1"
-                                                Text="Stats Client 2025"
-                                                VerticalAlignment="Bottom"
-                                                Margin="2,0,0,0">
-                            <core:OutlinedTextBlock.LayoutTransform>
-                                <RotateTransform Angle="270" />
-                            </core:OutlinedTextBlock.LayoutTransform>
-                        </core:OutlinedTextBlock>
-                    </DockPanel>
+                            <core:OutlinedTextBlock Stroke="#333"
+                                                    StrokePosition="Outside"
+                                                    FontSize="24"
+                                                    FontWeight="SemiBold"
+                                                    Fill="WhiteSmoke"
+                                                    StrokeThickness="1"
+                                                    Text="Stats Client 2025"
+                                                    VerticalAlignment="Bottom"
+                                                    Margin="2,0,0,0">
+                                <core:OutlinedTextBlock.LayoutTransform>
+                                    <RotateTransform Angle="270" />
+                                </core:OutlinedTextBlock.LayoutTransform>
+                            </core:OutlinedTextBlock>
+
+                        </DockPanel>
+                        <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
+                                   d:Text="v1"
+                                   Margin="-4,0,0,226"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom"
+                                   Foreground="Wheat"
+                                   Panel.ZIndex="-1"
+                                   FontSize="14" />
+                    </Grid>
                 </Border>
 
             </DockPanel>
@@ -2387,15 +2398,15 @@
                                 </StackPanel>
                             </Grid>
                         </TabItem>
-                        
+
                         <TabItem Header="Modules"
                                  Style="{StaticResource applicationsTabItem}">
                             <Grid Margin="10,0">
                                 <StackPanel Grid.Row="0">
-                                    
+
                                     <TextBlock Text="Modules"
-                                                FontSize="26"
-                                                FontWeight="Thin" />
+                                               FontSize="26"
+                                               FontWeight="Thin" />
 
                                     <CheckBox Content="Account Infos"
                                               Foreground="Beige"
@@ -3181,16 +3192,6 @@
                         </ScrollViewer>
                     </DockPanel>
                 </StackPanel>
-
-                <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
-                           d:Text="v1"
-                           Grid.Column="1"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Right"
-                           Margin="0,0,14,-2"
-                           Foreground="#999"
-                           Panel.ZIndex="-1"
-                           FontSize="8"/>
             </Grid>
             <!-- END OF FOOTER -->
         </Grid>

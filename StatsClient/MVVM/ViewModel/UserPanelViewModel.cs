@@ -1,11 +1,13 @@
 ﻿using StatsClient.MVVM.Core;
 using StatsClient.MVVM.Model;
 using StatsClient.MVVM.View;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
-using static StatsClient.MVVM.Core.Functions;
+using static StatsClient.MVVM.Core.DatabaseOperations;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -289,18 +291,7 @@ public partial class UserPanelViewModel : ObservableObject
 
 
     #endregion units
-
-    private List<CheckedOutCasesModel> sentOutCasesModelRAW = [];
-    public List<CheckedOutCasesModel> SentOutCasesModelRAW
-    {
-        get => sentOutCasesModelRAW;
-        set
-        {
-            sentOutCasesModelRAW = value;
-            RaisePropertyChanged(nameof(SentOutCasesModelRAW));
-        }
-    }
-    
+        
     private List<CheckedOutCasesModel> sentOutCasesModel = [];
     public List<CheckedOutCasesModel> SentOutCasesModel
     {
@@ -338,6 +329,18 @@ public partial class UserPanelViewModel : ObservableObject
         }
     }
 
+
+    private bool gettingOrderInfosNow = false;
+    public bool GettingOrderInfosNow
+    {
+        get => gettingOrderInfosNow;
+        set
+        {
+            gettingOrderInfosNow = value;
+            RaisePropertyChanged(nameof(GettingOrderInfosNow));
+        }
+    }
+
     #endregion Properties
 
 
@@ -358,25 +361,24 @@ public partial class UserPanelViewModel : ObservableObject
         _startTimer.Elapsed += StartTimer_Elapsed;
         _startTimer.Start();
         
-        SentOutCasesModelRAW = SentOutCasesViewModel.StaticInstance!.SentOutCasesModel;
-
+        
         FilterCommand = new RelayCommand(o => Filter());
         ClearFilterCommand = new RelayCommand(o => ClearFilter());
     }
 
-    private void StartTimer_Elapsed(object? sender, ElapsedEventArgs e)
+    private async void StartTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         DesignerName = sentOutCasesViewModel.DesignersModel.FirstOrDefault(x => x.DesignerID == DesignerID)?.FriendlyName!;
      
-        _ = GetTheOrderInfos();
+        await GetTheOrderInfos();
         _startTimer.Stop();
     }
 
-    private void OrderTimer_Elapsed(object? sender, ElapsedEventArgs e)
+    private async void OrderTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        if (!sentOutCasesViewModel.ServerInfoModel.ServerIsWritingDatabase && string.IsNullOrEmpty(Search))
+        if (!sentOutCasesViewModel.ServerInfoModel.ServerIsWritingDatabase && string.IsNullOrEmpty(Search) && !GettingOrderInfosNow)
         {
-            _ = GetTheOrderInfos();
+            await GetTheOrderInfos();
         }
 
 
@@ -414,20 +416,16 @@ public partial class UserPanelViewModel : ObservableObject
 
     private async Task GetTheOrderInfos()
     {
-        SentOutCasesModelRAW = SentOutCasesViewModel.StaticInstance!.SentOutCasesModel;
+        GettingOrderInfosNow = true;
+        List<CheckedOutCasesModel> modelList = await GetCheckedOutCasesFromStatsDatabase(DesignerID);
 
-        
-
-        List<CheckedOutCasesModel> modelList = SentOutCasesModelRAW.Where(x => x.Designer == DesignerID).ToList();
-        
-        
-        if (SentOutCasesModelFinal != modelList)
+        if (SentOutCasesModel.All(modelList.Contains))
         {
             List<CheckedOutCasesModel> sortedModelList = [];
 
             try
             {
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
                     TotalAbutments = 0;
                     TotalCrowns = 0;
@@ -664,7 +662,7 @@ public partial class UserPanelViewModel : ObservableObject
                         }
                     }
 
-                }).Wait();
+                });
 
                 TotalOrdersLeftOvers = TotalOrders - TotalOrdersToday;
             
@@ -684,6 +682,8 @@ public partial class UserPanelViewModel : ObservableObject
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
             }
         }
+
+        GettingOrderInfosNow = false;
     }
 
 
