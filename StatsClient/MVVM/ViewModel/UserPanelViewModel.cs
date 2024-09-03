@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
 using static StatsClient.MVVM.Core.Functions;
 
 namespace StatsClient.MVVM.ViewModel;
@@ -15,7 +14,9 @@ public partial class UserPanelViewModel : ObservableObject
     public System.Timers.Timer _orderTimer;
     public System.Timers.Timer _startTimer;
     public System.Timers.Timer _periodicTimer;
-    
+
+    #region Properties
+
     private string designerID;
     public string DesignerID
     {
@@ -38,8 +39,8 @@ public partial class UserPanelViewModel : ObservableObject
         }
     }
 
-    private static UserPanelViewModel instance;
-    public static UserPanelViewModel Instance
+    private static UserPanelViewModel? instance;
+    public static UserPanelViewModel? Instance
     {
         get => instance;
         set
@@ -337,6 +338,8 @@ public partial class UserPanelViewModel : ObservableObject
         }
     }
 
+    #endregion Properties
+
 
     public RelayCommand FilterCommand { get; set; }
     public RelayCommand ClearFilterCommand { get; set; }
@@ -346,8 +349,7 @@ public partial class UserPanelViewModel : ObservableObject
     {
         Instance = this;
         sentOutCasesViewModel = SentOutCasesViewModel.StaticInstance!;
-        //sentOutCasesViewModel.UserPanelViewModels.Add(this);
-
+        
         _orderTimer = new System.Timers.Timer(10000);
         _orderTimer.Elapsed += OrderTimer_Elapsed;
         _orderTimer.Start();
@@ -356,22 +358,11 @@ public partial class UserPanelViewModel : ObservableObject
         _startTimer.Elapsed += StartTimer_Elapsed;
         _startTimer.Start();
         
-        //_periodicTimer = new System.Timers.Timer(2000);
-        //_periodicTimer.Elapsed += PeriodicTimer_Elapsed;
-        //_periodicTimer.Start();
-
-        
-
         SentOutCasesModelRAW = SentOutCasesViewModel.StaticInstance!.SentOutCasesModel;
 
         FilterCommand = new RelayCommand(o => Filter());
         ClearFilterCommand = new RelayCommand(o => ClearFilter());
     }
-
-    //private void PeriodicTimer_Elapsed(object? sender, ElapsedEventArgs e)
-    //{
-    //    //SortOrders();
-    //}
 
     private void StartTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
@@ -383,7 +374,7 @@ public partial class UserPanelViewModel : ObservableObject
 
     private void OrderTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        if (!sentOutCasesViewModel.ServerInfoModel.ServerIsWritingDatabase & sentOutCasesViewModel.ServerIsOnline && string.IsNullOrEmpty(Search))
+        if (!sentOutCasesViewModel.ServerInfoModel.ServerIsWritingDatabase && string.IsNullOrEmpty(Search))
         {
             _ = GetTheOrderInfos();
         }
@@ -693,25 +684,8 @@ public partial class UserPanelViewModel : ObservableObject
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
             }
         }
-        //SortOrders();
     }
 
-
-    //private void SortOrders()
-    //{
-    //    if (SentOutCasesModel is not null)
-    //    {
-    //        List<CheckedOutCasesModel>? modelList = SentOutCasesModel;
-    //        List<CheckedOutCasesModel>? sortedModelList = [];
-
-    //        if (modelList is not null)
-    //        {
-    //            sortedModelList = [.. modelList.OrderBy(x => x.SentOn).ThenByDescending(x => x.Rush).ThenBy(x => x.CommentIcon).ThenByDescending(x => x.TotalUnitsWithPrefixZero)];
-    //            SentOutCasesModel = sortedModelList;
-    //            SentOutCasesModelFinal = sortedModelList;
-    //        }
-    //    }
-    //}
 
     private static string GetIcon(string ScanSource, string commentIcon)
     {

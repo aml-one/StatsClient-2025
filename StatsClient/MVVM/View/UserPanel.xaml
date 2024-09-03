@@ -480,13 +480,7 @@
 
         <Grid Grid.Row="2"
               Background="White">
-            <Image Source="/Images/stats_2025_Q512.png"
-                   Panel.ZIndex="1"
-                   Opacity="1"
-                   Width="512"
-                   Height="512"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center" />
+            
             <core:OutlinedTextBlock Text="{Binding DesignerName}"
                                     Grid.Column="3"
                                     Stroke="#000"

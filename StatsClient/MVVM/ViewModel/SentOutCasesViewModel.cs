@@ -11,6 +11,7 @@ namespace StatsClient.MVVM.ViewModel;
 
 public partial class SentOutCasesViewModel : ObservableObject
 {
+    #region Properties
     private bool panelsAddedalready = false;
     public bool PanelsAddedalready
     {
@@ -163,32 +164,11 @@ public partial class SentOutCasesViewModel : ObservableObject
         }
     }
 
-    //private Dictionary<string, UserPanel> userPanels = [];
-    //public Dictionary<string, UserPanel> UserPanels
-    //{
-    //    get => userPanels;
-    //    set
-    //    {
-    //        userPanels = value;
-    //        RaisePropertyChanged(nameof(UserPanels));
-    //    }
-    //}
+    
+    #endregion Properties
 
-    private bool serverIsOnline = true;
-    public bool ServerIsOnline
-    {
-        get => serverIsOnline;
-        set
-        {
-            serverIsOnline = value;
-            RaisePropertyChanged(nameof(ServerIsOnline));
-        }
-    }
-
-  
     private int Counter = 10;
     public System.Timers.Timer _timer;
-    //public System.Timers.Timer _orderTimer;
 
     public SentOutCasesViewModel()
     {
@@ -201,24 +181,10 @@ public partial class SentOutCasesViewModel : ObservableObject
         _timer.Elapsed += Timer_Elapsed;
         _timer.Start();
 
-        //_orderTimer = new System.Timers.Timer(60000);
-        //_orderTimer.Elapsed += OrderTimer_Elapsed;
-        //_orderTimer.Start();
-
-
         _ = GetServerInfo();
 
         _ = GetTheOrderInfos("both");
     }
-
-    //private void OrderTimer_Elapsed(object? sender, ElapsedEventArgs e)
-    //{
-    //    if (!ServerInfoModel.ServerIsWritingDatabase)
-    //    {
-    //        LastDBUpdateLocalTime = DateTime.Now.ToString("MMM d - h:mm:ss tt");
-    //        _ = GetTheOrderInfos("both");
-    //    }
-    //}
 
 
     private async void Timer_Elapsed(object? sender, ElapsedEventArgs e)
@@ -285,7 +251,6 @@ public partial class SentOutCasesViewModel : ObservableObject
 
         try
         {
-        
             modelList = await GetCheckedOutCasesFromStatsDatabase(designerID);
         }
         catch (Exception ex)
