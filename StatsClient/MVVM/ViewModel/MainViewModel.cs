@@ -1907,9 +1907,8 @@ public class MainViewModel : ObservableObject
     public RelayCommand ExpanderCollapsedCommand { get; set; }
     public RelayCommand ItemClickedCommand { get; set; }
     public RelayCommand ItemRightClickedCommand { get; set; }
-    public RelayCommand GetInfoOn3ShapeOrderCommand { get; set; }
-    public RelayCommand ExploreOrderSourceCommand { get; set; }
-    public RelayCommand ExploreOrderCAMCommand { get; set; }
+    //public RelayCommand GetInfoOn3ShapeOrderCommand { get; set; }
+    
     public RelayCommand GroupBySelectionChangedCommand { get; set; }
     public RelayCommand SearchFieldClickedCommand { get; set; }
     public RelayCommand SearchFieldKeyDownCommand { get; set; }
@@ -2017,9 +2016,6 @@ public class MainViewModel : ObservableObject
         ExpanderCollapsedCommand = new RelayCommand(o => ExpanderCollapsed(o));
         ItemClickedCommand = new RelayCommand(o => ItemClicked(o));
         ItemRightClickedCommand = new RelayCommand(o => ItemRightClicked(o));
-        GetInfoOn3ShapeOrderCommand = new RelayCommand(o => GetInfoOn3ShapeOrder(o));
-        ExploreOrderSourceCommand = new RelayCommand(o => ExploreOrderSource(o));
-        ExploreOrderCAMCommand = new RelayCommand(o => ExploreOrderCAM(o));
         GroupBySelectionChangedCommand = new RelayCommand(o => GroupList());
         SearchFieldClickedCommand = new RelayCommand(o => _MainWindow.tbSearch.Focus());
         SearchFieldKeyDownCommand = new RelayCommand(o => SearchFieldKeyDown());
@@ -2423,15 +2419,16 @@ public class MainViewModel : ObservableObject
         string number = obj.ToString()!;
         FsHideNotification();
 
+
         if (await Task.Run(() => CopyDirectory(FsSelectedFolderObject.Path!, $@"{FsubscrTargetFolder}{number}-{FsSelectedFolderObject.FolderName}")))
         {
-            ShowNotificationMessage("Success", $"Folder with name: '{number}-{FsSelectedFolderObject.FolderName}' copied over successfully", NotificationIcon.Success, true);
+            ShowNotificationMessage("Success", $"Folder with name: '{number}-{FsSelectedFolderObject.FolderName}' copied over successfully", NotificationIcon.Success, true, false, 35);
             FsSearchString = "";
             await Task.Run(() => MarkPanNumberAsCollected(number));
             FillUpPendingDigiCaseNumberList(true);
         }
         else
-            ShowNotificationMessage("Error", "Error occured during the copy process!", NotificationIcon.Error, true);
+            ShowNotificationMessage("Error", "Error occured during the copy process!", NotificationIcon.Error, true, false, 35);
     }
 
     
@@ -2517,7 +2514,7 @@ public class MainViewModel : ObservableObject
             }
             else
             {
-                ShowNotificationMessage("Folder not found", "The folder you're selected does not exist anymore", NotificationIcon.Error, true);
+                ShowNotificationMessage("Folder not found", "The folder you're selected does not exist anymore", NotificationIcon.Error, true, false, 35);
             }
         }
         catch (Exception ex)
@@ -4144,6 +4141,25 @@ public class MainViewModel : ObservableObject
     }
 
     
+    public void ExploreOrderFolder()
+    {
+        string SelectedOrderID = ThreeShapeObject!.IntOrderID!;
+        if (string.IsNullOrEmpty(SelectedOrderID))
+            return;
+
+        if (Directory.Exists($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\"))
+        {
+            try
+            {
+                Process.Start("explorer.exe", $@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\");
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+    }
+
 
     public void GenerateStCopy()
     {
@@ -4156,26 +4172,26 @@ public class MainViewModel : ObservableObject
             bool regenerate = false;
             if ((ThreeShapeDirectoryHelper.Length > 1) && CheckFolderIsWritable(ThreeShapeDirectoryHelper + SelectedOrderID)) // if 3Shape dir not set it up or it is setted up but the case folder not writable (maybe doesn't exist)
             {
-                if (!File.Exists($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy"))
-                    File.Copy($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.3ml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy");
+                if (!File.Exists($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\Manufacturers.stCopy"))
+                    File.Copy($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\Manufacturers.3ml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy");
                 else
                 {
-                    File.Move($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy{DateTime.Now:HHmmss}");
-                    File.Copy($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.3ml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy");
+                    File.Move($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\Manufacturers.stCopy", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy{DateTime.Now:HHmmss}");
+                    File.Copy($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\Manufacturers.3ml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\Manufacturers.stCopy");
                     regenerate = true;
                 }
 
-                if (!File.Exists($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy"))
-                    File.Copy($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.xml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy");
+                if (!File.Exists($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\{SelectedOrderID}.stCopy"))
+                    File.Copy($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\{SelectedOrderID}.xml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy");
                 else
                 {
-                    File.Move($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy{DateTime.Now:HHmmss}");
-                    File.Copy($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.xml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy");
+                    File.Move($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\{SelectedOrderID}.stCopy", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy{DateTime.Now:HHmmss}");
+                    File.Copy($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\{SelectedOrderID}.xml", $@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\{SelectedOrderID}.stCopy");
                     regenerate = true;
                 }
 
-                if (!File.Exists($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\client.info"))
-                    File.WriteAllText($@"{ThreeShapeDirectoryHelper}\{SelectedOrderID}\client.info", ThreeShapeObject.Customer);
+                if (!File.Exists($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\client.info"))
+                    File.WriteAllText($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\client.info", ThreeShapeObject.Customer);
             }
 
             if (regenerate)
@@ -4220,35 +4236,8 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private void ExploreOrderCAM(object o)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void ExploreOrderSource(object o)
-    {
-        try
-        {
-            //Process.Start("explorer.exe", DatabaseConnection.GetServerFileDirectory(ServerID) + (string)obj);
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-        }
-    }
-
-    private void GetInfoOn3ShapeOrder(object obj)
-    {
-        MessageBox.Show("item:" + (string)obj);
-
-        //OrderBeingWatched = (string)obj;
-        //ThreeShapeObject = Current3ShapeOrderList.FirstOrDefault(x => x.IntOrderID == OrderBeingWatched);
-        //if (ThreeShapeObject is null)
-        //    return;
-        ////orderDetailsWindow = new OrderDetailsWindow();
-        ////orderDetailsWindow.ShowDialog(this, ThreeShapeObject);
-        //OrderBeingWatched = "";
-    }
+    
+    
 
     private void ItemClicked(object obj)
     {
@@ -4515,7 +4504,7 @@ public class MainViewModel : ObservableObject
         return true;
     }
 
-    private void ListCases_DoWork(object? sender, DoWorkEventArgs e)
+    private async void ListCases_DoWork(object? sender, DoWorkEventArgs e)
     {
         ThreeShapeServerIsDown = false;
         var data = (SearchData)e.Argument!;
@@ -5271,22 +5260,27 @@ public class MainViewModel : ObservableObject
                         ExtOrderID = "";
 
 
+                    bool hasAnyImage = false;
+
+                    
+                    hasAnyImage = CheckForImageInOrderFolder(reader["IntOrderID"].ToString()!);
+
                     #region Context MenuItems Visibility
 
-                    Visibility ToolBarButton_exploreOrderCAM = Visibility.Collapsed;
-                    Visibility ToolBarButton_secureAbutmentDesign = Visibility.Collapsed;
-                    Visibility ToolBarButton_removeSecureAbutmentDesign = Visibility.Collapsed;
-                    Visibility ToolBarButton_renameOrder = Visibility.Collapsed;
+                    //Visibility ToolBarButton_exploreOrderCAM = Visibility.Collapsed;
+                    //Visibility ToolBarButton_secureAbutmentDesign = Visibility.Collapsed;
+                    //Visibility ToolBarButton_removeSecureAbutmentDesign = Visibility.Collapsed;
+                    //Visibility ToolBarButton_renameOrder = Visibility.Collapsed;
 
 
-                    if (MaxProcessStatusID == "psModelled")
-                        ToolBarButton_exploreOrderCAM = Visibility.Visible;
+                    //if (MaxProcessStatusID == "psModelled")
+                    //    ToolBarButton_exploreOrderCAM = Visibility.Visible;
 
-                    if (isAbutmentCase)
-                        ToolBarButton_secureAbutmentDesign = Visibility.Visible;
+                    //if (isAbutmentCase)
+                    //    ToolBarButton_secureAbutmentDesign = Visibility.Visible;
 
-                    if (isAbutmentCase)
-                        ToolBarButton_removeSecureAbutmentDesign = Visibility.Visible;
+                    //if (isAbutmentCase)
+                    //    ToolBarButton_removeSecureAbutmentDesign = Visibility.Visible;
 
                     bool isTheFilesAccessible = true;               
                     bool generateStCopy = true;
@@ -5374,6 +5368,7 @@ public class MainViewModel : ObservableObject
                         IsCheckedOut = IsCheckedOut,
                         CanBeRenamed = canBeRenamed,
                         CanGenerateStCopy = generateStCopy,
+                        HasAnyImage = hasAnyImage,
                     });
 #pragma warning restore CS8604 // Possible null reference argument.
 
@@ -5404,6 +5399,19 @@ public class MainViewModel : ObservableObject
         Application.Current.Dispatcher.Invoke(new Action(() => {
             _MainWindow.pb3ShapeProgressBar.Value = 0;
         }));
+    }
+
+    private bool CheckForImageInOrderFolder(string orderID)
+    {
+        string path = @$"{ThreeShapeDirectoryHelper}{orderID}\Images";
+                
+        if (Directory.Exists(path))
+        {
+            var fileCount = Directory.EnumerateFiles(path).Count();
+            if (fileCount > 0)
+                return true;
+        }
+        return false;
     }
 
     private void FilterMenuItemClicked(object obj)
@@ -5543,22 +5551,28 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    public void ShowNotificationMessage(string title, string message, NotificationIcon notificationIcon = NotificationIcon.Info, bool notificationWindowPulledIn = false, bool notificationWindowOnInfoBar = false)
+    public void ShowNotificationMessage(string title, string message, NotificationIcon notificationIcon = NotificationIcon.Info, 
+                                        bool notificationWindowPulledIn = false, bool notificationWindowOnInfoBar = false, 
+                                        double pullUpFromBottomEdge = 20 )
     {
+        
+        if (FsCopyPanelShows && !notificationWindowOnInfoBar && notificationWindowPulledIn)
+            pullUpFromBottomEdge = 155;
+
 
         if (notificationWindowOnInfoBar)
         {
             NotificationMessageGridPosition = "2";
-            NotificationMessagePosition = new Thickness(1, 10, 0, 20);
+            NotificationMessagePosition = new Thickness(1, 10, 0, pullUpFromBottomEdge);
             NotificationMessageVertAlignment = VerticalAlignment.Top;
         }
         else
         {
             NotificationMessageVertAlignment = VerticalAlignment.Bottom;
             if (notificationWindowPulledIn)
-                NotificationMessagePosition = new Thickness(145, 0, 0, 20);
+                NotificationMessagePosition = new Thickness(151, 0, 0, pullUpFromBottomEdge);
             else
-                NotificationMessagePosition = new Thickness(15, 0, 0, 20);
+                NotificationMessagePosition = new Thickness(15, 0, 0, pullUpFromBottomEdge);
             NotificationMessageGridPosition = "1";
         }
 

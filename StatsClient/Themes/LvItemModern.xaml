@@ -503,6 +503,13 @@
                                         <Image  Source="/Images/ToolBar/stcopy.png" />
                                     </MenuItem.Icon>
                                 </MenuItem>
+                                
+                                <MenuItem Header="Explore order folder"
+                                          Click="MenuItemExploreFolder_Click">
+                                    <MenuItem.Icon>
+                                        <Image  Source="/Images/folder.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
 
 
                             </ContextMenu>
@@ -529,6 +536,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="{Binding ElementName=headerIcon, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerCaseID, Path=Width}" />
+                                <ColumnDefinition Width="{Binding ElementName=headerPrescription, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerScanInfo, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerCustomer, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerItems, Path=Width}" />
@@ -639,8 +647,19 @@
                             </StackPanel>
 
 
-                            <!-- Scanner Info & Other -->
+                            <!-- Prescription / Image icon -->
                             <StackPanel Grid.Column="2"
+                                        VerticalAlignment="Center">
+                                <Image Source="\Images\ListViewIcons\image.png" 
+                                       Width="21"
+                                       Height="22"
+                                       ToolTip="This order has images / rx form"
+                                       Visibility="{Binding HasAnyImage, Converter={StaticResource BoolToVisibilityConverter}}"
+                                       />
+                            </StackPanel>
+
+                            <!-- Scanner Info & Other -->
+                            <StackPanel Grid.Column="3"
                                         VerticalAlignment="Top">
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
@@ -698,7 +717,7 @@
 
                             <!-- Customer & Patient info -->
                             <StackPanel Orientation="Vertical"
-                                        Grid.Column="3"
+                                        Grid.Column="4"
                                         Margin="5,0,10,0"
                                         VerticalAlignment="Top">
                                 <TextBlock Text="{Binding Customer}"
@@ -746,7 +765,7 @@
 
 
                             <!-- Items & Manufacturers -->
-                            <StackPanel Grid.Column="4"
+                            <StackPanel Grid.Column="5"
                                         VerticalAlignment="Top"
                                         Margin="5,0,0,0">
                                 <TextBlock Text="{Binding Items}"

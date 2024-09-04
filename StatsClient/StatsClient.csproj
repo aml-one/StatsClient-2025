@@ -87,6 +87,7 @@
     <None Remove="Images\IssuesIcons\warning.png" />
     <None Remove="Images\ListViewIcons\checkedOut.png" />
     <None Remove="Images\ListViewIcons\checkingIn.png" />
+    <None Remove="Images\ListViewIcons\image.png" />
     <None Remove="Images\ListViewIcons\lock.png" />
     <None Remove="Images\ListViewIcons\psAccepted.png" />
     <None Remove="Images\ListViewIcons\psClosed.png" />
@@ -328,6 +329,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\ListViewIcons\checkingIn.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\ListViewIcons\image.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\ListViewIcons\lock.png">

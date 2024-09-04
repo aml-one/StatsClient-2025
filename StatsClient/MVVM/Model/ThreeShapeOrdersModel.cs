@@ -45,5 +45,5 @@ public class ThreeShapeOrdersModel{
     public bool IsCheckedOut { get; set; } = false;
     public bool CanBeRenamed { get; set; } = false;
     public bool CanGenerateStCopy { get; set; } = false;
-    
+    public bool HasAnyImage { get; set; } = false;
 }

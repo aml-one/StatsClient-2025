@@ -38,6 +38,11 @@ public partial class LvItemModern
         MainViewModel.Instance.ListUpdateable = true;
     }
 
+    private void MenuItemExploreFolder_Click(object sender, RoutedEventArgs e)
+    {
+        MainViewModel.Instance.ExploreOrderFolder();
+    }
+
     private void AccountInfosShowPassword_Button_Click(object sender, RoutedEventArgs e)
     {
         if (((Button)sender).Tag is not null)
@@ -68,4 +73,6 @@ public partial class LvItemModern
 
         passwordTb.Text = "------";
     }
+
+    
 }

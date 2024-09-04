@@ -954,6 +954,13 @@
                                         </GridViewColumn>
 
 
+                                        <GridViewColumn x:Name="headerPrescription"
+                                                        Width="30">
+                                            <GridViewColumn.Header>
+                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                      Tag="   Rx" />
+                                            </GridViewColumn.Header>
+                                        </GridViewColumn>
                                         <GridViewColumn x:Name="headerScanInfo"
                                                         Width="140"
                                                         DisplayMemberBinding="{Binding ScanSource}">
