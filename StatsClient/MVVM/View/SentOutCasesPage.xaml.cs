@@ -33,6 +33,7 @@ namespace StatsClient.MVVM.View
                 RaisePropertyChangedStatic(nameof(Instance));
             }
         }
+        
 
         public SentOutCasesPage()
         {

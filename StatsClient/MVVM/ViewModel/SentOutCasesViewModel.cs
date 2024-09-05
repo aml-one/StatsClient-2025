@@ -67,12 +67,30 @@ public partial class SentOutCasesViewModel : ObservableObject
             RaisePropertyChanged(nameof(DesignersModel));
         }
     }
-
-
-
-
-
     
+    
+    private Dictionary<string, double>? designerPagesTotalUnits = [];
+    public Dictionary<string, double> DesignerPagesTotalUnits
+    {
+        get => designerPagesTotalUnits!;
+        set
+        {
+            designerPagesTotalUnits = value;
+            RaisePropertyChanged(nameof(DesignerPagesTotalUnits));
+        }
+    }
+    
+    private bool startCheckingForUnitNumbersToo = false;
+    public bool StartCheckingForUnitNumbersToo
+    {
+        get => startCheckingForUnitNumbersToo!;
+        set
+        {
+            startCheckingForUnitNumbersToo = value;
+            RaisePropertyChanged(nameof(StartCheckingForUnitNumbersToo));
+        }
+    }
+
 
     private StatsDBSettingsModel? serverInfoModel;
     public StatsDBSettingsModel ServerInfoModel
@@ -141,18 +159,7 @@ public partial class SentOutCasesViewModel : ObservableObject
             RaisePropertyChanged(nameof(UpdateTimeColor));
         }
     }
-
-
-    //private List<UserPanelViewModel> userPanelViewModels = [];
-    //public List<UserPanelViewModel> UserPanelViewModels
-    //{
-    //    get => userPanelViewModels;
-    //    set
-    //    {
-    //        userPanelViewModels = value;
-    //        RaisePropertyChanged(nameof(UserPanelViewModels));
-    //    }
-    //}
+    
 
     private ObservableCollection<CheckedOutCasesModel> sentOutCasesModel = [];
     public ObservableCollection<CheckedOutCasesModel> SentOutCasesModel
@@ -214,18 +221,61 @@ public partial class SentOutCasesViewModel : ObservableObject
                         string designerID = DesignersModel.ToArray()[i].DesignerID!;
 
                         UserPanel userPanel = new(designerID);
-                        ColumnDefinition column = new();
-                        column.Width = new GridLength(1, GridUnitType.Star);
-                        column.Name = $"gridColumn{designerID}";
+                        ColumnDefinition column = new()
+                        {
+                            Width = new GridLength(1, GridUnitType.Star),
+                            Name = $"gridColumn{designerID}"
+                        };
                         SentOutCasesPage.Instance.mainGrid.ColumnDefinitions.Add(column);
                         Grid.SetColumn(userPanel, i);
-                    
+
+                        DesignerPagesTotalUnits.TryAdd(designerID, 0);
+
+
                         SentOutCasesPage.Instance.mainGrid.Children.Add(userPanel);
                     });
                 }
             }
+            else
+                await GetTotalUnitsForEachDesigner();
+
+
+            if (DesignerPagesTotalUnits.Count > 0 && PanelsAddedalready)
+            {
+                foreach (var item in DesignerPagesTotalUnits)
+                {
+                    if (item.Value < 1)
+                    {
+                        Application.Current.Dispatcher.Invoke(new Action(() => {
+                            SentOutCasesPage.Instance.mainGrid.ColumnDefinitions.FirstOrDefault(x => x.Name == $"gridColumn{item.Key}")!.Width = new GridLength(1, GridUnitType.Pixel);
+                        }));
+                    }
+                    else
+                    {
+                        Application.Current.Dispatcher.Invoke(new Action(() => {
+                            SentOutCasesPage.Instance.mainGrid.ColumnDefinitions.FirstOrDefault(x => x.Name == $"gridColumn{item.Key}")!.Width = new GridLength(1, GridUnitType.Star);
+                        }));
+                    }
+                }
+            }
         }
     }
+
+    private async Task GetTotalUnitsForEachDesigner()
+    {
+        if (DesignerPagesTotalUnits.Count < 0)
+            return;
+
+        List<DesignerUnitsModel> designerUnitsModels = await GetDesignerUnitsModel();
+        if (designerUnitsModels.Count > 0)
+        {
+            foreach (var item in designerUnitsModels)
+            {
+                DesignerPagesTotalUnits[item.DesignerID!] = item.TotalUnits;
+            }
+        }
+    }
+
 
     private async Task GetServerInfo()
     {

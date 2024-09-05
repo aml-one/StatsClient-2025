@@ -2907,7 +2907,7 @@
                                                 StrokePosition="Outside"
                                                 FontSize="20"
                                                 FontWeight="SemiBold"
-                                                Fill="#ede505"
+                                                Fill="LightYellow"
                                                 StrokeThickness="0.5"
                                                 Margin="0,2,8,0"
                                                 Text="Server is" />
@@ -2917,7 +2917,7 @@
                                                     StrokePosition="Outside"
                                                     FontSize="20"
                                                     FontWeight="SemiBold"
-                                                    Fill="#05eb78"
+                                                    Fill="NavajoWhite"
                                                     StrokeThickness="0.5"
                                                     Margin="-2,2,0,0"
                                                     Text="{Binding ServerStatus}" />
@@ -2937,7 +2937,7 @@
                                                 FontWeight="SemiBold"
                                                 Fill="#ffabb6"
                                                 StrokeThickness="0.5"
-                                                Margin="0,2,8,0"
+                                                Margin="0,0,8,0"
                                                 Text="Lost connection to 3Shape Server" />
 
                     </StackPanel>
@@ -2946,7 +2946,7 @@
                           d:Visibility="Visible">
                         <DockPanel HorizontalAlignment="Left"
                                    VerticalAlignment="Top"
-                                   Margin="2,2,5,0"
+                                   Margin="2,0,5,0"
                                    MaxWidth="265"
                                    MinWidth="245"
                                    Visibility="{Binding LastDCASUpdate, Converter={StaticResource EmptyToCollapsedConverter}}"
@@ -2955,18 +2955,18 @@
                                                     StrokePosition="Outside"
                                                     FontSize="15"
                                                     FontWeight="SemiBold"
-                                                    Fill="DeepSkyBlue"
+                                                    Fill="LightYellow"
                                                     StrokeThickness="0.5"
-                                                    Margin="0,2,8,0"
+                                                    Margin="0,0,8,0"
                                                     Text="Last D.C.A.S. update" />
                             <core:OutlinedTextBlock Stroke="#222"
                                                     StrokePosition="Outside"
                                                     HorizontalAlignment="Right"
                                                     FontSize="15"
                                                     FontWeight="SemiBold"
-                                                    Fill="MistyRose"
+                                                    Fill="NavajoWhite"
                                                     StrokeThickness="0.5"
-                                                    Margin="0,2,0,0"
+                                                    Margin="0,0,0,0"
                                                     d:Text="38 seconds ago"
                                                     Text="{Binding LastDCASUpdate}" />
                             <i:Interaction.Triggers>
@@ -3161,7 +3161,7 @@
                                                 StrokePosition="Outside"
                                                 FontSize="20"
                                                 FontWeight="SemiBold"
-                                                Fill="#05eb78"
+                                                Fill="LightYellow"
                                                 StrokeThickness="0.5"
                                                 Visibility="{Binding CbSettingShowDigiCases, Converter={StaticResource BoolToVisibilityConverter}}"
                                                 d:Visibility="Visible"

@@ -21,6 +21,60 @@ namespace StatsClient.MVVM.Core;
 public partial class DatabaseOperations
 {
 
+    public static async Task<List<DesignerUnitsModel>> GetDesignerUnitsModel()
+    {
+        List<DesignerUnitsModel> list = [];
+
+
+        List<DesignerModel> designers = await GetDesignersModel();
+
+        foreach (var designer in designers)
+        {
+            string designerID = designer.DesignerID!;
+            double totalUnits = 0;
+
+            try
+            {
+                string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+                string query;
+
+                query = @$"SELECT * FROM dbo.CheckedOutCases WHERE Designer = '{designerID}'";
+
+                using SqlConnection connection = new(connectionString);
+                SqlCommand command = new(query, connection);
+                connection.Open();
+
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    double crowns = 0;
+                    double abutments = 0;
+
+                    if (reader["Crowns"].ToString() is not null)
+                        _ = double.TryParse(reader["Crowns"].ToString(), out crowns);
+                    if (reader["Abutments"].ToString() is not null)
+                        _ = double.TryParse(reader["Abutments"].ToString(), out abutments);
+
+                    totalUnits += crowns + abutments;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            list.Add(new DesignerUnitsModel()
+            {
+                DesignerID = designerID,
+                TotalUnits = totalUnits,
+            });
+
+        }
+
+
+        return list;
+    }
+
     public static async Task<List<string>> GetAccountInfoCategories()
     {
         List<string> list = [];

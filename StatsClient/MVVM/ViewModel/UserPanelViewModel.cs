@@ -352,11 +352,13 @@ public partial class UserPanelViewModel : ObservableObject
         }
     }
 
+
     #endregion Properties
 
 
     public RelayCommand FilterCommand { get; set; }
     public RelayCommand ClearFilterCommand { get; set; }
+    
 
 
     public UserPanelViewModel()
@@ -366,8 +368,8 @@ public partial class UserPanelViewModel : ObservableObject
         
         _orderTimer = new System.Timers.Timer(10000);
         _orderTimer.Elapsed += OrderTimer_Elapsed;
-        _orderTimer.Start();
-        
+        _orderTimer.Start(); 
+
         _startTimer = new System.Timers.Timer(1000);
         _startTimer.Elapsed += StartTimer_Elapsed;
         _startTimer.Start();
@@ -376,6 +378,7 @@ public partial class UserPanelViewModel : ObservableObject
         FilterCommand = new RelayCommand(o => Filter());
         ClearFilterCommand = new RelayCommand(o => ClearFilter());
     }
+
 
     private async void StartTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
@@ -388,23 +391,8 @@ public partial class UserPanelViewModel : ObservableObject
     private async void OrderTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         if (!sentOutCasesViewModel.ServerInfoModel.ServerIsWritingDatabase && string.IsNullOrEmpty(Search) && !GettingOrderInfosNow)
-        {
+        {   
             await GetTheOrderInfos();
-        }
-
-
-        // hiding the UserPanel if the TotalUnits = 0
-        if (TotalUnits < 1)
-        {
-            Application.Current.Dispatcher.Invoke(new Action(() => {
-                SentOutCasesPage.Instance.mainGrid.ColumnDefinitions.FirstOrDefault(x => x.Name == $"gridColumn{designerID}")!.Width = new GridLength(0, GridUnitType.Star);
-            }));
-        }
-        else
-        {
-            Application.Current.Dispatcher.Invoke(new Action(() => {
-                SentOutCasesPage.Instance.mainGrid.ColumnDefinitions.FirstOrDefault(x => x.Name == $"gridColumn{designerID}")!.Width = new GridLength(1, GridUnitType.Star);
-            }));
         }
     }
 
@@ -429,8 +417,8 @@ public partial class UserPanelViewModel : ObservableObject
     {
         GettingOrderInfosNow = true;
         List<CheckedOutCasesModel> modelList = await GetCheckedOutCasesFromStatsDatabase(DesignerID);
-
-        if (!SentOutCasesModel.All(modelList.Contains) || FirstQuery)
+        
+        if (!SentOutCasesModel.All(modelList.Contains) || SentOutCasesModel.Count == 0 || FirstQuery)
         {
             FirstQuery = false;
             List<CheckedOutCasesModel> sortedModelList = [];
@@ -450,12 +438,6 @@ public partial class UserPanelViewModel : ObservableObject
 
                     foreach (var model in modelList)
                     {
-                        model.RedoCaseComment = "(REDO)";
-                        model.RushCaseComment = "(RUSH CASE)";
-                        model.RushForMorningComment = "RUSH case for the morning!";
-                        model.OrderDesignedComment = "(Order received by the lab, but auto import failed)";
-                        model.ScrewRetainedCaseComment = "ACH";
-
                         model.OriginalSentOn = model.SentOn;
 
                         if (model.TotalUnits!.Length == 1)
@@ -692,6 +674,7 @@ public partial class UserPanelViewModel : ObservableObject
             catch (Exception ex)
             {
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

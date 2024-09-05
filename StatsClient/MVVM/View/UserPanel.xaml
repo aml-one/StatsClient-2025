@@ -549,7 +549,7 @@
                                     DisplayMemberBinding="{Binding Models}" />
                     <GridViewColumn x:Name="headerSentOn"
                                     Width="110"
-                                    Header="Sent On"
+                                    Header="         Sent On"
                                     DisplayMemberBinding="{Binding SentOn}" />
 
                 </GridView>
@@ -631,6 +631,8 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
+
+                
                 <TextBlock Text="SEARCH"
                            Foreground="#888"
                            FontSize="10"
