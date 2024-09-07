@@ -36,6 +36,8 @@
                Margin="0,0,10,0"
                FontFamily="Sans Serif"
                Cursor="Hand"
+               d:Visibility="Visible"
+               x:Name="closeButton"
                PreviewMouseDown="Label_PreviewMouseDown"
                Height="35"
                Width="30" />
@@ -53,16 +55,18 @@
 
         <StackPanel Grid.Row="2"
                     Margin="0,20,0,0">
-            <TextBlock Text="{DynamicResource pleaseWait}"
-                       d:Text="Please wait.." 
+            <TextBlock Text="Please wait.." 
+                       x:Name="tbStatus"
                        HorizontalAlignment="Center"/>
 
             <ProgressBar Grid.Row="2"
                          Margin="20,10"
                          Height="3"
+                         x:Name="progressBar"
+                         Value="{Binding ProgressValue}"
                          Background="Transparent"
                          BorderThickness="0"
-                         IsIndeterminate="True" />
+                         IsIndeterminate="False" />
         </StackPanel>
 
         <TextBlock Text="AmL 2024."

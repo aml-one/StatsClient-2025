@@ -145,6 +145,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             RaisePropertyChanged(nameof(ShowCasesWithoutNumber));
         }
     }
+    
+    private bool hitRenameOnShadeSelect = false;
+    public bool HitRenameOnShadeSelect
+    {
+        get => hitRenameOnShadeSelect;
+        set
+        {
+            hitRenameOnShadeSelect = value;
+            RaisePropertyChanged(nameof(HitRenameOnShadeSelect));
+        }
+    }
 
     private string selectedDigitalSystem = "";
     public string SelectedDigitalSystem
@@ -339,7 +350,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     private void ShadeButtonClicked(object obj)
     {
         SelectedShade = (string)obj;
-        BuildName();
+        BuildName("shade");
         SmartOrderNamesPage.StaticInstance!.renameButton.Focus();
     }
 
@@ -357,7 +368,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         await Refresh();
     }
 
-    private async void BuildName()
+    private async void BuildName(string obj = "")
     {
         if (SelectedOrder is null || string.IsNullOrEmpty(PanNumber))
             return;
@@ -468,6 +479,9 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                              .ToUpper();
 
         OrderNamePreview = finalName;
+
+        if (obj == "shade" && HitRenameOnShadeSelect)
+            RenameOrder();
     }
 
     

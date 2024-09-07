@@ -883,6 +883,12 @@
                                     d:Visibility="Visible"
                                     IsEnabled="{Binding ControlsEnabled}"
                                     Command="{Binding RenameOrderCommand}" />
+
+                            <CheckBox Content="Hit Rename on Shade select" 
+                                      Foreground="Pink"
+                                      VerticalAlignment="Center"
+                                      Margin="20,0"
+                                      IsChecked="{Binding HitRenameOnShadeSelect}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
