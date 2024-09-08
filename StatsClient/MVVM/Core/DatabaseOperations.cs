@@ -1103,7 +1103,10 @@ public partial class DatabaseOperations
             if (Ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
                 MainViewModel.Instance.ThreeShapeServerIsDown = true;
             else
-                MessageBox.Show(Ex.Message, "Error #312", MessageBoxButton.OK, MessageBoxImage.Error);
+            {
+                if (!Ex.Message.Contains("Incorrect syntax near ')'"))
+                    MessageBox.Show(Ex.Message, "Error #312", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         return result;
@@ -1125,12 +1128,12 @@ public partial class DatabaseOperations
         }
     }
 
-    public static List<string> GetAllSentOutIssues()
+    public static async Task<List<OrderIssueModel>> GetAllSentOutIssues()
     {
-        List<string> list = [];
+        List<OrderIssueModel> list = [];
         try
         {
-            string connectionstring = ConnectionStrToStatsDatabase();
+            string connectionstring = await Task.Run(ConnectionStrToStatsDatabase);
             string query = @"SELECT * FROM dbo.SentOutIssues";
 
             using SqlConnection connection = new(connectionstring);
@@ -1140,7 +1143,13 @@ public partial class DatabaseOperations
             using SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                list.Add(reader["Level"].ToString() + "|" + reader["OrderID"].ToString() + "|" + reader["SkipReason"].ToString() + "|" + reader["ForeColor"].ToString() + "|" + reader["CreateDate"].ToString());
+                list.Add(new OrderIssueModel()
+                {
+                    Level = reader["Level"].ToString(),
+                    OrderID = reader["OrderID"].ToString(),
+                    IssueDescription = reader["SkipReason"].ToString(),
+                    Color = reader["ForeColor"].ToString(),
+                });
             }
         }
         catch

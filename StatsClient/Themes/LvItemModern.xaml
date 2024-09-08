@@ -1173,58 +1173,38 @@
                 <ControlTemplate>
                     <Border x:Name="IssueItem"
                             BorderThickness="1"
+                            Height="26"
                             Tag="{Binding OrderID}">
+                        <Border.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick"
+                                          Command="{Binding DataContext.SearchForOrderByOrderIssueClickCommand,
+                                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
+                        </Border.InputBindings>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding ElementName=lvIssuesIcon, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=lvIssuesOrderID, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=lvIssuesSkipReason, Path=Width}" />
-                                <ColumnDefinition Width="{Binding ElementName=lvIssuesAge, Path=Width}" />
                             </Grid.ColumnDefinitions>
 
-                            <Ellipse Width="24"
-                                     Height="24"
-                                     Margin="3,0,2,0"
-                                     Grid.Column="0"
-                                     VerticalAlignment="Top">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding IconSource}"
-                                                RenderOptions.BitmapScalingMode="Fant" />
-                                </Ellipse.Fill>
-                            </Ellipse>
-
+                            
                             <TextBlock Text="{Binding OrderID}"
-                                       ToolTip="{Binding OrderID}"
+                                       Grid.Column="0"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       Foreground="{Binding Color}"
+                                       Margin="5,0,20,0"
+                                       TextTrimming="CharacterEllipsis" />
+
+
+                            <TextBlock Text="{Binding IssueDescription}"
                                        Grid.Column="1"
                                        FontWeight="Normal"
                                        VerticalAlignment="Center"
-                                       FontSize="12"
-                                       Foreground="{Binding ForeColor}"
+                                       FontSize="13"
+                                       Foreground="{Binding Color}"
                                        Margin="5,0,0,0"
                                        TextTrimming="CharacterEllipsis" />
-
-
-                            <TextBlock Text="{Binding SkipReason}"
-                                       ToolTip="{Binding SkipReason}"
-                                       Grid.Column="2"
-                                       FontWeight="Normal"
-                                       VerticalAlignment="Center"
-                                       FontSize="12"
-                                       Foreground="{Binding ForeColor}"
-                                       Margin="5,0,0,0"
-                                       TextTrimming="CharacterEllipsis" />
-
-
-                            <TextBlock Text="{Binding CreateDate}"
-                                       Grid.Column="3"
-                                       FontWeight="Normal"
-                                       VerticalAlignment="Center"
-                                       FontSize="12"
-                                       Foreground="{Binding ForeColor}"
-                                       Margin="5,0,0,0"
-                                       TextTrimming="CharacterEllipsis" />
-
-
 
                         </Grid>
 
@@ -1999,33 +1979,36 @@
                             Tag="{Binding Credentials.Password}"
                             Background="{Binding Color}"
                             Margin="0,5"
-                            Padding="5">
-                        <Grid Background="#96999F"
+                            Padding="2">
+                        <Grid Background="#BBB"
                               Height="40">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6" />
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="250" />
                                 <ColumnDefinition />
-                                <ColumnDefinition Width="350" />
+                                <ColumnDefinition Width="300" />
                             </Grid.ColumnDefinitions>
 
+                            <Rectangle Fill="{Binding Color}" />
 
                             <Image Source="{Binding ApplicationName, Converter={StaticResource AppNameToIconConverter}}"
                                    Width="24"
-                                   Height="24" />
+                                   Height="24"
+                                   Grid.Column="1" />
 
-                            <StackPanel Grid.Column="1"
+                            <StackPanel Grid.Column="2"
                                         VerticalAlignment="Center">
 
                                 <TextBlock Text="{Binding FriendlyName}"
-                                           Foreground="White"
-                                           FontWeight="Thin"
+                                           Foreground="Black"
+                                           FontWeight="Normal"
                                            FontSize="16"
                                            Margin="5,0,0,0"
                                            TextTrimming="CharacterEllipsis" />
 
                                 <TextBlock Text="{Binding SubCategory}"
-                                           Foreground="WhiteSmoke"
+                                           Foreground="Green"
                                            VerticalAlignment="Center"
                                            FontWeight="Thin"
                                            FontSize="9"
@@ -2034,7 +2017,7 @@
 
                             </StackPanel>
 
-                            <Grid Grid.Column="2">
+                            <Grid Grid.Column="3">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
@@ -2058,7 +2041,7 @@
                                            Grid.Row="0"
                                            Grid.Column="1"
                                            FontSize="11"
-                                           Foreground="Yellow"
+                                           Foreground="Green"
                                            VerticalAlignment="Center"
                                            TextTrimming="CharacterEllipsis"
                                            Margin="0,0,4,0" />
@@ -2073,7 +2056,7 @@
                                            Grid.Row="1"
                                            Grid.Column="1"
                                            FontSize="12"
-                                           Foreground="BlanchedAlmond"
+                                           Foreground="Blue"
                                            VerticalAlignment="Center"
                                            TextTrimming="CharacterEllipsis"
                                            Margin="0,0,4,0" />
@@ -2108,14 +2091,15 @@
 
 
 
-                            <Button Grid.Column="3"
+                            <Button Grid.Column="4"
                                     Margin="3"
+                                    Height="25"
                                     Visibility="{Binding ApplicationName, Converter={StaticResource EmptyAppNameToVisibleConverter}}"
                                     Command="{Binding DataContext.OpenWebsiteCommand, 
                                               RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
                                     CommandParameter="{Binding Website}">
                                 <Button.Content>
-                                    <Grid Width="300">
+                                    <Grid Width="250">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="25" />
                                             <ColumnDefinition />
@@ -2124,6 +2108,7 @@
                                         <Image Source="{Binding ApplicationName, Converter={StaticResource AppNameToIconConverter}}"
                                                Width="16"
                                                Height="16"
+                                               Margin="0,2,0,0"
                                                Grid.Column="0" />
 
                                         <TextBlock Grid.Column="1"
@@ -2132,14 +2117,15 @@
                                 </Button.Content>
                             </Button>
 
-                            <Button Grid.Column="3"
+                            <Button Grid.Column="4"
                                     Margin="3"
+                                    Height="25"
                                     Visibility="{Binding ApplicationName, Converter={StaticResource EmptyAppNameToCollapsedConverter}}"
                                     Command="{Binding DataContext.StartApplicationCommand, 
                                                       RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
                                     CommandParameter="{Binding ApplicationPath}">
                                 <Button.Content>
-                                    <Grid Width="300">
+                                    <Grid Width="250">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="25" />
                                             <ColumnDefinition />
@@ -2159,7 +2145,23 @@
 
                     </Border>
 
-
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="#99c5ff"
+                                    TargetName="AccountInfoItem" />
+                            <Setter Property="Background"
+                                    Value="#005475"
+                                    TargetName="AccountInfoItem" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex"
+                                 Value="1">
+                            <Setter TargetName="AccountInfoItem"
+                                    Property="Background"
+                                    Value="#777" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
 
                 </ControlTemplate>
             </Setter.Value>

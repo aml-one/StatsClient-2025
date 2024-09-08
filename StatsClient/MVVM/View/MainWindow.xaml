@@ -339,6 +339,7 @@
                                         StrokePosition="Outside"
                                         VerticalAlignment="Center"
                                         FontSize="22"
+                                        Cursor="Hand"
                                         FontWeight="SemiBold"
                                         Fill="#ff809d"
                                         StrokeThickness="1"
@@ -347,7 +348,13 @@
                                         d:Visibility="Visible"
                                         d:Text="17"
                                         DockPanel.Dock="Right"
-                                        Margin="0" />
+                                        Margin="0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding SwitchToOrderIssuesTabCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </core:OutlinedTextBlock>
 
                 <core:OutlinedTextBlock Stroke="#333"
                                         StrokePosition="Outside"
@@ -415,6 +422,7 @@
                 <!--#region 3SHAPE TAB -->
                 <TabItem Header="3Shape Orders"
                          IsTabStop="False"
+                         IsEnabled="{Binding ThreeShapeServerIsDown, Converter={StaticResource InverseBoolConverter}}"
                          x:Name="ThreeShapeTab">
                     <Grid Background="White"
                           Margin="-2">
@@ -2309,6 +2317,35 @@
                             <localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}" />
                         </TabItem>
 
+                        <TabItem IsTabStop="False"
+                                 x:Name="orderIssuesTab"
+                                 Visibility="{Binding SentOutIssuesCount, Converter={StaticResource ZeroToCollapsedConverter}}"
+                                 d:Visibility="Visible"
+                                 Style="{StaticResource applicationsTabItem}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Order Issues" />
+                                    <TextBlock Text="{Binding SentOutIssuesCount, StringFormat='- \{0}'}"
+                                               Margin="4,0,0,0" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <ListView ItemsSource="{Binding OrderIssuesList}"
+                                      ItemContainerStyle="{StaticResource LvItemIssues}"
+                                      SelectedItem="{Binding SelectedOrderIssue}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                                <ListView.View>
+
+                                    <GridView AllowsColumnReorder="False"
+                                              ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
+                                        <GridViewColumn x:Name="lvIssuesOrderID">
+                                        </GridViewColumn>
+                                        <GridViewColumn x:Name="lvIssuesSkipReason">
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </TabItem>
+
 
                     </TabControl>
                 </TabItem>
@@ -3096,11 +3133,11 @@
                                        Margin="0,0,0,-6"
                                        Cursor="Hand"
                                        FontSize="26">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseDown">
-                                    <i:InvokeCommandAction Command="{Binding SwitchToPrescriptionMakerTabCommand}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding SwitchToPrescriptionMakerTabCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </TextBlock>
                             <TextBlock Text="Empty pan left"
                                        Foreground="White"

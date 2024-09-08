@@ -1541,6 +1541,18 @@ public class MainViewModel : ObservableObject
 
     #endregion PRESCRIPTION MAKER PROPERTIES
 
+    private OrderIssueModel selectedOrderIssue;
+    public OrderIssueModel SelectedOrderIssue
+    {
+        get => selectedOrderIssue;
+        set
+        {
+            selectedOrderIssue = value;
+            RaisePropertyChanged(nameof(SelectedOrderIssue));
+        }
+    }
+
+
     #region PAN COLOR CHECKER PROPERTIES
     private string pcPanColor = "#56595F";
     public string PcPanColor
@@ -1870,6 +1882,17 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(AccountInfoCategories));
         }
     }
+    
+    private List<OrderIssueModel> orderIssuesList = [];
+    public List<OrderIssueModel> OrderIssuesList
+    {
+        get => orderIssuesList;
+        set
+        {
+            orderIssuesList = value;
+            RaisePropertyChanged(nameof(OrderIssuesList));
+        }
+    }
 
     
 
@@ -1915,6 +1938,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand HideNotificationCommand { get; set; }
 
     public RelayCommand OpenUpOrderInfoWindowCommand { get; set; }
+    public RelayCommand SearchForOrderByOrderIssueClickCommand { get; set; }
     public RelayCommand GenerateStCopyCommand { get; set; }
     public RelayCommand OpenUpRenameOrderWindowCommand { get; set; }
     public RelayCommand SelectTargetFolderCommand { get; set; }
@@ -1951,6 +1975,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand RunNotificationProgressCommand { get; set; }
 
     public RelayCommand SwitchToPrescriptionMakerTabCommand { get; set; }
+    public RelayCommand SwitchToOrderIssuesTabCommand { get; set; }
     public RelayCommand SwitchToFolderSubscriptionTabCommand { get; set; }
     public RelayCommand SwitchToPendingDigiCasesTabCommand { get; set; }
     public RelayCommand RequestDCASUpdateCommand { get; set; }
@@ -2022,6 +2047,7 @@ public class MainViewModel : ObservableObject
         HideNotificationCommand = new RelayCommand(o => HideNotification());
 
         OpenUpOrderInfoWindowCommand = new RelayCommand(o => OpenUpOrderInfoWindow());
+        SearchForOrderByOrderIssueClickCommand = new RelayCommand(o => SearchForOrderByOrderIssueClick());
         GenerateStCopyCommand = new RelayCommand(o => GenerateStCopy());
         OpenUpRenameOrderWindowCommand = new RelayCommand(o => OpenUpRenameOrderWindow());
 
@@ -2083,6 +2109,7 @@ public class MainViewModel : ObservableObject
 
         RunNotificationProgressCommand = new RelayCommand(o => BlinkWindow());
         SwitchToPrescriptionMakerTabCommand = new RelayCommand(o => SwitchToPrescriptionMakerTab());
+        SwitchToOrderIssuesTabCommand = new RelayCommand(o => SwitchToOrderIssuesTab());
         SwitchToFolderSubscriptionTabCommand = new RelayCommand(o => SwitchToFolderSubscriptionTab());
         SwitchToPendingDigiCasesTabCommand = new RelayCommand(o => SwitchToPendingDigiCasesTab());
 
@@ -2239,6 +2266,15 @@ public class MainViewModel : ObservableObject
         });
     }
     
+    private void SwitchToOrderIssuesTab()
+    {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            _MainWindow.applicationsTabControl.SelectedItem = _MainWindow.orderIssuesTab;
+            _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
+        });
+    }
+    
     private void SwitchToFolderSubscriptionTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -2254,6 +2290,14 @@ public class MainViewModel : ObservableObject
         {
             _MainWindow.applicationsTabControl.SelectedItem = _MainWindow.pendingDigiCasesTab;
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
+        });
+    }
+    
+    private void SwitchTo3ShapeTab()
+    {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            _MainWindow.mainTabControl.SelectedItem = _MainWindow.ThreeShapeTab;
         });
     }
 
@@ -3967,6 +4011,14 @@ public class MainViewModel : ObservableObject
         orderInfoWindow.ShowDialog();
     }
     
+    public void SearchForOrderByOrderIssueClick()
+    {
+        if (SelectedOrderIssue is null)
+            return;
+        Search(SelectedOrderIssue.OrderID!);
+        SwitchTo3ShapeTab();
+    }
+    
     public async void OpenUpRenameOrderWindow()
     {
         OrderRenameWindow orderRenameWindow = new(ThreeShapeObject!)
@@ -4236,8 +4288,11 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    
-    
+    private async void UpdateOrderIssuesList()
+    {
+        OrderIssuesList = await GetAllSentOutIssues();
+    }
+
 
     private void ItemClicked(object obj)
     {
@@ -4535,12 +4590,202 @@ public class MainViewModel : ObservableObject
             sFilter = "WHERE ( ";
 
 
-            if (keyWord.StartsWith('@'))
+            if (keyWord.StartsWith('@') && !keyWord.Contains('+'))
             {
                 sFilter += $@" (o.Patient_RefNo LIKE '%{keyWord.Replace("@","").Trim()}%' OR
                                 o.ExtOrderID LIKE '%{keyWord.Replace("@", "").Trim()}%') ";
             }
-            else
+            else if (keyWord.Contains('+') && keyWord.Length > 2 && !keyWord.StartsWith('+') && !keyWord.EndsWith('+'))
+            {
+                string[] keyWordPart = keyWord.Split('+');
+
+                if (keyWordPart.Length > 5)
+                {
+                    ShowNotificationMessage("Error", "You can only use 5 keywords at once", NotificationIcon.Error);
+                    return;
+                }
+
+                if (keyWordPart.Length == 2)
+                    sFilter += $@"
+                                (o.IntOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[0].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[0].Trim()}%') 
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[1].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[1].Trim()}%') 
+                                ";
+                
+                if (keyWordPart.Length == 3)
+                    sFilter += $@"
+                                (o.IntOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[0].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[0].Trim()}%') 
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[1].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[1].Trim()}%')
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[2].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[2].Trim()}%') 
+                                ";
+                
+                if (keyWordPart.Length == 4)
+                    sFilter += $@"
+                                (o.IntOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[0].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[0].Trim()}%') 
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[1].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[1].Trim()}%')
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[2].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[2].Trim()}%') 
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[3].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[3].Trim()}%') 
+                                ";
+                
+                if (keyWordPart.Length == 5)
+                    sFilter += $@"
+                                (o.IntOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[0].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[0].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[0].Trim()}%') 
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[1].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[1].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[1].Trim()}%')
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[2].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[2].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[2].Trim()}%') 
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[3].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[3].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[3].Trim()}%')  
+                                AND
+                                (o.IntOrderID LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.Patient_FirstName LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.Patient_LastName LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.Patient_RefNo LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.ExtOrderID LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.OrderComments LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.Items LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.Customer LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 o.ManufName LIKE '%{keyWordPart[4].Trim()} % ' OR 
+                                 o.CacheMaterialName LIKE '%{keyWordPart[4].Trim()}%' OR 
+                                 i.MaxCreateDate LIKE '%{keyWordPart[4].Trim()}%') 
+                                ";
+            }
+            else if (!keyWord.Contains('+'))
             {
                 if (SearchOnlyInFileNames)
                 {
@@ -4552,7 +4797,7 @@ public class MainViewModel : ObservableObject
                 }
                 else
                 {
-                    sFilter += " (o.IntOrderID LIKE '%" + keyWord + "%' OR " +
+                    sFilter += " o.IntOrderID LIKE '%" + keyWord + "%' OR " +
                             "o.Patient_FirstName LIKE '%" + keyWord + "%' OR " +
                             "o.Patient_LastName LIKE '%" + keyWord + "%' OR " +
                             "o.Patient_RefNo LIKE '%" + keyWord + "%' OR " +
@@ -4562,7 +4807,7 @@ public class MainViewModel : ObservableObject
                             "o.Customer LIKE '%" + keyWord + "%' OR " +
                             "o.ManufName LIKE '%" + keyWord + "%' OR " +
                             "o.CacheMaterialName LIKE '%" + keyWord + "%' OR " +
-                            "i.MaxCreateDate LIKE '%" + keyWord + "%') ";
+                            "i.MaxCreateDate LIKE '%" + keyWord + "%' ";
                 }
             }
 
@@ -5392,7 +5637,10 @@ public class MainViewModel : ObservableObject
                 if (ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
                     ThreeShapeServerIsDown = true;
                 else
-                    ShowMessage(MainWindow.Instance, "Exception", "Exception occured", ex.Message, Ookii.Dialogs.Wpf.TaskDialogIcon.Error, Buttons.Ok);
+                {
+                    if (!ex.Message.Contains("Incorrect syntax near ')'"))
+                        ShowMessage(MainWindow.Instance, "Exception", "Exception occured", ex.Message, Ookii.Dialogs.Wpf.TaskDialogIcon.Error, Buttons.Ok);
+                }
             }));
         }
 
@@ -5801,8 +6049,10 @@ public class MainViewModel : ObservableObject
 
 
         if (second % 15 == 1 || FirstRun)
-        //if (FirstRun)
         {
+            if (FirstRun)
+                UpdateOrderIssuesList();
+
             FirstRun = false;
             Application.Current.Dispatcher.Invoke(new Action(() => {
                 int casesDesigningNow = GetOpenedForDesignCasesCount(ServerID);
@@ -5870,6 +6120,7 @@ public class MainViewModel : ObservableObject
 
         if (second % 59 == 1)
         {
+            UpdateOrderIssuesList();
 
             Application.Current.Dispatcher.Invoke(new Action(() => {
                 if (bwGetSentOutIssues.IsBusy != true)
