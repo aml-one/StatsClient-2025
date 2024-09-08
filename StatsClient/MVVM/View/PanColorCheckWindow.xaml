@@ -96,9 +96,30 @@
                          </i:EventTrigger>
                      </i:Interaction.Triggers>
                     </TextBlock>
-                </DockPanel>
 
-                <Grid PreviewMouseDown="Border_PreviewMouseDown">
+                </DockPanel>
+                <TextBlock Text="Hide"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Left"
+                           Width="30"
+                           Cursor="Hand"
+                           Panel.ZIndex="55"
+                           Visibility="{Binding HideLabelVisibility}"
+                           d:Visibility="Visible"
+                           MouseEnter="PanNumberBox_MouseEnter"
+                           MouseLeave="PanNumberBox_MouseLeave"
+                           FontSize="11">
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDown">
+                                <i:InvokeCommandAction Command="{Binding HidePanColorCheckWindowCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                </TextBlock>
+
+                <Grid PreviewMouseDown="Border_PreviewMouseDown"
+                      MouseEnter="PanNumberBox_MouseEnter"
+                      MouseLeave="PanNumberBox_MouseLeave">
                     <TextBox d:Text="8008"
                              x:Name="panNumberBox"
                              Panel.ZIndex="49"
@@ -116,7 +137,10 @@
                             <KeyBinding Key="Enter"
                                         Command="{Binding PcCheckPanColorCommand}" />
                         </TextBox.InputBindings>
+
+
                     </TextBox>
+
 
                     <TextBlock Text="{Binding PcPanColorFriendlyName}"
                                d:Text="Check Pan Color"
@@ -124,6 +148,7 @@
                                VerticalAlignment="Bottom"
                                HorizontalAlignment="Center"
                                Foreground="{Binding IsItDarkColor, Converter={StaticResource DarkColorBoolToColorConverter}}" />
+
                 </Grid>
             </Grid>
         </Border>

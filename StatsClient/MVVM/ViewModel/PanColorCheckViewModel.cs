@@ -3,6 +3,7 @@ using StatsClient.MVVM.View;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using static StatsClient.MVVM.Core.DatabaseOperations;
 using static StatsClient.MVVM.Core.Functions;
 
@@ -90,6 +91,17 @@ public class PanColorCheckViewModel : ObservableObject
         }
     }
     
+    private Visibility hideLabelVisibility = Visibility.Hidden;
+    public Visibility HideLabelVisibility
+    {
+        get => hideLabelVisibility;
+        set
+        {
+            hideLabelVisibility = value;
+            RaisePropertyChanged(nameof(HideLabelVisibility));
+        }
+    }
+    
     private string pcPanColor = "#888";
     public string PcPanColor
     {
@@ -123,10 +135,13 @@ public class PanColorCheckViewModel : ObservableObject
         }
     }
 
+    private readonly DispatcherTimer WindowHideTimer = new();
+
     public RelayCommand CloseWindowCommand { get; set; }
     public RelayCommand PcCheckPanColorCommand { get; set; }
     public RelayCommand ChangeColorCommand { get; set; }
     public RelayCommand AddNewNumberCommand { get; set; }
+    public RelayCommand HidePanColorCheckWindowCommand { get; set; }
 
     public PanColorCheckViewModel()
     {
@@ -137,6 +152,28 @@ public class PanColorCheckViewModel : ObservableObject
         PcCheckPanColorCommand = new RelayCommand(o => PcCheckPanColor());
         ChangeColorCommand = new RelayCommand(o => ChangeColor());
         AddNewNumberCommand = new RelayCommand(o => AddNewNumber());
+        HidePanColorCheckWindowCommand = new RelayCommand(o => HidePanColorCheckWindow());
+
+        WindowHideTimer.Tick += WindowHideTimer_Tick;
+        WindowHideTimer.Interval = new TimeSpan(0, 0, 10);
+    }
+
+    public void ShowHideLabel()
+    {
+        HideLabelVisibility = Visibility.Visible;
+    }
+
+    private void WindowHideTimer_Tick(object? sender, EventArgs e)
+    {
+        PanColorCheckWindow.StaticInstance.Show();
+        WindowHideTimer.Stop();
+    }
+
+    private void HidePanColorCheckWindow()
+    {
+        HideLabelVisibility = Visibility.Hidden;
+        PanColorCheckWindow.StaticInstance.Hide();
+        WindowHideTimer.Start();
     }
 
     private void AddNewNumber()

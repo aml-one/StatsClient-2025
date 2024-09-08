@@ -42,6 +42,21 @@ namespace StatsClient.MVVM.View
 
         private void SaveWindowPosition()
         {
+            double MaxTopPosition = SystemParameters.MaximizedPrimaryScreenHeight - (StaticInstance.Height + 17);
+            double MaxLeftPosition = SystemParameters.MaximizedPrimaryScreenWidth - (StaticInstance.Width + 20);
+
+            if (Top > MaxTopPosition)
+                Top = MaxTopPosition;
+
+            if (Left > MaxLeftPosition)
+                Left = MaxLeftPosition;
+
+            if (Left < 0)
+                Left = 0;
+
+            if (Top < 0)
+                Top = 0;
+
             LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosTop", Top.ToString());
             LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosLeft", Left.ToString());
             LocalSettingsDB.WriteLocalSetting("ColorCheckWindowIsOpen", "true");
@@ -67,12 +82,23 @@ namespace StatsClient.MVVM.View
         private void Window_Deactivated(object sender, EventArgs e)
         {
             PanColorCheckViewModel.StaticInstance.PcPanColor = "#565656";
+            PanColorCheckViewModel.StaticInstance.HideLabelVisibility = Visibility.Hidden;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
             return;
+        }
+
+        private void PanNumberBox_MouseEnter(object sender, MouseEventArgs e)
+        {
+            PanColorCheckViewModel.StaticInstance.HideLabelVisibility = Visibility.Visible;
+        }
+
+        private void PanNumberBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            PanColorCheckViewModel.StaticInstance.HideLabelVisibility = Visibility.Hidden;
         }
     }
 }
