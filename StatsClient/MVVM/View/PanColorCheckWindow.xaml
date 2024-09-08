@@ -106,6 +106,7 @@
                            Panel.ZIndex="55"
                            Visibility="{Binding HideLabelVisibility}"
                            d:Visibility="Visible"
+                           Foreground="{Binding IsItDarkColor, Converter={StaticResource DarkColorBoolToColorConverter}}"
                            MouseEnter="PanNumberBox_MouseEnter"
                            MouseLeave="PanNumberBox_MouseLeave"
                            FontSize="11">
