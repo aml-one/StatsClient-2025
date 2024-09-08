@@ -135,6 +135,9 @@ namespace StatsClient.MVVM.View
             BeginStoryboard? sb = this.FindResource("PanelOpacityAnimation")! as BeginStoryboard;
             sb!.Storyboard.Completed += BackgroundOpacityStoryboard_Completed;
             sb!.Storyboard.Begin();
+
+            BeginStoryboard? sbVers = this.FindResource("VersionNumberEaseInAnimation")! as BeginStoryboard;
+            sbVers!.Storyboard.Begin();
         }
 
 

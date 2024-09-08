@@ -33,7 +33,7 @@
                     <DoubleAnimation Storyboard.TargetName="logo"
                                      Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.X)"
                                      Duration="0:0:2"
-                                     To="-200">
+                                     To="-195">
                     </DoubleAnimation>
                     <DoubleAnimation Storyboard.TargetName="logo"
                                      Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)"
@@ -92,6 +92,17 @@
 
 
 
+            <BeginStoryboard x:Key="VersionNumberEaseInAnimation">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="versionNumber"
+                                     Storyboard.TargetProperty="(Opacity)"
+                                     Duration="0:0:1.65"
+                                     From="0"
+                                     To="1">
+                    </DoubleAnimation>
+                </Storyboard>
+            </BeginStoryboard>
+            
             <BeginStoryboard x:Key="Background6EaseInAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background6"
@@ -102,7 +113,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background6EaseOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background6"
@@ -113,7 +124,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background5EaseInAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background5"
@@ -124,7 +135,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background5EaseOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background5"
@@ -135,7 +146,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background4EaseInAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background4"
@@ -146,7 +157,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background4EaseOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background4"
@@ -157,7 +168,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background3EaseInAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background3"
@@ -168,7 +179,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background3EaseOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background3"
@@ -179,7 +190,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background2EaseInAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background2"
@@ -190,7 +201,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background2EaseOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background2"
@@ -201,7 +212,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background1EaseInAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background"
@@ -212,7 +223,7 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
+
             <BeginStoryboard x:Key="Background1EaseOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="background"
@@ -223,13 +234,13 @@
                     </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
-            
-            
+
+
 
 
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <Window.Background>
         <SolidColorBrush Opacity="{Binding CbSettingGlassyEffect, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToOpacityConverter}}"
                          Color="#56595F" />
@@ -253,35 +264,35 @@
                d:Opacity="0.25"
                Stretch="UniformToFill"
                Margin="1,-77,-79,0" />
-        
+
         <Image Source="\Images\avatar_pink.jpeg"
                x:Name="background2"
                Opacity="0"
                d:Opacity="0.25"
                Stretch="UniformToFill"
                Margin="1,-77,-79,0" />
-        
+
         <Image Source="\Images\avatar_yellow.jpeg"
                x:Name="background3"
                Opacity="0"
                d:Opacity="0.25"
                Stretch="UniformToFill"
                Margin="1,-77,-79,0" />
-        
+
         <Image Source="\Images\avatar_green.jpeg"
                x:Name="background4"
                Opacity="0"
                d:Opacity="0.25"
                Stretch="UniformToFill"
                Margin="1,-77,-79,0" />
-        
+
         <!--Image Source="\Images\avatar_white.jpeg"
                x:Name="background5"
                Opacity="0"
                d:Opacity="0.25"
                Stretch="UniformToFill"
                Margin="1,-77,-79,0" /-->
-        
+
         <!--Image Source="\Images\avatar_yellow.jpeg"
                x:Name="background6"
                Opacity="0"
@@ -295,13 +306,32 @@
                Width="250"
                Height="250"
                d:Width="75"
-               d:Margin="-390,75,0,0"
+               d:Margin="-390,80,0,0"
                d:Opacity="1"
                Panel.ZIndex="10">
             <Image.RenderTransform>
                 <TranslateTransform />
             </Image.RenderTransform>
         </Image>
+
+        <StackPanel Margin="35,0,2,90"
+                    Width="40"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Panel.ZIndex="10">
+            <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
+                       d:Text="v27"
+                       d:Opacity="1"
+                       Opacity="0"
+                       Grid.Row="1"
+                       Grid.Column="1"
+                       FontSize="16"
+                       Foreground="Gold"
+                       HorizontalAlignment="Center"
+                       x:Name="versionNumber"
+                       />
+
+        </StackPanel>
 
         <Grid x:Name="panel"
               Width="350"
@@ -332,8 +362,8 @@
                            FontWeight="Normal"
                            Foreground="White"
                            HorizontalAlignment="Right"
-                           Margin="-8,8,5,0" 
-                           Panel.ZIndex="-1"/>
+                           Margin="-8,8,5,0"
+                           Panel.ZIndex="-1" />
 
             </StackPanel>
             <TextBlock Text="{Binding LoadingText}"
@@ -344,23 +374,14 @@
                        Margin="2,-5,0,0"
                        Foreground="White" />
         </Grid>
-        <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
-                   d:Text="v1"
-                   Grid.Row="1"
-                   Grid.Column="1"
-                   FontSize="9"
-                   Foreground="#BBB"
-                   VerticalAlignment="Bottom"
-                   HorizontalAlignment="Left" 
-                   Margin="2,0,2,1"/>
-        
+
         <TextBlock Text="Made by AmL"
                    Grid.Row="1"
                    Grid.Column="1"
                    FontSize="9"
                    Foreground="#AAA"
                    VerticalAlignment="Bottom"
-                   HorizontalAlignment="Right" 
-                   Margin="0,0,2,1"/>
+                   HorizontalAlignment="Right"
+                   Margin="0,0,2,1" />
     </Grid>
 </Window>
