@@ -19,6 +19,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         MouseLeave="Grid_MouseLeave"
+        ShowInTaskbar="False"
         Top="0"
         Height="49"
         Width="180">
