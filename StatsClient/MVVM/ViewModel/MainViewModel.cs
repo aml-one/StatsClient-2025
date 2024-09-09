@@ -1638,6 +1638,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private bool cbSettingPanColorCheckWndwIsSnapped = false;
+    public bool CbSettingPanColorCheckWndwIsSnapped
+    {
+        get => cbSettingPanColorCheckWndwIsSnapped;
+        set
+        {
+            cbSettingPanColorCheckWndwIsSnapped = value;
+            RaisePropertyChanged(nameof(CbSettingPanColorCheckWndwIsSnapped));
+        }
+    }
+    
     private bool cbSettingStartAppMinimized = false;
     public bool CbSettingStartAppMinimized
     {
@@ -1903,6 +1914,7 @@ public class MainViewModel : ObservableObject
 
     #region Settings Tab RelayCommands
     public RelayCommand CbSettingGlassyEffectCommand { get; set; }
+    public RelayCommand CbSettingPanColorCheckWndwIsSnappedCommand { get; set; }
     public RelayCommand CbSettingStartAppMinimizedCommand { get; set; }
     public RelayCommand CbSettingShowBottomInfoBarCommand { get; set; }
     public RelayCommand CbSettingShowDigiCasesCommand { get; set; }
@@ -2088,6 +2100,7 @@ public class MainViewModel : ObservableObject
         #endregion Folder Subscription RelayCommands
 
         CbSettingGlassyEffectCommand = new RelayCommand(o => CbSettingGlassyEffectMethod());
+        CbSettingPanColorCheckWndwIsSnappedCommand = new RelayCommand(o => CbSettingPanColorCheckWndwIsSnappedMethod());
         CbSettingStartAppMinimizedCommand = new RelayCommand(o => CbSettingStartAppMinimizedMethod());
         CbSettingShowBottomInfoBarCommand = new RelayCommand(o => CbSettingShowBottomInfoBarMethod());
         CbSettingShowDigiCasesCommand = new RelayCommand(o => CbSettingShowDigiCasesMethod());
@@ -4034,6 +4047,11 @@ public class MainViewModel : ObservableObject
     private void CbSettingGlassyEffectMethod()
     {
         WriteLocalSetting("GlassyEffect", CbSettingGlassyEffect.ToString());
+    }
+    
+    private void CbSettingPanColorCheckWndwIsSnappedMethod()
+    {
+        WriteLocalSetting("PanColorCheckWndwIsSnapped", CbSettingPanColorCheckWndwIsSnapped.ToString());
     }
     
     private void CbSettingStartAppMinimizedMethod()
@@ -6191,6 +6209,7 @@ public class MainViewModel : ObservableObject
             ServerFriendlyNameHelper = DatabaseOperations.GetServerName();
 
             _ = bool.TryParse(ReadLocalSetting("GlassyEffect"), out bool GlassyEffect);
+            _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool PanColorCheckWndwIsSnapped);
             _ = bool.TryParse(ReadLocalSetting("StartAppMinimized"), out bool StartAppMinimized);
             _ = bool.TryParse(ReadLocalSetting("ShowBottomInfoBar"), out bool showBottomInfoBar);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiDetails"), out bool showDigiDetails);
@@ -6219,6 +6238,9 @@ public class MainViewModel : ObservableObject
                 CbSettingIncludePendingDigiCasesInNewlyArrived = true;
 
             CbSettingGlassyEffect = GlassyEffect;
+            CbSettingPanColorCheckWndwIsSnapped = PanColorCheckWndwIsSnapped;
+            if (MainWindow.Instance is not null)
+                MainWindow.Instance.PancolorCheckWindowIsSnapped = PanColorCheckWndwIsSnapped;
             CbSettingStartAppMinimized = StartAppMinimized;
             ShowBottomInfoBar = showBottomInfoBar;
             CbSettingShowDigiDetails = showDigiDetails;

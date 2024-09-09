@@ -2334,13 +2334,10 @@
                                       SelectedItem="{Binding SelectedOrderIssue}"
                                       ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                                 <ListView.View>
-
                                     <GridView AllowsColumnReorder="False"
                                               ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
-                                        <GridViewColumn x:Name="lvIssuesOrderID">
-                                        </GridViewColumn>
-                                        <GridViewColumn x:Name="lvIssuesSkipReason">
-                                        </GridViewColumn>
+                                        <GridViewColumn x:Name="lvIssuesOrderID" />
+                                        <GridViewColumn x:Name="lvIssuesSkipReason" />
                                     </GridView>
                                 </ListView.View>
                             </ListView>
@@ -2439,6 +2436,15 @@
                                                    Margin="0,6,0,0" />
                                     </StackPanel>
 
+                                    <CheckBox Content="Use Pan Color Check window as a snapped window"
+                                              Foreground="Beige"
+                                              VerticalAlignment="Top"
+                                              HorizontalAlignment="Left"
+                                              Cursor="Hand"
+                                              IsChecked="{Binding CbSettingPanColorCheckWndwIsSnapped, Mode=TwoWay}"
+                                              Style="{StaticResource CircleCheckBox}"
+                                              Command="{Binding CbSettingPanColorCheckWndwIsSnappedCommand}"
+                                              Margin="0,6,5,0" />
                                 </StackPanel>
                             </Grid>
                         </TabItem>

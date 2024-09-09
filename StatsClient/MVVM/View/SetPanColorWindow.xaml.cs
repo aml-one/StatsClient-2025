@@ -8,13 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using static StatsClient.MVVM.Core.Functions;
 
 namespace StatsClient.MVVM.View
 {
@@ -58,11 +52,36 @@ namespace StatsClient.MVVM.View
             }
         }
 
+        bool IsItDarkColor = false;
         public SetPanColorWindow(string? panNumber = "", string? originalColor = "")
         {
             Instance = this;
             StaticInstance = this;
             InitializeComponent();
+
+            if (!string.IsNullOrEmpty(originalColor) && !originalColor.Equals("0-0-0"))
+            {
+                try
+                {
+                    string oColor = originalColor.Replace("#FF", "");
+                    string r = oColor.Substring(0, 2);
+                    string g = oColor.Substring(2, 2);
+                    string b = oColor.Substring(4, 2);
+
+                    int cR = Convert.ToInt32(r, 16);
+                    int cG = Convert.ToInt32(g, 16);
+                    int cB = Convert.ToInt32(b, 16);
+                    IsItDarkColor = CheckIfItsDarkColor($"{cR}-{cG}-{cB}");
+                }
+                catch (Exception)
+                {
+                    IsItDarkColor = false;
+                }
+            }
+            else
+                IsItDarkColor = true;
+
+            SetPanColorViewModel.StaticInstance!.IsItDarkColor = IsItDarkColor;
             SetPanColorViewModel.StaticInstance!.PanNumber = panNumber!;
 
             if (originalColor == "0-0-0")

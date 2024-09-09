@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using static StatsClient.MVVM.Core.DatabaseOperations;
 using static StatsClient.MVVM.Core.Functions;
+using static StatsClient.MVVM.Core.LocalSettingsDB;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -30,6 +31,17 @@ public class PanColorCheckViewModel : ObservableObject
         {
             staticInstance = value;
             RaisePropertyChangedStatic(nameof(StaticInstance));
+        }
+    }
+
+    private bool pancolorCheckWindowIsSnapped = true;
+    public bool PancolorCheckWindowIsSnapped
+    {
+        get => pancolorCheckWindowIsSnapped!;
+        set
+        {
+            pancolorCheckWindowIsSnapped = value;
+            RaisePropertyChangedStatic(nameof(PancolorCheckWindowIsSnapped));
         }
     }
 
@@ -113,6 +125,17 @@ public class PanColorCheckViewModel : ObservableObject
         }
     }
     
+    private string panColorWindowBorderColor = "BlanchedAlmond";
+    public string PanColorWindowBorderColor
+    {
+        get => panColorWindowBorderColor;
+        set
+        {
+            panColorWindowBorderColor = value;
+            RaisePropertyChanged(nameof(PanColorWindowBorderColor));
+        }
+    }
+    
     private string originalRgbColor = "";
     public string OriginalRgbColor
     {
@@ -156,6 +179,8 @@ public class PanColorCheckViewModel : ObservableObject
 
         WindowHideTimer.Tick += WindowHideTimer_Tick;
         WindowHideTimer.Interval = new TimeSpan(0, 0, 10);
+
+        PancolorCheckWindowIsSnapped = MainWindow.Instance.PancolorCheckWindowIsSnapped;
     }
 
     public void ShowHideLabel()
@@ -178,19 +203,31 @@ public class PanColorCheckViewModel : ObservableObject
 
     private void AddNewNumber()
     {
-        SetPanColorWindow setPanColorWindow = new(PreviousPcPanNumber, "0-0-0")
-        {
-            Owner = PanColorCheckWindow.StaticInstance
-        };
+        _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool panColorCheckWndwIsSnapped);
+        PancolorCheckWindowIsSnapped = panColorCheckWndwIsSnapped;
+
+        SetPanColorWindow setPanColorWindow = new(PreviousPcPanNumber, "0-0-0");
+
+        if (PancolorCheckWindowIsSnapped)
+            setPanColorWindow.Owner = SnappedPanColorCheckWindow.StaticInstance;
+        else
+            setPanColorWindow.Owner = PanColorCheckWindow.StaticInstance;
+
         setPanColorWindow.ShowDialog();
     }
 
     private void ChangeColor()
     {
-        SetPanColorWindow setPanColorWindow = new(PreviousPcPanNumber, OriginalRgbColor)
-        {
-            Owner = PanColorCheckWindow.StaticInstance
-        };
+        _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool panColorCheckWndwIsSnapped);
+        PancolorCheckWindowIsSnapped = panColorCheckWndwIsSnapped;
+
+        SetPanColorWindow setPanColorWindow = new(PreviousPcPanNumber, OriginalRgbColor);
+        
+        if (PancolorCheckWindowIsSnapped)
+            setPanColorWindow.Owner = SnappedPanColorCheckWindow.StaticInstance;
+        else
+            setPanColorWindow.Owner = PanColorCheckWindow.StaticInstance;
+
         setPanColorWindow.ShowDialog();
     }
 
@@ -211,6 +248,7 @@ public class PanColorCheckViewModel : ObservableObject
         string rgbColor = GetPanColorByNumber(num);
         if (rgbColor == "0-0-0")
         {
+            HideLabelVisibility = Visibility.Hidden;
             NoNumberRegisteredShowsNow = Visibility.Visible;
             PcPanColor = "#46494F";
             PcPanColorFriendlyName = "NUMBER NOT REGISTERED!!";
@@ -220,11 +258,13 @@ public class PanColorCheckViewModel : ObservableObject
             PcPanColor = "#888";
             PcPanColorFriendlyName = "Check Pan Color";
             NoNumberRegisteredShowsNow = Visibility.Hidden;
+            //HideLabelVisibility = Visibility.Visible;
         }
         else
         {
             IsItDarkColor = CheckIfItsDarkColor(rgbColor);
 
+            HideLabelVisibility = Visibility.Hidden;
             PanColorShowsNow = Visibility.Visible;
             string[] panColorParts = rgbColor.Split('-');
 
@@ -242,6 +282,7 @@ public class PanColorCheckViewModel : ObservableObject
             PcPanColor = "#888";
             PcPanColorFriendlyName = "Check pan color";
             PanColorShowsNow = Visibility.Hidden;
+            //HideLabelVisibility = Visibility.Visible;
             IsItDarkColor = true;
         }
     }

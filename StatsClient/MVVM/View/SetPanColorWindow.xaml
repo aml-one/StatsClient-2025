@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StatsClient.MVVM.View"
         xmlns:viewmodel="clr-namespace:StatsClient.MVVM.ViewModel"
+        xmlns:converter="clr-namespace:StatsClient.MVVM.Converters"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="Set Pan Color"
@@ -30,8 +31,10 @@
                 <ResourceDictionary Source="/Themes/ScrollBar.xaml" />
                 <ResourceDictionary Source="/Themes/LvItemModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converter:DarkColorBoolToColorConverter x:Key="DarkColorBoolToColorConverter" />
         </ResourceDictionary>
     </Window.Resources>
+
 
     <Border CornerRadius="8,8,4,8"
             BorderThickness="0.5"
@@ -89,8 +92,10 @@
                         <TextBlock Text="{Binding PanNumber}"
                                    d:Text="8008"
                                    d:Foreground="Beige"
-                                   Foreground="{Binding OriginalColor}"
+                                   Foreground="{Binding IsItDarkColor, Converter={StaticResource DarkColorBoolToColorConverter}}"
+                                   Background="{Binding OriginalColor}"
                                    FontSize="14"
+                                   Padding="4,2"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right" />
 

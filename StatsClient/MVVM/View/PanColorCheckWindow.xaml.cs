@@ -45,21 +45,23 @@ namespace StatsClient.MVVM.View
             double MaxTopPosition = SystemParameters.MaximizedPrimaryScreenHeight - (StaticInstance.Height + 17);
             double MaxLeftPosition = SystemParameters.MaximizedPrimaryScreenWidth - (StaticInstance.Width + 20);
 
-            if (Top > MaxTopPosition)
-                Top = MaxTopPosition;
-
-            if (Left > MaxLeftPosition)
-                Left = MaxLeftPosition;
-
-            if (Left < 0)
-                Left = 0;
-
-            if (Top < 0)
-                Top = 0;
-
             LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosTop", Top.ToString());
             LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosLeft", Left.ToString());
             LocalSettingsDB.WriteLocalSetting("ColorCheckWindowIsOpen", "true");
+
+            if (Top > MaxTopPosition)
+                LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosTop", MaxTopPosition.ToString());
+
+            if (Top < 0)
+                LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosTop", "0");
+
+
+            if (Left > MaxLeftPosition)
+                LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosLeft", MaxLeftPosition.ToString());
+
+            if (Left < 0)
+                LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosLeft", "0");
+
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -99,6 +101,64 @@ namespace StatsClient.MVVM.View
         private void PanNumberBox_MouseLeave(object sender, MouseEventArgs e)
         {
             PanColorCheckViewModel.StaticInstance.HideLabelVisibility = Visibility.Hidden;
+        }
+
+
+
+
+
+
+
+
+
+
+        private Point offset = new ();
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point cursorPos = PointToScreen(Mouse.GetPosition(this));
+            Point windowPos = new (this.Left, this.Top);
+            offset = (Point)(cursorPos - windowPos);
+
+            // capturing the mouse here will redirect all events to this window, even if
+            // the mouse cursor should leave the window area
+            Mouse.Capture(this, CaptureMode.Element);
+        }
+
+        private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Mouse.Capture(null);
+            panNumberBox.Focus();
+            SaveWindowPosition();
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (Mouse.Captured == this && Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                Point cursorPos = PointToScreen(Mouse.GetPosition(this));
+                double newLeft = cursorPos.X - offset.X;
+                double newTop = cursorPos.Y - offset.Y;
+
+                // here you can change the window position and implement
+                // the snapping behaviour that you need
+
+                int snappingMargin = 25;
+
+                if (Math.Abs(SystemParameters.WorkArea.Left - newLeft) < snappingMargin)
+                    newLeft = SystemParameters.WorkArea.Left;
+                else if (Math.Abs(newLeft + this.ActualWidth - SystemParameters.WorkArea.Left - SystemParameters.WorkArea.Width) < snappingMargin)
+                    newLeft = SystemParameters.WorkArea.Left + SystemParameters.WorkArea.Width - this.ActualWidth;
+
+                if (Math.Abs(SystemParameters.WorkArea.Top - newTop) < snappingMargin)
+                    newTop = SystemParameters.WorkArea.Top;
+                else if (Math.Abs(newTop + this.ActualHeight - SystemParameters.WorkArea.Top - SystemParameters.WorkArea.Height) < snappingMargin)
+                    newTop = SystemParameters.WorkArea.Top + SystemParameters.WorkArea.Height - this.ActualHeight;
+
+
+                this.Left = newLeft;
+                this.Top = newTop;
+            }
         }
     }
 }

@@ -37,8 +37,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             RaisePropertyChangedStatic(nameof(Instance));
         }
     }
+    
+    private bool pancolorCheckWindowIsSnapped = false;
+    public bool PancolorCheckWindowIsSnapped
+    {
+        get => pancolorCheckWindowIsSnapped!;
+        set
+        {
+            pancolorCheckWindowIsSnapped = value;
+            RaisePropertyChangedStatic(nameof(PancolorCheckWindowIsSnapped));
+        }
+    }
 
     private static PanColorCheckWindow? PanColorCheckWindowInstance;
+    private static SnappedPanColorCheckWindow? SnappedPanColorCheckWindowInstance;
 
     public MainWindow()
     {
@@ -78,9 +90,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         tbSearch.PreviewKeyDown += new KeyEventHandler(HandleEsc);
 
         PanColorCheckWindowInstance = new();
+        SnappedPanColorCheckWindowInstance = new();
 
-        
-        
+        _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool pancolorCheckWindowIsSnapped);
+        PancolorCheckWindowIsSnapped = pancolorCheckWindowIsSnapped;
     }
 
 
@@ -198,30 +211,62 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void MenuItemOpenUpColorCheckWindow_Click(object sender, RoutedEventArgs e)
     {
+        _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool pancolorCheckWindowIsSnapped);
+        PancolorCheckWindowIsSnapped = pancolorCheckWindowIsSnapped;
+
         ShowHidePanColorCheckWindow();
     }
 
     public void ShowHidePanColorCheckWindow()
     {
-        if (PanColorCheckWindowInstance is not null)
+        if (PanColorCheckWindowInstance is not null && SnappedPanColorCheckWindowInstance is not null)
         {
            // PanColorCheckWindowInstance.Owner = Instance;
 
-            if (IsWindowIsShown<PanColorCheckWindow>("panColorCheckWindow"))
+            if (PancolorCheckWindowIsSnapped)
             {
-                PanColorCheckWindowInstance.Hide();
-                WriteLocalSetting("ColorCheckWindowPosTop", "");
-                WriteLocalSetting("ColorCheckWindowPosLeft", "");
-                WriteLocalSetting("ColorCheckWindowIsOpen", "false");
+                if (IsWindowIsShown<SnappedPanColorCheckWindow>("snappedPanColorCheckWindow"))
+                {
+                    SnappedPanColorCheckWindowInstance.Hide();
+                    PanColorCheckWindowInstance.Hide();
+                    WriteLocalSetting("ColorCheckWindowPosTop", "");
+                    WriteLocalSetting("ColorCheckWindowPosLeft", "");
+                    WriteLocalSetting("ColorCheckWindowIsOpen", "false");
 
-                MainViewModel.Instance.OpenUpColorCheckWindowMenuItemTitle = "Open up ColorCheck window";
+                    MainViewModel.Instance.OpenUpColorCheckWindowMenuItemTitle = "Open up ColorCheck window";
+                }
+                else
+                {
+                    SnappedPanColorCheckWindowInstance.Show();
+                    WriteLocalSetting("ColorCheckWindowIsOpen", "true");
+
+                    if (IsWindowIsShown<PanColorCheckWindow>("panColorCheckWindow"))
+                        PanColorCheckWindowInstance.Hide();
+                    MainViewModel.Instance.OpenUpColorCheckWindowMenuItemTitle = "Close ColorCheck window";
+                }
             }
             else
             {
-                PanColorCheckWindowInstance.Show();
-                WriteLocalSetting("ColorCheckWindowIsOpen", "true");
+                if (IsWindowIsShown<PanColorCheckWindow>("panColorCheckWindow"))
+                {
+                    PanColorCheckWindowInstance.Hide();
+                    SnappedPanColorCheckWindowInstance.Hide();
+                    WriteLocalSetting("ColorCheckWindowPosTop", "");
+                    WriteLocalSetting("ColorCheckWindowPosLeft", "");
+                    WriteLocalSetting("ColorCheckWindowIsOpen", "false");
 
-                MainViewModel.Instance.OpenUpColorCheckWindowMenuItemTitle = "Close ColorCheck window";
+                    MainViewModel.Instance.OpenUpColorCheckWindowMenuItemTitle = "Open up ColorCheck window";
+                }
+                else
+                {
+                    PanColorCheckWindowInstance.Show();
+                    WriteLocalSetting("ColorCheckWindowIsOpen", "true");
+
+                    if (IsWindowIsShown<SnappedPanColorCheckWindow>("snappedPanColorCheckWindow"))
+                        SnappedPanColorCheckWindowInstance.Hide();
+
+                    MainViewModel.Instance.OpenUpColorCheckWindowMenuItemTitle = "Close ColorCheck window";
+                }
             }
         }
     }

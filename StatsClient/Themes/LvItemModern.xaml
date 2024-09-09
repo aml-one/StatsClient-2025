@@ -1174,6 +1174,7 @@
                     <Border x:Name="IssueItem"
                             BorderThickness="1"
                             Height="26"
+                            Background="{Binding Color}"
                             Tag="{Binding OrderID}">
                         <Border.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick"
@@ -1192,7 +1193,7 @@
                                        FontWeight="SemiBold"
                                        VerticalAlignment="Center"
                                        FontSize="13"
-                                       Foreground="{Binding Color}"
+                                       Foreground="White"
                                        Margin="5,0,20,0"
                                        TextTrimming="CharacterEllipsis" />
 
@@ -1202,7 +1203,7 @@
                                        FontWeight="Normal"
                                        VerticalAlignment="Center"
                                        FontSize="13"
-                                       Foreground="{Binding Color}"
+                                       Foreground="White"
                                        Margin="5,0,0,0"
                                        TextTrimming="CharacterEllipsis" />
 
@@ -1218,7 +1219,7 @@
                                     Value="#79bbf2"
                                     TargetName="IssueItem" />
                             <Setter Property="Background"
-                                    Value="AliceBlue"
+                                    Value="#005475"
                                     TargetName="IssueItem" />
                             <Setter Property="Cursor"
                                     Value="Hand"

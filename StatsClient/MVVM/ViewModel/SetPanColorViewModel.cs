@@ -29,7 +29,18 @@ public class SetPanColorViewModel : ObservableObject
             RaisePropertyChanged(nameof(AvailablePanColors));
         }
     }
-        
+
+    private bool isItDarkColor = true;
+    public bool IsItDarkColor
+    {
+        get => isItDarkColor;
+        set
+        {
+            isItDarkColor = value;
+            RaisePropertyChanged(nameof(IsItDarkColor));
+        }
+    }
+
     private string windowTitle = "Pick the new color:";
     public string WindowTitle
     {
