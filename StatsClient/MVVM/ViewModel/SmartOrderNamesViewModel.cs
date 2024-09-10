@@ -38,7 +38,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             RaisePropertyChanged(nameof(NewOrdersByMe));
             if (AutoSelectFirstOrder && newOrdersByMe.Count > 0)
             {
-                SelectedOrder = newOrdersByMe[0];
+                SelectFirstOrder();
             }
         }
     }
@@ -324,6 +324,13 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         Timer_Elapsed(null, null);
     }
 
+    private async void SelectFirstOrder()
+    {
+        await Task.Delay(1000);
+        if (NewOrdersByMe.Count > 0)
+            SelectedOrder = NewOrdersByMe[0];
+    }
+
     private void FocusOnPanNumberBox()
     {
         Application.Current.Dispatcher.Invoke(() => {
@@ -334,8 +341,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     private void FocusOnRenameButton()
     {
         Application.Current.Dispatcher.Invoke(() => { 
-            if (SmartOrderNamesPage.StaticInstance is not null)
-                SmartOrderNamesPage.StaticInstance!.renameButton.Focus();
+            SmartOrderNamesPage.StaticInstance!.renameButton.Focus();
         });
     }
 
