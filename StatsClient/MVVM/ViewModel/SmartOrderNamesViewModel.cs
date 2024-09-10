@@ -331,8 +331,9 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     
     private void FocusOnRenameButton()
     {
-        Application.Current.Dispatcher.Invoke((Action)delegate {
-            SmartOrderNamesPage.StaticInstance!.renameButton.Focus();
+        Application.Current.Dispatcher.Invoke(() => { 
+            if (SmartOrderNamesPage.StaticInstance is not null)
+                SmartOrderNamesPage.StaticInstance!.renameButton.Focus();
         });
     }
 
@@ -373,7 +374,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
 
     private async void ResetNameForm()
     {
-        Application.Current.Dispatcher.Invoke((Action)delegate {
+        Application.Current.Dispatcher.Invoke(() => {
             PanNumber = "";
             IsScrewRetained = false;
             SelectedDigitalSystem = "None";
