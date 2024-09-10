@@ -318,8 +318,12 @@ public class MainViewModel : ObservableObject
         get => sentOutIssuesCount;
         set
         {
-            sentOutIssuesCount = value;
-            RaisePropertyChanged(nameof(SentOutIssuesCount));
+            if (value != SentOutIssuesCount)
+            {
+                sentOutIssuesCount = value;
+                RaisePropertyChanged(nameof(SentOutIssuesCount));
+                _ = GetAllSentOutIssues();
+            }
         }
     }
 

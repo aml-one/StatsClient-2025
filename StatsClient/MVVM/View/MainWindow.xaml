@@ -59,6 +59,7 @@
             <converter:StringToImageConverter x:Key="StringToImageConverter" />
             <converter:ZeroToVisibleConverter x:Key="ZeroToVisibleConverter" />
             <converter:ZeroToCollapsedConverter x:Key="ZeroToCollapsedConverter" />
+            <converter:ZeroToCollapsedVisibilityConverter x:Key="ZeroToCollapsedVisibilityConverter" />
             <converter:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
             <converter:ZeroToFalseConverter x:Key="ZeroToFalseConverter" />
 
@@ -2329,18 +2330,28 @@
                                                Margin="4,0,0,0" />
                                 </StackPanel>
                             </TabItem.Header>
-                            <ListView ItemsSource="{Binding OrderIssuesList}"
-                                      ItemContainerStyle="{StaticResource LvItemIssues}"
-                                      SelectedItem="{Binding SelectedOrderIssue}"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-                                <ListView.View>
-                                    <GridView AllowsColumnReorder="False"
-                                              ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
-                                        <GridViewColumn x:Name="lvIssuesOrderID" />
-                                        <GridViewColumn x:Name="lvIssuesSkipReason" />
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
+                            <Grid>
+                                <TextBlock Text="Nothing here yet.." 
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#999"
+                                           d:Visibility="Visible"
+                                           Visibility="{Binding SentOutIssuesCount, Converter={StaticResource ZeroToCollapsedVisibilityConverter}}"/>
+                                <ListView ItemsSource="{Binding OrderIssuesList}"
+                                          ItemContainerStyle="{StaticResource LvItemIssues}"
+                                          SelectedItem="{Binding SelectedOrderIssue}"
+                                          Background="#46494F"
+                                          BorderThickness="0"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                                    <ListView.View>
+                                        <GridView AllowsColumnReorder="False"
+                                                  ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
+                                            <GridViewColumn x:Name="lvIssuesOrderID" />
+                                            <GridViewColumn x:Name="lvIssuesSkipReason" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </Grid>
                         </TabItem>
 
 

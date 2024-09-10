@@ -36,10 +36,14 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         {
             newOrdersByMe = value;
             RaisePropertyChanged(nameof(NewOrdersByMe));
+            if (AutoSelectFirstOrder && newOrdersByMe.Count > 0)
+            {
+                SelectedOrder = newOrdersByMe[0];
+            }
         }
     }
 
-    private readonly List<string> digitalSystems = ["None", "CARESTREAM", "DEXIS", "DSCORE", "DROPBOX", "EMAIL", "MEDIT", "TRIOS", "iTERO", "IS3D", "SIRONA"  ];
+    private readonly List<string> digitalSystems = ["None", "ABUTMENT-ONLY", "CARESTREAM", "DEXIS", "DSCORE", "DROPBOX", "EMAIL", "MEDIT", "TRIOS", "iTERO", "IS3D", "SIRONA"  ];
     public List<string> DigitalSystems
     {
         get => digitalSystems;
@@ -110,6 +114,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         {
             namingCustomerFirst = value;
             RaisePropertyChanged(nameof(NamingCustomerFirst));
+        }
+    }
+    
+    private bool autoSelectFirstOrder = true;
+    public bool AutoSelectFirstOrder
+    {
+        get => autoSelectFirstOrder;
+        set
+        {
+            autoSelectFirstOrder = value;
+            RaisePropertyChanged(nameof(AutoSelectFirstOrder));
         }
     }
     

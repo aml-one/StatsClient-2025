@@ -1147,7 +1147,7 @@ public partial class DatabaseOperations
                 {
                     Level = reader["Level"].ToString(),
                     OrderID = reader["OrderID"].ToString(),
-                    IssueDescription = reader["SkipReason"].ToString(),
+                    IssueDescription = reader["SkipReason"].ToString()!.Replace("&apos;","'"),
                     Color = reader["ForeColor"].ToString(),
                 });
             }
