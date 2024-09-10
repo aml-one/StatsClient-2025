@@ -2159,6 +2159,46 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#7a4076", "");
         bgBorderColors.TryAdd("#67467d", "");
         bgBorderColors.TryAdd("#7a464f", "");
+
+        bgBorderColors.TryAdd("#466f68", "");
+        bgBorderColors.TryAdd("#78804e", "");
+        bgBorderColors.TryAdd("#7d5f47", "");
+        bgBorderColors.TryAdd("#7a504b", "");
+        bgBorderColors.TryAdd("#485c79", "");
+        bgBorderColors.TryAdd("#46596E", "");
+        bgBorderColors.TryAdd("#7a4075", "");
+        bgBorderColors.TryAdd("#67467c", "");
+        bgBorderColors.TryAdd("#7a464d", "");
+        
+        bgBorderColors.TryAdd("#466f67", "");
+        bgBorderColors.TryAdd("#78804d", "");
+        bgBorderColors.TryAdd("#7d5f46", "");
+        bgBorderColors.TryAdd("#7a504c", "");
+        bgBorderColors.TryAdd("#485c78", "");
+        bgBorderColors.TryAdd("#46596d", "");
+        bgBorderColors.TryAdd("#7a4074", "");
+        bgBorderColors.TryAdd("#67467b", "");
+        bgBorderColors.TryAdd("#7a464c", "");
+        
+        bgBorderColors.TryAdd("#466f66", "");
+        bgBorderColors.TryAdd("#78804c", "");
+        bgBorderColors.TryAdd("#7d5f45", "");
+        bgBorderColors.TryAdd("#7a504b", "");
+        bgBorderColors.TryAdd("#485c77", "");
+        bgBorderColors.TryAdd("#46596c", "");
+        bgBorderColors.TryAdd("#7a4073", "");
+        bgBorderColors.TryAdd("#67467a", "");
+        bgBorderColors.TryAdd("#7a464b", "");
+        
+        bgBorderColors.TryAdd("#466f65", "");
+        bgBorderColors.TryAdd("#78804b", "");
+        bgBorderColors.TryAdd("#7d5f44", "");
+        bgBorderColors.TryAdd("#7a504c", "");
+        bgBorderColors.TryAdd("#485c76", "");
+        bgBorderColors.TryAdd("#46596b", "");
+        bgBorderColors.TryAdd("#7a4072", "");
+        bgBorderColors.TryAdd("#674679", "");
+        bgBorderColors.TryAdd("#7a464b", "");
     }
 
     
