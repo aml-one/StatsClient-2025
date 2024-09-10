@@ -326,7 +326,9 @@ public partial class SmartOrderNamesViewModel : ObservableObject
 
     private void FocusOnPanNumberBox()
     {
-        SmartOrderNamesPage.StaticInstance!.panNumberBox.Focus();
+        Application.Current.Dispatcher.Invoke(() => {
+            SmartOrderNamesPage.StaticInstance!.panNumberBox.Focus();
+        });
     }
     
     private void FocusOnRenameButton()
