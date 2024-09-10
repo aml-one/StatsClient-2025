@@ -28,6 +28,7 @@
     <converters:AppNameToIconConverter x:Key="AppNameToIconConverter" />
     <converters:EmptyAppNameToCollapsedConverter x:Key="EmptyAppNameToCollapsedConverter" />
     <converters:EmptyAppNameToVisibleConverter x:Key="EmptyAppNameToVisibleConverter" />
+    <converters:EmailToWebsiteConverter x:Key="EmailToWebsiteConverter" />
 
 
     <!-- LvItemSimple -->
@@ -2113,7 +2114,7 @@
                                                Grid.Column="0" />
 
                                         <TextBlock Grid.Column="1"
-                                                   Text="{Binding FriendlyName, StringFormat='Open \{0} website'}" />
+                                                   Text="{Binding FriendlyName, StringFormat='Open \{0} website', Converter={StaticResource EmailToWebsiteConverter}}" />
                                     </Grid>
                                 </Button.Content>
                             </Button>
