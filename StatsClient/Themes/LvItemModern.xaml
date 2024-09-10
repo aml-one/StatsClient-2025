@@ -1220,8 +1220,11 @@
                                     Value="#79bbf2"
                                     TargetName="IssueItem" />
                             <Setter Property="Background"
-                                    Value="#005475"
+                                    Value="#a3b502"
                                     TargetName="IssueItem" />
+                            <!--Setter Property="Background"
+                                    Value="#005475"
+                                    TargetName="IssueItem" /-->
                             <Setter Property="Cursor"
                                     Value="Hand"
                                     TargetName="IssueItem" />

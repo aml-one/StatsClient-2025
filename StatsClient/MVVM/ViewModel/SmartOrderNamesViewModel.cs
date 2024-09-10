@@ -331,7 +331,9 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     
     private void FocusOnRenameButton()
     {
-        SmartOrderNamesPage.StaticInstance!.renameButton.Focus();
+        Application.Current.Dispatcher.Invoke((Action)delegate {
+            SmartOrderNamesPage.StaticInstance!.renameButton.Focus();
+        });
     }
 
     private async void AddCustomerSuggestion()
@@ -371,14 +373,16 @@ public partial class SmartOrderNamesViewModel : ObservableObject
 
     private async void ResetNameForm()
     {
-        PanNumber = "";
-        IsScrewRetained = false;
-        SelectedDigitalSystem = "None";
-        SelectedShade = "";
-        OrderNamePreview = string.Empty;
-        SelectedOrder = null;
-        PreviouslySelectedOrder = null;
-        CustomerSuggestionsList = [];
+        Application.Current.Dispatcher.Invoke((Action)delegate {
+            PanNumber = "";
+            IsScrewRetained = false;
+            SelectedDigitalSystem = "None";
+            SelectedShade = "";
+            OrderNamePreview = string.Empty;
+            SelectedOrder = null;
+            PreviouslySelectedOrder = null;
+            CustomerSuggestionsList = [];   
+        });
 
         await Refresh();
     }
