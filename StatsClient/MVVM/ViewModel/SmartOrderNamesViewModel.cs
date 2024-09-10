@@ -327,7 +327,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     private async void SelectFirstOrder()
     {
         await Task.Delay(1000);
-        if (NewOrdersByMe.Count > 0)
+        if (NewOrdersByMe.Count > 0 && SelectedOrder is null)
             SelectedOrder = NewOrdersByMe[0];
     }
 
