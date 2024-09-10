@@ -12,7 +12,7 @@ public class EmailToWebsiteConverter : IValueConverter
             if (value is string val)
             {
                 if (val.Contains('@'))
-                    return string.Concat(val[val.IndexOf('@')..][0].ToString().ToUpper(), val[val.IndexOf('@')..].AsSpan(1));
+                    return string.Concat(val[(val.IndexOf('@') + 1)..][0].ToString().ToUpper(), val[(val.IndexOf('@') + 1)..].AsSpan(1));
             }
         }
         catch (Exception)
