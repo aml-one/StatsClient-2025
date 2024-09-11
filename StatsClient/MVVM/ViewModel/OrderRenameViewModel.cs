@@ -335,17 +335,17 @@ public class OrderRenameViewModel : ObservableObject
 
     private void ValidateOrderID()
     {
-        if (OrderID.Contains("'") ||
-            OrderID.Contains("\"") ||
-            OrderID.Contains("+") ||
-            OrderID.Contains("\\") ||
-            OrderID.Contains("/") ||
-            OrderID.Contains(":") ||
-            OrderID.Contains("*") ||
-            OrderID.Contains("?") ||
-            OrderID.Contains("<") ||
-            OrderID.Contains(">") ||
-            OrderID.Contains("|"))
+        if (OrderID.Contains('\'') ||
+            OrderID.Contains('"') ||
+            OrderID.Contains('+') ||
+            OrderID.Contains('\\') ||
+            OrderID.Contains('/') ||
+            OrderID.Contains(':') ||
+            OrderID.Contains('*') ||
+            OrderID.Contains('?') ||
+            OrderID.Contains('<') ||
+            OrderID.Contains('>') ||
+            OrderID.Contains('|'))
             OrderIDIsValid = false;
         else
             OrderIDIsValid = true;
@@ -354,7 +354,7 @@ public class OrderRenameViewModel : ObservableObject
 
     private void CopyOriginalOrderId()
     {
-        OrderID = ThreeShapeObject!.OriginalOrderID! + "-COPY";
+        OrderID = ThreeShapeObject!.OriginalOrderID! + "-CHANGE";
     }
 
     private void ResetChanges()

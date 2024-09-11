@@ -38,7 +38,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             {
                 newOrdersByMe = value;
                 RaisePropertyChanged(nameof(NewOrdersByMe));
-                if (NewOrdersByMe.Count == 0)
+                if (NewOrdersByMe.Count == 0 && PreviouslySelectedOrder is not null)
                 {
                     ResetNameForm();
                 }
