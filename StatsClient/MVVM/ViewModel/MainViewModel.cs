@@ -4143,8 +4143,8 @@ public class MainViewModel : ObservableObject
         int seconds = dtime.Second;
         
 
-        if (hours > 12)
-            _ = 12;
+        //if (hours > 12)
+        //    _ = 12;
 
        
 
@@ -6269,7 +6269,10 @@ public class MainViewModel : ObservableObject
         if (second % 15 == 1 || FirstRun)
         {
             if (FirstRun)
+            {
+                BuildingUpDates();
                 UpdateOrderIssuesList();
+            }
 
             FirstRun = false;
             Application.Current.Dispatcher.Invoke(new Action(() => {
@@ -6349,6 +6352,9 @@ public class MainViewModel : ObservableObject
 
             GC.Collect();
         }
+
+        if (minute % 59 == 0 && second < 3)
+            BuildingUpDates();
     }
 
     private void BwGetSentOutIssues_DoWork(object? sender, DoWorkEventArgs e)
