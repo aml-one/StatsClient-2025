@@ -21,6 +21,64 @@ namespace StatsClient.MVVM.Core;
 public partial class DatabaseOperations
 {
 
+    public static async Task<List<string>> GetCustomerSuggestionsReplacementList(string customerName)
+    {
+        List<string> list = [];
+
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query;
+
+            query = @$"SELECT NewName FROM dbo.CustomerSuggestion WHERE CustomerName = '{customerName}'";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(reader["NewName"].ToString()!);
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+
+        return list;
+    }
+
+    public static async Task<List<string>> GetCustomerSuggestionsCustomerNamesList()
+    {
+        List<string> list = [];
+
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query;
+
+            query = @$"SELECT CustomerName FROM dbo.CustomerSuggestion GROUP by CustomerName";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(reader["CustomerName"].ToString()!);
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+
+        return list;
+    }
+
     public static async Task<List<DesignerUnitsModel>> GetDesignerUnitsModel()
     {
         List<DesignerUnitsModel> list = [];
@@ -311,6 +369,39 @@ public partial class DatabaseOperations
         return list;
     }
 
+
+    public static async Task<bool> DeleteCustomer(string customerName)
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = @$"DELETE FROM dbo.CustomerSuggestion WHERE CustomerName = '{customerName}'";
+
+            RunSQLCommandAsynchronously(query, connectionString);
+
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+    public static async Task<bool> DeleteCustomerSuggestion(string customerName, string customerSuggestion)
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = @$"DELETE FROM dbo.CustomerSuggestion WHERE CustomerName = '{customerName}' AND NewName = '{customerSuggestion}'";
+            
+            RunSQLCommandAsynchronously(query, connectionString);
+
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
 
     public static async Task<bool> AddNewCustomerSuggestion(string originalCustomer, string suggestedCustomer)
     {

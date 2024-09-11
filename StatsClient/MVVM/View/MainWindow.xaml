@@ -2331,12 +2331,12 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <Grid>
-                                <TextBlock Text="Nothing here yet.." 
+                                <TextBlock Text="Nothing here yet.."
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Center"
                                            Foreground="#999"
                                            d:Visibility="Visible"
-                                           Visibility="{Binding SentOutIssuesCount, Converter={StaticResource ZeroToCollapsedVisibilityConverter}}"/>
+                                           Visibility="{Binding SentOutIssuesCount, Converter={StaticResource ZeroToCollapsedVisibilityConverter}}" />
                                 <ListView ItemsSource="{Binding OrderIssuesList}"
                                           ItemContainerStyle="{StaticResource LvItemIssues}"
                                           SelectedItem="{Binding SelectedOrderIssue}"
@@ -2823,6 +2823,97 @@
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </TabItem>
+
+
+                        <TabItem Header="Customer Suggestions"
+                                 Style="{StaticResource applicationsTabItem}">
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40" />
+                                    <RowDefinition />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Customer name"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Left"
+                                           Margin="6,0"
+                                           FontSize="14" />
+
+                                <TextBlock Text="Replacements"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Left"
+                                           Grid.Column="1"
+                                           Margin="8,0"
+                                           FontSize="14" />
+
+                                <ListBox Grid.Row="1"
+                                         Margin="0,0,2,0"
+                                         ItemsSource="{Binding CustomerSuggestionsCusNamesList}"
+                                         SelectedItem="{Binding SelectedCustomerName}"
+                                         Foreground="Beige"
+                                         Background="#444" />
+
+                                <ListBox Grid.Row="1"
+                                         Grid.Column="1"
+                                         Margin="2,0,4,0"
+                                         ItemsSource="{Binding CustomerSuggestionsReplacementsList}"
+                                         SelectedItem="{Binding SelectedCustomerSuggestion}"
+                                         Foreground="Beige"
+                                         Background="#444" />
+
+                                <Button Content="Delete customer"
+                                        Grid.Row="2"
+                                        Margin="0,5,2,5"
+                                        Command="{Binding DeleteCSCustomerCommand}" />
+
+                                <Button Content="Delete suggestion"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Margin="4,5,4,5"
+                                        Command="{Binding DeleteCSSuggestionCommand}"/>
+
+
+                                <TextBlock Text="Create new suggestion"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Left"
+                                           Grid.Column="2"
+                                           Margin="19,0"
+                                           FontSize="14" />
+
+                                <StackPanel Grid.Row="1"
+                                            Grid.Column="2"
+                                            Margin="20,10">
+                                    <TextBlock Text="Customer" />
+                                    <TextBox  Width="200"
+                                              Text="{Binding CSNewCustomer}"
+                                              Background="#555"
+                                              Foreground="Beige"
+                                              HorizontalAlignment="Left" />
+
+                                    <TextBlock Text="Replacement"
+                                               Margin="0,10,0,0" />
+                                    <TextBox  Width="200"
+                                              Text="{Binding CSNewReplacement}"
+                                              Background="#555"
+                                              Foreground="Beige"
+                                              HorizontalAlignment="Left" />
+
+                                    <Button Content="Add"
+                                            Width="200"
+                                            Margin="0,10"
+                                            HorizontalAlignment="Left" 
+                                            Command="{Binding AddNewCustomerSuggestionCommand}"/>
                                 </StackPanel>
                             </Grid>
                         </TabItem>

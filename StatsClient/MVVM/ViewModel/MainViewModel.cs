@@ -749,6 +749,78 @@ public class MainViewModel : ObservableObject
 
     #endregion FOLDER SUBSCRIPTION & PENDING DIGI CASES PROPERTIES
 
+
+    private List<string> customerSuggestionsCusNamesList = [];
+    public List<string> CustomerSuggestionsCusNamesList
+    {
+        get => customerSuggestionsCusNamesList;
+        set
+        {
+            customerSuggestionsCusNamesList = value;
+            RaisePropertyChanged(nameof(CustomerSuggestionsCusNamesList));
+        }
+    }
+    
+    private List<string> customerSuggestionsReplacementsList = [];
+    public List<string> CustomerSuggestionsReplacementsList
+    {
+        get => customerSuggestionsReplacementsList;
+        set
+        {
+            customerSuggestionsReplacementsList = value;
+            RaisePropertyChanged(nameof(CustomerSuggestionsReplacementsList));
+        }
+    }
+    
+    private string selectedCustomerName = "";
+    public string SelectedCustomerName
+    {
+        get => selectedCustomerName;
+        set
+        {
+            selectedCustomerName = value;
+            RaisePropertyChanged(nameof(SelectedCustomerName));
+            BuildCustomerSuggestionReplacementList();
+            CSNewCustomer = value;
+        }
+    }
+    
+    private string selectedCustomerSuggestion = "";
+    public string SelectedCustomerSuggestion
+    {
+        get => selectedCustomerSuggestion;
+        set
+        {
+            selectedCustomerSuggestion = value;
+            RaisePropertyChanged(nameof(SelectedCustomerSuggestion));
+        }
+    }
+    
+    private string cSNewCustomer = "";
+    public string CSNewCustomer
+    {
+        get => cSNewCustomer;
+        set
+        {
+            cSNewCustomer = value;
+            RaisePropertyChanged(nameof(CSNewCustomer));
+        }
+    }
+    
+    private string cSNewReplacement = "";
+    public string CSNewReplacement
+    {
+        get => cSNewReplacement;
+        set
+        {
+            cSNewReplacement = value;
+            RaisePropertyChanged(nameof(CSNewReplacement));
+        }
+    }
+
+    
+
+
     #region BuildingUpDates properties
     private string restDayStart = " 0:01:00.000";
     public string RestDayStart
@@ -1936,6 +2008,11 @@ public class MainViewModel : ObservableObject
     public RelayCommand CbSettingModuleSmartOrderNamesCommand { get; set; }
     public RelayCommand CbSettingModulePrescriptionMakerCommand { get; set; }
     public RelayCommand CbSettingModulePendingDigitalsCommand { get; set; }
+    
+    
+    public RelayCommand AddNewCustomerSuggestionCommand { get; set; }
+    public RelayCommand DeleteCSCustomerCommand { get; set; }
+    public RelayCommand DeleteCSSuggestionCommand { get; set; }
 
     #endregion Settings Tab RelayCommands
 
@@ -2124,6 +2201,11 @@ public class MainViewModel : ObservableObject
         CbSettingModulePendingDigitalsCommand = new RelayCommand(o => CbSettingModulePendingDigitalsMethod());
 
 
+        AddNewCustomerSuggestionCommand = new RelayCommand(o => AddNewCustomerSuggestionMethod());
+        DeleteCSCustomerCommand = new RelayCommand(o => DeleteCSCustomerMethod());
+        DeleteCSSuggestionCommand = new RelayCommand(o => DeleteCSSuggestionMethod());
+
+
         RunNotificationProgressCommand = new RelayCommand(o => BlinkWindow());
         SwitchToPrescriptionMakerTabCommand = new RelayCommand(o => SwitchToPrescriptionMakerTab());
         SwitchToOrderIssuesTabCommand = new RelayCommand(o => SwitchToOrderIssuesTab());
@@ -2203,10 +2285,25 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#7a4072", "");
         bgBorderColors.TryAdd("#674679", "");
         bgBorderColors.TryAdd("#7a464b", "");
+
+        BuildCustomerSuggestionsList();
+    }
+
+
+    #region Settings / Customer Suggestions Tab
+    private async void BuildCustomerSuggestionsList()
+    {
+        CustomerSuggestionsCusNamesList = await GetCustomerSuggestionsCustomerNamesList();
+    }
+
+    private async void BuildCustomerSuggestionReplacementList()
+    {
+        CustomerSuggestionsReplacementsList = await GetCustomerSuggestionsReplacementList(SelectedCustomerName);
     }
 
     
 
+    #endregion Settings / Customer Suggestions Tab
 
 
 
@@ -4217,6 +4314,65 @@ public class MainViewModel : ObservableObject
     private void CbSettingModulePendingDigitalsMethod()
     {
         WriteLocalSetting("ModulePendingDigitals", CbSettingModulePendingDigitals.ToString());
+    }
+    
+    private async void DeleteCSCustomerMethod()
+    {
+        if (string.IsNullOrEmpty(SelectedCustomerName))
+            return;
+
+        MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this customer?", "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (result == MessageBoxResult.Yes)
+        {
+            if (await DeleteCustomer(SelectedCustomerName))
+            {
+                ShowNotificationMessage("Customer", "Customer deleted!", NotificationIcon.Success);
+                BuildCustomerSuggestionsList();
+                SelectedCustomerName = "";
+            }
+            else
+                ShowNotificationMessage("Customer", "Customer was not deleted!", NotificationIcon.Error);
+        }
+    }
+
+    private async void DeleteCSSuggestionMethod()
+    {
+        if (string.IsNullOrEmpty(SelectedCustomerName) || string.IsNullOrEmpty(SelectedCustomerSuggestion))
+            return;
+
+        MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this customer suggestion / replacement?", "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (result == MessageBoxResult.Yes)
+        {
+            if (await DeleteCustomerSuggestion(SelectedCustomerName, SelectedCustomerSuggestion))
+            {
+                ShowNotificationMessage("Customer suggestion", "Customer suggestion deleted!", NotificationIcon.Success);
+                if (!string.IsNullOrEmpty(SelectedCustomerName))
+                    BuildCustomerSuggestionReplacementList();
+            }
+            else
+                ShowNotificationMessage("Customer suggestion", "Customer suggestion was not deleted!", NotificationIcon.Error);
+        }
+    }
+
+
+    private async void AddNewCustomerSuggestionMethod()
+    {
+        if (string.IsNullOrEmpty(CSNewCustomer.Trim()) || string.IsNullOrEmpty(CleanUpCustomerName(CSNewReplacement)))
+            return;
+
+        if (await AddNewCustomerSuggestion(CSNewCustomer.Trim(), CleanUpCustomerName(CSNewReplacement)))
+        {
+            CSNewReplacement = "";
+            BuildCustomerSuggestionsList();
+            if (!string.IsNullOrEmpty(SelectedCustomerName))
+                BuildCustomerSuggestionReplacementList();
+            else
+                CSNewCustomer = "";
+
+            ShowNotificationMessage("Customer suggestion", "New customer suggestion added!", NotificationIcon.Success);
+        }
+        else
+            ShowNotificationMessage("Customer suggestion", "The new suggestion was not added!", NotificationIcon.Error);
     }
     
     private void CbSettingExtractIteroZipFilesMethod()
