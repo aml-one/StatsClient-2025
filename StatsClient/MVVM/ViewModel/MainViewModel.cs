@@ -2125,7 +2125,7 @@ public class MainViewModel : ObservableObject
         fsNotificationTimer.Interval = new TimeSpan(0, 0, 30);
 
         UpdateCheckTimer.Tick += UpdateCheckTimer_Tick;
-        UpdateCheckTimer.Interval = new TimeSpan(0, 0, 30);
+        UpdateCheckTimer.Interval = new TimeSpan(0, 0, 10);
         UpdateCheckTimer.Start();
 
         StartProgramUpdateCommand = new RelayCommand(o => StartProgramUpdate());
@@ -6737,8 +6737,8 @@ public class MainViewModel : ObservableObject
 #if DEBUG
         if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
 #endif
-        UpdateCheckTimer.Interval = new TimeSpan(0, 0, 5);
         LookForUpdate();
+        UpdateCheckTimer.Interval = new TimeSpan(0, 5, 0);
     }
 
 

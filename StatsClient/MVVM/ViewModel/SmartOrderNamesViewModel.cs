@@ -34,11 +34,14 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         get => newOrdersByMe;
         set
         {
-            newOrdersByMe = value;
-            RaisePropertyChanged(nameof(NewOrdersByMe));
-            if (AutoSelectFirstOrder && newOrdersByMe.Count > 0)
+            if (value != newOrdersByMe)
             {
-                SelectFirstOrder();
+                newOrdersByMe = value;
+                RaisePropertyChanged(nameof(NewOrdersByMe));
+                if (AutoSelectFirstOrder && newOrdersByMe.Count > 0)
+                {
+                    SelectFirstOrder();
+                }
             }
         }
     }
@@ -328,7 +331,10 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     {
         await Task.Delay(1000);
         if (NewOrdersByMe.Count > 0)
-            SelectedOrder = NewOrdersByMe[0];
+        {
+            if (PreviouslySelectedOrder != NewOrdersByMe[0])
+                SelectedOrder = NewOrdersByMe[0];
+        }
     }
 
     private void FocusOnPanNumberBox()
