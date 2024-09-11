@@ -2838,8 +2838,8 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150" />
-                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
@@ -2862,6 +2862,7 @@
                                          ItemsSource="{Binding CustomerSuggestionsCusNamesList}"
                                          SelectedItem="{Binding SelectedCustomerName}"
                                          Foreground="Beige"
+                                         MinWidth="150"
                                          Background="#444" />
 
                                 <ListBox Grid.Row="1"
@@ -2870,17 +2871,18 @@
                                          ItemsSource="{Binding CustomerSuggestionsReplacementsList}"
                                          SelectedItem="{Binding SelectedCustomerSuggestion}"
                                          Foreground="Beige"
+                                         MinWidth="150"
                                          Background="#444" />
 
                                 <Button Content="Delete customer"
                                         Grid.Row="2"
-                                        Margin="0,5,2,5"
+                                        Margin="0,5,3,5"
                                         Command="{Binding DeleteCSCustomerCommand}" />
 
                                 <Button Content="Delete suggestion"
                                         Grid.Row="2"
                                         Grid.Column="1"
-                                        Margin="4,5,4,5"
+                                        Margin="3,5,4,5"
                                         Command="{Binding DeleteCSSuggestionCommand}"/>
 
 
