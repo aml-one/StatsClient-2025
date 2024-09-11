@@ -38,10 +38,6 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             {
                 newOrdersByMe = value;
                 RaisePropertyChanged(nameof(NewOrdersByMe));
-                if (AutoSelectFirstOrder && newOrdersByMe.Count > 0)
-                {
-                    SelectFirstOrder();
-                }
             }
         }
     }
@@ -234,6 +230,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                 RaisePropertyChanged(nameof(SelectedOrder));
                 FocusOnPanNumberBox();
                 SelectedOrder = null;
+                FirstOrderSelected = true;
             }
 
         }
@@ -251,6 +248,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         }
     }
 
+    private bool firstOrderSelected = false;
+    public bool FirstOrderSelected
+    {
+        get => firstOrderSelected!;
+        set
+        {
+            firstOrderSelected = value;
+            RaisePropertyChanged(nameof(FirstOrderSelected));
+        }
+    }
+    
     private string threeShapeDirectoryHelper = "";
     public string ThreeShapeDirectoryHelper
     {
@@ -333,7 +341,10 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         if (NewOrdersByMe.Count > 0)
         {
             if (PreviouslySelectedOrder != NewOrdersByMe[0])
+            {
+                FirstOrderSelected = true;
                 SelectedOrder = NewOrdersByMe[0];
+            }
         }
     }
 
@@ -523,11 +534,21 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     private async Task Refresh()
     {
         NewOrdersByMe = await GetNewOrdersCreatedByMe(ShowCasesWithoutNumber);
+
+        if (AutoSelectFirstOrder && NewOrdersByMe.Count > 0 && !FirstOrderSelected)
+        {
+            SelectFirstOrder();
+        }
     }
 
     private async void Timer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         NewOrdersByMe = await GetNewOrdersCreatedByMe(ShowCasesWithoutNumber);
+
+        if (AutoSelectFirstOrder && NewOrdersByMe.Count > 0 && !FirstOrderSelected)
+        {
+            SelectFirstOrder();
+        }
     }
 
 
