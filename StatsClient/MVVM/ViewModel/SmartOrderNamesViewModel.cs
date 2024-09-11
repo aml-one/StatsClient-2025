@@ -327,7 +327,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     private async void SelectFirstOrder()
     {
         await Task.Delay(1000);
-        if (NewOrdersByMe.Count > 0 && SelectedOrder is null)
+        if (NewOrdersByMe.Count > 0 && SelectedOrder != NewOrdersByMe[0])
             SelectedOrder = NewOrdersByMe[0];
     }
 
@@ -546,7 +546,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     public async Task RenamingProcess()
     {
 
-        ThreeShapeOrderInspectionModel inspectedOrder = InspectThreeShapeOrder(PreviouslySelectedOrder!.IntOrderID!);
+        //ThreeShapeOrderInspectionModel inspectedOrder = InspectThreeShapeOrder(PreviouslySelectedOrder!.IntOrderID!);
         bool error = false;
         string NewFileName = OrderNamePreview;
         string NewFolderName = NewFileName;
@@ -567,7 +567,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             catch (Exception ex)
             {
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                LogMessage = $"Couldn't rename the order's folder! (some app might still use it or 3Shape has a folder named as the order's new desired name)";
+                LogMessage = $"Couldn't rename the order's folder! (some app might still use it or 3Shape directory has a folder named already same as the order's new desired name)";
                 ControlsEnabled = true;
                 OrderIDIsValid = true;
                 
