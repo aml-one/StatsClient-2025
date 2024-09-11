@@ -38,6 +38,10 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             {
                 newOrdersByMe = value;
                 RaisePropertyChanged(nameof(NewOrdersByMe));
+                if (NewOrdersByMe.Count == 0)
+                {
+                    ResetNameForm();
+                }
             }
         }
     }

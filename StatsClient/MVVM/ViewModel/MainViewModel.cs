@@ -32,6 +32,7 @@ using System.Media;
 using System.Windows.Input;
 using Clipboard = System.Windows.Clipboard;
 using System.Net.Http;
+using System.Windows.Media.Animation;
 
 
 
@@ -106,6 +107,17 @@ public class MainViewModel : ObservableObject
         {
             autoUpdateAtStart = value;
             RaisePropertyChanged(nameof(AutoUpdateAtStart));
+        }
+    }
+    
+    private bool lookingForUpdateNow = false;
+    public bool LookingForUpdateNow
+    {
+        get => lookingForUpdateNow;
+        set
+        {
+            lookingForUpdateNow = value;
+            RaisePropertyChanged(nameof(LookingForUpdateNow));
         }
     }
     
@@ -2017,6 +2029,7 @@ public class MainViewModel : ObservableObject
     #endregion Settings Tab RelayCommands
 
 
+    public RelayCommand LookForUpdateCommand { get; set; }
     public RelayCommand StartProgramUpdateCommand { get; set; }
     public RelayCommand FilterMenuItemCommand { get; set; }
     public RelayCommand ExpanderLoadedCommand { get; set; }
@@ -2125,9 +2138,14 @@ public class MainViewModel : ObservableObject
         fsNotificationTimer.Interval = new TimeSpan(0, 0, 30);
 
         UpdateCheckTimer.Tick += UpdateCheckTimer_Tick;
-        UpdateCheckTimer.Interval = new TimeSpan(0, 0, 10);
+        UpdateCheckTimer.Interval = new TimeSpan(0, 0, 3);
         UpdateCheckTimer.Start();
 
+        LookForUpdateCommand = new RelayCommand(o => 
+        {
+            if (!LookingForUpdateNow)
+                LookForUpdate();
+        });
         StartProgramUpdateCommand = new RelayCommand(o => StartProgramUpdate());
         FilterMenuItemCommand = new RelayCommand(o => FilterMenuItemClicked(o));
         ExpanderLoadedCommand = new RelayCommand(o => ExpanderLoaded(o));
@@ -6656,6 +6674,12 @@ public class MainViewModel : ObservableObject
     #region Looking for Update
     private async void LookForUpdate()
     {
+        LookingForUpdateNow = true;
+        Debug.WriteLine("Looking for update..");
+        BeginStoryboard? sb = _MainWindow.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
+        sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
+        sb!.Storyboard.Begin();
+
         double remoteVersion = 0;
         try
         {
@@ -6730,6 +6754,25 @@ public class MainViewModel : ObservableObject
             UpdateAvailable = false;
 
         AutoUpdateAtStart = true;
+
+        LookingForUpdateNow = false;
+    }
+
+    private void ProgramIconShrinkAnimation_Completed(object? sender, EventArgs e)
+    {
+        BeginStoryboard? sb = _MainWindow.FindResource("ProgramIconGrowAnimation")! as BeginStoryboard;
+        sb!.Storyboard.Completed += ProgramIconGrowAnimation_Completed;
+        sb!.Storyboard.Begin();
+    }
+    
+    private void ProgramIconGrowAnimation_Completed(object? sender, EventArgs e)
+    {
+        if (LookingForUpdateNow)
+        {
+            BeginStoryboard? sb = _MainWindow.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
+            sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
+            sb!.Storyboard.Begin();
+        }
     }
 
     private void UpdateCheckTimer_Tick(object? sender, EventArgs e)

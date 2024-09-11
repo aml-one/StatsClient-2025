@@ -46,9 +46,28 @@
                 <ResourceDictionary Source="/Themes/LvItemModern.xaml" />
                 <ResourceDictionary Source="/Themes/ControlStyles.xaml" />
                 <ResourceDictionary Source="/Themes/SearchBoxTitleBar.xaml" />
-
-
             </ResourceDictionary.MergedDictionaries>
+
+            <BeginStoryboard x:Key="ProgramIconShrinkAnimation">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="programIcon"
+                                     Storyboard.TargetProperty="(Width)"
+                                     Duration="0:0:1.5"
+                                     From="25"
+                                     To="5" />
+                </Storyboard>
+            </BeginStoryboard>
+            
+            <BeginStoryboard x:Key="ProgramIconGrowAnimation">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="programIcon"
+                                     Storyboard.TargetProperty="(Width)"
+                                     Duration="0:0:1"
+                                     From="5"
+                                     To="25" />
+                </Storyboard>
+            </BeginStoryboard>
+
             <converter:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converter:RemoveIDTagFromFrontConverter x:Key="RemoveIDTagFromFrontConverter" />
@@ -268,6 +287,23 @@
                 </Button>
 
 
+                <Grid Height="39"
+                      DockPanel.Dock="Bottom">
+                    <Image Source="/Images/stats_2025_Q512.png"
+                           Height="25"
+                           x:Name="programIcon"
+                           Panel.ZIndex="200"
+                           DockPanel.Dock="Bottom"
+                           Margin="1,5,5,9">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDown">
+                                <i:InvokeCommandAction Command="{Binding LookForUpdateCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Image>
+                </Grid>
+
+
                 <Border x:Name="TitleBar"
                         Background="Transparent"
                         HorizontalAlignment="Stretch"
@@ -279,21 +315,6 @@
 
 
                         <DockPanel LastChildFill="False">
-
-                            <Image Source="/Images/stats_2025_Q512.png"
-                                   Height="25"
-                                   DockPanel.Dock="Bottom"
-                                   Margin="1,5,5,9">
-                                <!--Image.BitmapEffect>
-                                <DropShadowBitmapEffect Color="White"
-                                                        Direction="270"
-                                                        ShadowDepth="1"
-                                                        Opacity="0.55"
-                                                        Softness="2" />
-                            </Image.BitmapEffect-->
-                            </Image>
-
-
                             <core:OutlinedTextBlock Stroke="#333"
                                                     StrokePosition="Outside"
                                                     FontSize="24"
@@ -311,7 +332,7 @@
                         </DockPanel>
                         <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
                                    d:Text="v1"
-                                   Margin="-4,0,0,226"
+                                   Margin="-4,0,0,186"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Bottom"
                                    Foreground="Wheat"
