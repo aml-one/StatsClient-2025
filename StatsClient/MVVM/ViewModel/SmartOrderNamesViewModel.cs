@@ -10,6 +10,8 @@ using System.IO;
 using System.Windows;
 using Syncfusion.XPS;
 using System.Diagnostics;
+using static StatsClient.MVVM.Core.Enums;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 
 
 
@@ -43,6 +45,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                     ResetNameForm();
                 }
             }
+        }
+    }
+
+    private SMessageBoxResult sMessageBoxxResult;
+    public SMessageBoxResult SMessageBoxxResult
+    {
+        get => sMessageBoxxResult;
+        set
+        {
+            sMessageBoxxResult = value;
+            RaisePropertyChanged(nameof(SMessageBoxxResult));
         }
     }
 
@@ -561,7 +574,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         OriginalOrderID = PreviouslySelectedOrder!.IntOrderID!;
         if (!CheckIfOrderIDIsUnique(OrderNamePreview))
         {
-            MessageBox.Show(MainWindow.Instance, "It's not possible to rename the order.\nAn another order in 3Shape has the same name already.\n\nPlease ensure that the order number is unique.", "Stats Client", MessageBoxButton.OK, MessageBoxImage.Error);
+            ShowMessageBox("OrderID conflict", $"It's not possible to rename the order.\nAn another order in 3Shape has the same name already.\n\nPlease ensure that the order number is unique.", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
             return;
         }
 
@@ -827,7 +840,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                 error = true;
                 LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
                 LogMessages.Add(LogMessage);
-                MessageBox.Show(ex.Message, "Something went wrong", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
             }
             //
             // END
@@ -942,5 +955,21 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             LogMessages.Add(LogMessage);
             await Task.Delay(300);
         }
+    }
+
+    public SMessageBoxResult ShowMessageBox(string Title, string Message, SMessageBoxButtons Buttons,
+                                              NotificationIcon MessageBoxIcon,
+                                              double DismissAfterSeconds = 300,
+                                              Window? Owner = null)
+    {
+        SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
+        if (Owner is null)
+            sMessageBox.Owner = MainWindow.Instance;
+        else
+            sMessageBox.Owner = Owner;
+
+        sMessageBox.ShowDialog();
+
+        return MainViewModel.Instance.SMessageBoxxResult;
     }
 }

@@ -241,6 +241,16 @@
                 <Setter Property="BorderBrush"
                         Value="BlanchedAlmond" />
             </Trigger>
+            
+            <Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="#86898F" />
+                <Setter Property="Foreground"
+                        Value="BlanchedAlmond" />
+                <Setter Property="BorderBrush"
+                        Value="BlanchedAlmond" />
+            </Trigger>
         </Style.Triggers>
     </Style>
 

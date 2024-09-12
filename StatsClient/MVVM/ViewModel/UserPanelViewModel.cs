@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
 using static StatsClient.MVVM.Core.DatabaseOperations;
+using static StatsClient.MVVM.Core.Enums;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -674,13 +676,33 @@ public partial class UserPanelViewModel : ObservableObject
             catch (Exception ex)
             {
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(ex);
             }
         }
 
         GettingOrderInfosNow = false;
     }
 
+    private void ShowErrorMessage(Exception ex)
+    {
+        ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
+    }
+
+    public SMessageBoxResult ShowMessageBox(string Title, string Message, SMessageBoxButtons Buttons,
+                                              NotificationIcon MessageBoxIcon,
+                                              double DismissAfterSeconds = 300,
+                                              Window? Owner = null)
+    {
+        SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
+        if (Owner is null)
+            sMessageBox.Owner = MainWindow.Instance;
+        else
+            sMessageBox.Owner = Owner;
+
+        sMessageBox.ShowDialog();
+
+        return MainViewModel.Instance.SMessageBoxxResult;
+    }
 
     private static string GetIcon(string ScanSource, string commentIcon)
     {

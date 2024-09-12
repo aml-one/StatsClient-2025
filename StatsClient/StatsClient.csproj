@@ -110,6 +110,7 @@
     <None Remove="Images\ListViewIcons\trios_scanned.png" />
     <None Remove="Images\MessageIcons\Error.png" />
     <None Remove="Images\MessageIcons\Info.png" />
+    <None Remove="Images\MessageIcons\Question.png" />
     <None Remove="Images\MessageIcons\Success.png" />
     <None Remove="Images\MessageIcons\Warning.png" />
     <None Remove="Images\new_folder.png" />
@@ -398,6 +399,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\MessageIcons\Info.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\MessageIcons\Question.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\MessageIcons\Success.png">

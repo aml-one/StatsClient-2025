@@ -7,7 +7,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using static StatsClient.MVVM.Core.DatabaseOperations;
+using static StatsClient.MVVM.Core.Enums;
 using static StatsClient.MVVM.Core.Functions;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 using MessageBox = System.Windows.MessageBox;
 
 namespace StatsClient.MVVM.ViewModel;
@@ -48,7 +50,18 @@ public class OrderRenameViewModel : ObservableObject
             RaisePropertyChanged(nameof(_RenameWindow));
         }
     }
-    
+
+    private SMessageBoxResult sMessageBoxxResult;
+    public SMessageBoxResult SMessageBoxxResult
+    {
+        get => sMessageBoxxResult;
+        set
+        {
+            sMessageBoxxResult = value;
+            RaisePropertyChanged(nameof(SMessageBoxxResult));
+        }
+    }
+
     private bool makeCommentAboutRename = true;
     public bool MakeCommentAboutRename
     {
@@ -299,8 +312,9 @@ public class OrderRenameViewModel : ObservableObject
             }
             else
             {
-                MessageBoxResult dlg = MessageBox.Show($"The given pan number not registered within the system!\nAre you sure you want to use this number:{givenPanNr}?", "Pan number not recognised", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (dlg == MessageBoxResult.Yes)
+                SMessageBoxResult dlg = ShowMessageBox("Pan number not recognised", $"The given pan number not registered within the system!\nAre you sure you want to use this number:{givenPanNr}?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, OrderRenameWindow.StaticInstance);
+                
+                if (dlg == SMessageBoxResult.Yes)
                 {
                     GoWithGivenPanNumber = true;
                     goto ContinueHere;
@@ -311,7 +325,7 @@ public class OrderRenameViewModel : ObservableObject
         }
         else
         {
-            MessageBox.Show("Please enter a pan number into the Order ID field above.\n(Pan number only)", "Pan number not recognised", MessageBoxButton.OK, MessageBoxImage.Information);
+            ShowMessageBox("Pan number not recognised", $"Please enter a pan number into the Order ID field above.\n(Pan number only)", SMessageBoxButtons.Ok, NotificationIcon.Info, 15, OrderRenameWindow.StaticInstance);
         }
     }
 
@@ -322,7 +336,7 @@ public class OrderRenameViewModel : ObservableObject
         OriginalOrderID = ThreeShapeObject!.IntOrderID!;
         if (!CheckIfOrderIDIsUnique(OrderID))
         {
-            MessageBox.Show(OrderRenameWindow.StaticInstance, "It's not possible to rename the order.\nAn another order in 3Shape has the same name already.\n\nPlease ensure that the order number is unique.", "Stats Client", MessageBoxButton.OK, MessageBoxImage.Error);
+            ShowMessageBox("OrderID issue", $"Not possible to rename the order.\nAn another order in 3Shape has the same name already.\n\nPlease ensure that the order number is unique.", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, OrderRenameWindow.StaticInstance);
             return;
         }
 
@@ -709,7 +723,7 @@ public class OrderRenameViewModel : ObservableObject
                 error = true;
                 LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
                 LogMessages.Add(LogMessage);
-                MessageBox.Show(ex.Message, "Something went wrong", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, OrderRenameWindow.StaticInstance);
             }
             //
             // END
@@ -826,5 +840,21 @@ public class OrderRenameViewModel : ObservableObject
             LogMessages.Add(LogMessage);
             await Task.Delay(300);
         }
+    }
+
+    public SMessageBoxResult ShowMessageBox(string Title, string Message, SMessageBoxButtons Buttons,
+                                              NotificationIcon MessageBoxIcon,
+                                              double DismissAfterSeconds = 300,
+                                              Window? Owner = null)
+    {
+        SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
+        if (Owner is null)
+            sMessageBox.Owner = MainWindow.Instance;
+        else
+            sMessageBox.Owner = Owner;
+
+        sMessageBox.ShowDialog();
+
+        return MainViewModel.Instance.SMessageBoxxResult;
     }
 }

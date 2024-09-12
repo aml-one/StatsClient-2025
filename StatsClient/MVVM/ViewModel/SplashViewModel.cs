@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Threading;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.Functions;
+using static StatsClient.MVVM.Core.Enums;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -34,6 +36,17 @@ public class SplashViewModel : ObservableObject
         {
             loadingText = value;
             RaisePropertyChanged(nameof(LoadingText));
+        }
+    }
+    
+    private SMessageBoxResult sMessageBoxxResult;
+    public SMessageBoxResult SMessageBoxxResult
+    {
+        get => sMessageBoxxResult;
+        set
+        {
+            sMessageBoxxResult = value;
+            RaisePropertyChanged(nameof(SMessageBoxxResult));
         }
     }
 
@@ -69,10 +82,6 @@ public class SplashViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingGlassyEffect));
         }
     }
-
-
-
-
 
 
     public SplashViewModel()
@@ -133,7 +142,7 @@ public class SplashViewModel : ObservableObject
             Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
             if (ex.Message.Contains("Login failed for user"))
             {
-                MessageBox.Show(ex.Message + "\n\nApplication will shutdown!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowMessageBox("Error", $"{ex.Message}\n\nApplication will shutdown!", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, SplashWindow.Instance);
                 SplashWindow.Instance.Close();
                 return;
             }
@@ -172,13 +181,13 @@ public class SplashViewModel : ObservableObject
     {
         if (!isEverythingOkay)
         {
-            MessageBoxResult dg = MessageBox.Show("Could not connect to DataBase server!\nServer might be offline or not accessible.\n\nClick OK to retry.", "Could'n connect..", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-            if (dg == MessageBoxResult.OK)
+            SMessageBoxResult dg = ShowMessageBox("Error", $"Could not connect to DataBase server!\nServer might be offline or not accessible.", SMessageBoxButtons.TryAgainClose, NotificationIcon.Warning, 15, SplashWindow.Instance);
+            if (dg == SMessageBoxResult.TryAgain)
             {
                 isEverythingOkay = true;
                 CheckStatsServerConnection();
             }
-            else if (dg == MessageBoxResult.Cancel)
+            else if (dg == SMessageBoxResult.Close)
             {
                 SplashWindow.Instance.Close();
             }
@@ -191,5 +200,24 @@ public class SplashViewModel : ObservableObject
 
             MainViewModel.StartInitialTasks();
         }
+    }
+
+    public SMessageBoxResult ShowMessageBox(string Title, string Message, SMessageBoxButtons Buttons,
+                                              NotificationIcon MessageBoxIcon,
+                                              double DismissAfterSeconds = 300,
+                                              Window? Owner = null)
+    {
+        SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
+        if (Owner is null)
+            sMessageBox.Owner = MainWindow.Instance;
+        else
+            sMessageBox.Owner = Owner;
+
+        sMessageBox.ShowDialog();
+
+        if (MainViewModel.Instance is not null)
+            return MainViewModel.Instance.SMessageBoxxResult;
+        else
+            return SMessageBoxxResult;
     }
 }

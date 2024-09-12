@@ -16,9 +16,9 @@ using static StatsClient.MVVM.Core.DatabaseOperations;
 using static StatsClient.MVVM.Core.DatabaseConnection;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.Functions;
+using static StatsClient.MVVM.Core.Enums;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
-using MessageBox = System.Windows.MessageBox;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Parsing;
 using Syncfusion.Pdf;
@@ -33,6 +33,8 @@ using System.Windows.Input;
 using Clipboard = System.Windows.Clipboard;
 using System.Net.Http;
 using System.Windows.Media.Animation;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
+
 
 
 
@@ -576,6 +578,21 @@ public class MainViewModel : ObservableObject
         }
     }
     #endregion NOTIFICATION MESSAGE PROPERTIES
+
+
+    #region SMessageBox PROPERTIES
+    private SMessageBoxResult sMessageBoxxResult;
+    public SMessageBoxResult SMessageBoxxResult
+    {
+        get => sMessageBoxxResult;
+        set
+        {
+            sMessageBoxxResult = value;
+            RaisePropertyChanged(nameof(SMessageBoxxResult));
+        }
+    }
+    #endregion SMessageBox PROPERTIES
+
 
     private List<ThreeShapeOrdersModel> current3ShapeOrderList = [];
     public List<ThreeShapeOrdersModel> Current3ShapeOrderList
@@ -2236,6 +2253,9 @@ public class MainViewModel : ObservableObject
         PcCheckPanColorCommand = new RelayCommand(o => PcCheckPanColor());
 
 
+        //SMessageButtonClickCommand = new RelayCommand(o => SMessageButtonClick(o));
+
+
         bwInitialTasks.DoWork += InitialTasksAtApplicationStartup_DoWork;
         bwInitialTasks.RunWorkerCompleted += InitialTasksAtApplicationStartup_RunWorkerCompleted;
 
@@ -2306,6 +2326,28 @@ public class MainViewModel : ObservableObject
 
         BuildCustomerSuggestionsList();
     }
+
+    #region SMessageBox Metods
+
+    public SMessageBoxResult ShowMessageBox(string Title, string Message, SMessageBoxButtons Buttons,
+                                              NotificationIcon MessageBoxIcon,
+                                              double DismissAfterSeconds = 300,
+                                              Window? Owner = null)
+    {
+        SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
+        if (Owner is null)
+            sMessageBox.Owner = MainWindow.Instance;
+        else
+            sMessageBox.Owner = Owner;
+        
+        sMessageBox.ShowDialog();
+
+        return SMessageBoxxResult;
+    }
+
+    
+
+    #endregion SMessageBox Metods
 
 
     #region Settings / Customer Suggestions Tab
@@ -2679,7 +2721,8 @@ public class MainViewModel : ObservableObject
         catch (Exception ex)
         {
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                MessageBox.Show(ex.Message);
+
+                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
         }
 
         try
@@ -2798,25 +2841,25 @@ public class MainViewModel : ObservableObject
     {
         string panNumberStr = (string)obj;
 
-        MessageBoxResult dlg = MessageBox.Show(_MainWindow, $"Are you sure you want to delete this pan: {panNumberStr}?", "Delete pan", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        SMessageBoxResult res = ShowMessageBox("Delete pan", $"Are you sure you want to delete this pan number: {panNumberStr} ?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
 
-        if (dlg == MessageBoxResult.No)
-            return;
-
-        foreach (var item in _MainWindow.pmPanelPanek.Children.OfType<Button>().ToList())
+        if (res == SMessageBoxResult.Yes)
         {
-            if (item.Tag == panNumberStr)
-                _MainWindow.pmPanelPanek.Children.Remove(item);
+            foreach (var item in _MainWindow.pmPanelPanek.Children.OfType<Button>().ToList())
+            {
+                if (item.Tag == panNumberStr)
+                    _MainWindow.pmPanelPanek.Children.Remove(item);
+            }
+
+            PmPanNumberList.Remove(panNumberStr);
+            RaisePropertyChanged(nameof(PmPanNumberList));
+            RemovePanNumberFromAvailablePans(panNumberStr);
+            FillUpEmptyPanNumberPanel();
+            ShowingTakeANumberPanel = Visibility.Hidden;
+
+            if (PmPanNumberList.Count == 0)
+                PmNextPanNumberInList = null;
         }
-
-        PmPanNumberList.Remove(panNumberStr);
-        RaisePropertyChanged(nameof(PmPanNumberList));
-        RemovePanNumberFromAvailablePans(panNumberStr);
-        FillUpEmptyPanNumberPanel();
-        ShowingTakeANumberPanel = Visibility.Hidden;
-
-        if (PmPanNumberList.Count == 0)
-            PmNextPanNumberInList = null;
     }
 
     private void FillUpEmptyPanNumberPanel(bool clearBeforeAdd = true, string panNumbr = "")
@@ -3022,7 +3065,7 @@ public class MainViewModel : ObservableObject
                     }
                     else
                     {
-                        MessageBox.Show("No more available numbers!", "No more numbers", MessageBoxButton.OK, MessageBoxImage.Error);
+                        ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
                         SironaOrderNumber = "";
                         IsItSironaPrescription = false;
                     }
@@ -3030,8 +3073,6 @@ public class MainViewModel : ObservableObject
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                    //MessageBox.Show("No more available numbers!", "No more numbers", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //MessageBox.Show(ex.Message, "Error #PM-1", MessageBoxButton.OK, MessageBoxImage.Error);
                     SironaOrderNumber = "";
                     IsItSironaPrescription = false;
                     return;
@@ -3085,7 +3126,7 @@ public class MainViewModel : ObservableObject
                     }
                     else
                     {
-                        MessageBox.Show("No more available numbers!", "No more numbers", MessageBoxButton.OK, MessageBoxImage.Error);
+                        ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
                         SironaOrderNumber = "";
                         IsItSironaPrescription = false;
                     }
@@ -3093,8 +3134,6 @@ public class MainViewModel : ObservableObject
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                    //MessageBox.Show("No more available numbers!", "No more numbers", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //MessageBox.Show(ex.Message, "Error #PM-1", MessageBoxButton.OK, MessageBoxImage.Error);
                     SironaOrderNumber = "";
                     IsItSironaPrescription = false;
                     return;
@@ -3367,7 +3406,7 @@ public class MainViewModel : ObservableObject
                     catch (Exception ex)
                     {
                         Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                        MessageBox.Show("#78f: ", ex.Message);
+                        ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 20, MainWindow.Instance);
                     }
                 }
             }
@@ -3542,7 +3581,7 @@ public class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-            MessageBox.Show(ex.Message, "", MessageBoxButton.OK, MessageBoxImage.Error);
+            ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 20, MainWindow.Instance);
         }
 
         
@@ -3550,9 +3589,9 @@ public class MainViewModel : ObservableObject
 
     private async void PmMarkCaseAsRush()
     {
-        MessageBoxResult dlg = MessageBox.Show(_MainWindow, "Sure you want to mark the case RUSH?",
-                                                                        "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        if (dlg == MessageBoxResult.Yes)
+        SMessageBoxResult res = ShowMessageBox("Marking case rush", $"Sure you want to mark the case RUSH?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
+
+        if (res == SMessageBoxResult.Yes)
         {
             PmRushButtonShows = Visibility.Hidden;
             await Task.Run(() => EditPDF("", "", true));
@@ -3565,13 +3604,13 @@ public class MainViewModel : ObservableObject
     {
         if (PmSelectedSentTo is null || PmSelectedSentTo == "")
         {
-            MessageBox.Show("Please select a name from the list to add to the prescription", "Stats Client", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowMessageBox("Error", $"Please choose one option from the dropdow first", SMessageBoxButtons.Ok, NotificationIcon.Warning, 15, MainWindow.Instance);
             return;
         }
 
-        MessageBoxResult dlg = MessageBox.Show(_MainWindow, $"Sure you want to add label '{PmSelectedSentTo}' to prescription?",
-                                                                        "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        if (dlg == MessageBoxResult.Yes)
+        SMessageBoxResult res = ShowMessageBox("Adding label", $"Sure you want to add label '{PmSelectedSentTo}' to prescription?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
+
+        if (res == SMessageBoxResult.Yes)
         {
             PmSendToButtonShows = Visibility.Hidden;
             await Task.Run(() => EditPDF("", "", false, true, PmSelectedSentTo));
@@ -3644,7 +3683,7 @@ public class MainViewModel : ObservableObject
                         catch (Exception ex)
                         {
                             Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                            MessageBox.Show("#8\n\n" + ex.Message);
+                            ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                         }
 
                     }
@@ -3736,9 +3775,9 @@ public class MainViewModel : ObservableObject
                                     }
                                     else
                                     {
-                                        MessageBoxResult dlg = MessageBox.Show("This number is already used for a prescription, would you like to overwrite the original file?",
-                                                                        "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                                        if (dlg == MessageBoxResult.Yes)
+                                        SMessageBoxResult res = ShowMessageBox("Adding label", $"This number is already used for a prescription, would you like to overwrite the original file?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
+
+                                        if (res == SMessageBoxResult.Yes)
                                         {
                                             PngBitmapEncoder encoder = new();
 
@@ -3776,7 +3815,7 @@ public class MainViewModel : ObservableObject
                             catch (Exception ex)
                             {
                                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                                MessageBox.Show("#9\n\n" + ex.Message);
+                                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                             }
 
 
@@ -3819,7 +3858,7 @@ public class MainViewModel : ObservableObject
                                 catch (Exception ex)
                                 {
                                     Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                                    MessageBox.Show("#10\n\n" + ex.Message);
+                                    ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                                 }
                             }
 
@@ -3886,9 +3925,9 @@ public class MainViewModel : ObservableObject
                                     }
                                     else
                                     {
-                                        MessageBoxResult dlg = MessageBox.Show("This number is already used for a prescription, would you like to overwrite the original file?",
-                                                                        "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                                        if (dlg == MessageBoxResult.Yes)
+                                        SMessageBoxResult dlg = ShowMessageBox("Number already used", $"This number is already used for a prescription, would you like to overwrite the original file?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
+                                        
+                                        if (dlg == SMessageBoxResult.Yes)
                                         {
                                             await Task.Run(() => CombineImages(files).Save(FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png", System.Drawing.Imaging.ImageFormat.Png));
 
@@ -3921,7 +3960,7 @@ public class MainViewModel : ObservableObject
                             catch (Exception ex)
                             {
                                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                                MessageBox.Show("#11s\n\n" + ex.Message);
+                                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                             }
 
                             if (!IgnoreExistingImage)
@@ -3946,7 +3985,7 @@ public class MainViewModel : ObservableObject
             catch (Exception ex)
             {
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                MessageBox.Show("#11d\n\n" + ex.Message);
+                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
             }
 
             try
@@ -3959,7 +3998,7 @@ public class MainViewModel : ObservableObject
             catch (Exception ex)
             {
                 Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-                MessageBox.Show("#12\n\n" + ex.Message);
+                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
             }
 
             SystemSounds.Beep.Play();
@@ -3973,8 +4012,9 @@ public class MainViewModel : ObservableObject
 
         if (PmLastPrescriptionSize == ActualSize)
         {
-            MessageBoxResult dlg = MessageBox.Show("This case's prescription might be a duplicate..\nWould you like to open up last saved prescription to see if they are the same?", "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (dlg == MessageBoxResult.Yes)
+            SMessageBoxResult dlg = ShowMessageBox("Number already used", $"This case's prescription might be a duplicate..\nWould you like to open up last saved prescription to see if they are the same?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
+            
+            if (dlg == SMessageBoxResult.Yes)
             {
                 try
                 {
@@ -3985,8 +4025,9 @@ public class MainViewModel : ObservableObject
                 {
                     Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
                 }
-                MessageBoxResult res = MessageBox.Show("Is they are the same?", "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                if (res == MessageBoxResult.Yes)
+
+                SMessageBoxResult res = ShowMessageBox("Is it same?", $"Is it same?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
+                if (res == SMessageBoxResult.Yes)
                 {
                     PmSavedPrescription = null;
                     return true;
@@ -4339,8 +4380,9 @@ public class MainViewModel : ObservableObject
         if (string.IsNullOrEmpty(SelectedCustomerName))
             return;
 
-        MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this customer?", "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        if (result == MessageBoxResult.Yes)
+        SMessageBoxResult result = ShowMessageBox("Question", $"Are you sure you want to delete the selected customer?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
+        
+        if (result == SMessageBoxResult.Yes)
         {
             if (await DeleteCustomer(SelectedCustomerName))
             {
@@ -4358,8 +4400,8 @@ public class MainViewModel : ObservableObject
         if (string.IsNullOrEmpty(SelectedCustomerName) || string.IsNullOrEmpty(SelectedCustomerSuggestion))
             return;
 
-        MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this customer suggestion / replacement?", "Stats Client", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        if (result == MessageBoxResult.Yes)
+        SMessageBoxResult result = ShowMessageBox("Question", $"Are you sure you want to delete the selected customer suggestion / replacement?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
+        if (result == SMessageBoxResult.Yes)
         {
             if (await DeleteCustomerSuggestion(SelectedCustomerName, SelectedCustomerSuggestion))
             {
@@ -6072,7 +6114,8 @@ public class MainViewModel : ObservableObject
         Info,
         Warning,
         Error,
-        Success
+        Success,
+        Question
     }
 
 
@@ -6676,9 +6719,12 @@ public class MainViewModel : ObservableObject
     {
         LookingForUpdateNow = true;
         Debug.WriteLine("Looking for update..");
-        BeginStoryboard? sb = _MainWindow.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
-        sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
-        sb!.Storyboard.Begin();
+        if (MainWindow.Instance is not null)
+        {
+            BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
+            sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
+            sb!.Storyboard.Begin();
+        }
 
         double remoteVersion = 0;
         try
@@ -6727,8 +6773,8 @@ public class MainViewModel : ObservableObject
                     UpdateMessagePresented = true;
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        MessageBoxResult result = MessageBox.Show(_MainWindow, "New version available! Would you like to update the program to the new version?\nClick No to update an hour later instead.", "Stats Client - Update found", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (result == MessageBoxResult.Yes)
+                        SMessageBoxResult result = ShowMessageBox("Question", $"New version available! Would you like to update the program to the new version?", SMessageBoxButtons.YesLater, NotificationIcon.Question, 120, MainWindow.Instance);
+                        if (result == SMessageBoxResult.Yes)
                         {
                             StartProgramUpdate();
                         }
@@ -6760,16 +6806,19 @@ public class MainViewModel : ObservableObject
 
     private void ProgramIconShrinkAnimation_Completed(object? sender, EventArgs e)
     {
-        BeginStoryboard? sb = _MainWindow.FindResource("ProgramIconGrowAnimation")! as BeginStoryboard;
-        sb!.Storyboard.Completed += ProgramIconGrowAnimation_Completed;
-        sb!.Storyboard.Begin();
+        if (MainWindow.Instance is not null)
+        {
+            BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconGrowAnimation")! as BeginStoryboard;
+            sb!.Storyboard.Completed += ProgramIconGrowAnimation_Completed;
+            sb!.Storyboard.Begin();
+        }
     }
     
     private void ProgramIconGrowAnimation_Completed(object? sender, EventArgs e)
     {
-        if (LookingForUpdateNow)
+        if (LookingForUpdateNow && MainWindow.Instance is not null)
         {
-            BeginStoryboard? sb = _MainWindow.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
+            BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
             sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
             sb!.Storyboard.Begin();
         }
@@ -6851,7 +6900,7 @@ public class MainViewModel : ObservableObject
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MessageBox.Show(_MainWindow, ex.Message, "Stats Client - Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                 _MainWindow.Cursor = Cursors.Arrow;
             });
         }
