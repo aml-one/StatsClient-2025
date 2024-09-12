@@ -2273,6 +2273,7 @@ public class MainViewModel : ObservableObject
 
         DataView = CollectionViewSource.GetDefaultView(Current3ShapeOrderList);
 
+        #region accountinfo bordercolors by category
         // for accountinfo bordercolors by category
         bgBorderColors.TryAdd("#466f69", "");
         bgBorderColors.TryAdd("#78804f", "");
@@ -2323,6 +2324,7 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#7a4072", "");
         bgBorderColors.TryAdd("#674679", "");
         bgBorderColors.TryAdd("#7a464b", "");
+        #endregion accountinfo bordercolors by category
 
         BuildCustomerSuggestionsList();
     }
@@ -4380,7 +4382,7 @@ public class MainViewModel : ObservableObject
         if (string.IsNullOrEmpty(SelectedCustomerName))
             return;
 
-        SMessageBoxResult result = ShowMessageBox("Question", $"Are you sure you want to delete the selected customer?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
+        SMessageBoxResult result = ShowMessageBox("Question", $"Are you sure you want to delete the selected customer?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 150, MainWindow.Instance);
         
         if (result == SMessageBoxResult.Yes)
         {

@@ -2987,7 +2987,7 @@
                     <Border Grid.RowSpan="2"
                             Background="#56595F"
                             CornerRadius="10,0,0,10">
-                        <Image Source="{Binding NotificationMessageIcon, StringFormat='\Images\{0}.png'}"
+                        <Image Source="{Binding NotificationMessageIcon}"
                                d:Source="\Images\MessageIcons\Info.png"
                                Width="40"
                                Height="40"
