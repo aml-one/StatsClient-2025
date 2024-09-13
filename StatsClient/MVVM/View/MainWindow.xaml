@@ -2280,7 +2280,7 @@
                                                 </GridViewColumn>
 
                                                 <GridViewColumn x:Name="pbPostedTime"
-                                                                Width="100"
+                                                                Width="120"
                                                                 DisplayMemberBinding="{Binding PostedTime}">
                                                     <GridViewColumn.Header>
                                                         <GridViewColumnHeader Template="{StaticResource CustomHeader}"
