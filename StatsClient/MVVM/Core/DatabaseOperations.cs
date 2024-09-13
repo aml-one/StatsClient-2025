@@ -2462,6 +2462,7 @@ public partial class DatabaseOperations
                     processed = "true";
                 list.Add(new ProcessedPanNumberModel() 
                 { 
+                    Id = reader["Id"].ToString(),
                     PanNumber = reader["PanNumber"].ToString(), 
                     PostedTime = reader["PostedTime"].ToString(), 
                     ProcessedTime = reader["ProcessedTime"].ToString(), 

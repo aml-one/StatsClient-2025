@@ -4129,7 +4129,8 @@ public class MainViewModel : ObservableObject
             ProcessedPanNumberModel model = new()
             {
                 PanNumber = item.PanNumber,
-                Comment = item.Comment
+                Comment = item.Comment,
+                Id = item.Id,
             };
 
             if (item.IsProcessed == "true")
@@ -4147,18 +4148,18 @@ public class MainViewModel : ObservableObject
             string postedTime = postedDateTime.ToString("M/d - h:mm tt");
 
             if (postedDateTime.ToString("yyyy-MM-dd") == DateTime.Now.ToString("yyyy-MM-dd"))
-                postedTime = "Today";
+                postedTime = $"Today - {postedDateTime:h:mm tt}";
             else if (postedDateTime.ToString("yyyy-MM-dd") == DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"))
-                postedTime = "Yesterday";
+                postedTime = $"Yesterday - {postedDateTime:h:mm tt}";
 
             string processedTime;
             if (DateTime.TryParse(item.ProcessedTime!, out DateTime processedDateTime))
             {
                 processedTime = processedDateTime.ToString("M/d - h:mm tt");
                 if (processedDateTime.ToString("yyyy-MM-dd") == DateTime.Now.ToString("yyyy-MM-dd"))
-                    processedTime = "Today";
+                    processedTime = $"Today - {processedDateTime:h:mm tt}";
                 else if (processedDateTime.ToString("yyyy-MM-dd") == DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"))
-                    processedTime = "Yesterday";
+                    processedTime = $"Yesterday - {processedDateTime:h:mm tt}";
             }
             else
                 processedTime = "-";

@@ -2,6 +2,7 @@
 
 public class ProcessedPanNumberModel
 {
+    public string? Id { get; set; }
     public string? PanNumber { get; set; }
     public string? PostedTime { get; set; }
     public string? ProcessedTime { get; set; }
