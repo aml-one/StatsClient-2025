@@ -501,7 +501,7 @@
                                 <MenuItem Header="Explore order folder"
                                           Click="MenuItemExploreFolder_Click">
                                     <MenuItem.Icon>
-                                        <Image  Source="/Images/folder.png" />
+                                        <Image  Source="/Images/ToolBar/folder.png" />
                                     </MenuItem.Icon>
                                 </MenuItem>
 

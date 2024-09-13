@@ -4491,6 +4491,7 @@ public class MainViewModel : ObservableObject
             NotificationMessageTitle = "";
             NotificationMessageBody = "";
             NotificationMessageIcon = @"\Images\MessageIcons\Info.png";
+            MainWindow.Instance.notificationMessagePanel.Visibility = Visibility.Hidden;
             notificationTimer.Stop();
         };
     }
@@ -6209,6 +6210,7 @@ public class MainViewModel : ObservableObject
         NotificationMessageTitle = title;
         NotificationMessageBody = message;
         NotificationMessageIcon = $@"\Images\MessageIcons\{notificationIcon}.png";
+        MainWindow.Instance.notificationMessagePanel.Visibility = Visibility.Visible;
         DoubleAnimation da = new(1, TimeSpan.FromMilliseconds(250));
         MainWindow.Instance.notificationMessagePanel.BeginAnimation(FrameworkElement.OpacityProperty, da);
         
