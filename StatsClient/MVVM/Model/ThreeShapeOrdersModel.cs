@@ -46,6 +46,7 @@ public class ThreeShapeOrdersModel{
     public bool CanBeRenamed { get; set; } = false;
     public bool CanGenerateStCopy { get; set; } = false;
     public bool HasDesignerHistory { get; set; } = false;
+    public bool PreviouslyDesigned { get; set; } = false;
     public List<DesignerHistoryModel>? DesignerHistory { get; set; } = [];
     public bool HasAnyImage { get; set; } = false;
 }

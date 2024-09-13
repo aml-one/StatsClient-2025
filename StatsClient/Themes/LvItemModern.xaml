@@ -850,6 +850,22 @@
                         </Trigger>
 
 
+                        <DataTrigger Binding="{Binding PreviouslyDesigned}"
+                                     Value="True">
+                            <Setter TargetName="Item"
+                                    Property="Background"
+                                    Value="#dff2f7" />
+                            <Setter TargetName="ToolTipText"
+                                    Property="Text"
+                                    Value="Previously designed!" />
+                            <Setter TargetName="ToolTipText"
+                                    Property="Foreground"
+                                    Value="Blue" />
+                            <Setter TargetName="brdPanColor"
+                                    Property="BorderBrush"
+                                    Value="Transparent" />
+                        </DataTrigger>
+                        
                         <DataTrigger Binding="{Binding PanColor}"
                                      Value="Transparent">
                             <Setter TargetName="Item"

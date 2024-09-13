@@ -5836,6 +5836,7 @@ public class MainViewModel : ObservableObject
                     bool IsLocked = false;
                     bool IsCheckedOut = false;
                     bool IsCaseWereDesigned = false;
+                    bool previouslyDesigned = false;
 
                     if (reader["ProcessLockID"].ToString() == "plLocked")
                         IsLocked = true;
@@ -5938,6 +5939,11 @@ public class MainViewModel : ObservableObject
                     {
                         canBeRenamed = true;
                     }
+
+
+                    if (MaxProcessStatusID != "psModelled" && IsCaseWereDesigned)
+                        previouslyDesigned = true;
+
                     #endregion
 
 
@@ -5988,6 +5994,7 @@ public class MainViewModel : ObservableObject
                         CanGenerateStCopy = generateStCopy,
                         HasDesignerHistory = hasDesignerHistory,
                         DesignerHistory = designerHistory,
+                        PreviouslyDesigned = previouslyDesigned,
                         HasAnyImage = hasAnyImage,
                     });
 #pragma warning restore CS8604 // Possible null reference argument.
