@@ -33,7 +33,7 @@ using System.Windows.Input;
 using Clipboard = System.Windows.Clipboard;
 using System.Net.Http;
 using System.Windows.Media.Animation;
-using static StatsClient.MVVM.ViewModel.MainViewModel;
+using System.Collections.ObjectModel;
 
 
 
@@ -508,6 +508,17 @@ public class MainViewModel : ObservableObject
         {
             notificationMessagePosition = value;
             RaisePropertyChanged(nameof(NotificationMessagePosition));
+        }
+    }
+    
+    private Visibility notificationMessageVisibility = Visibility.Collapsed;
+    public Visibility NotificationMessageVisibility
+    {
+        get => notificationMessageVisibility;
+        set
+        {
+            notificationMessageVisibility = value;
+            RaisePropertyChanged(nameof(NotificationMessageVisibility));
         }
     }
     
@@ -2330,6 +2341,7 @@ public class MainViewModel : ObservableObject
 
         BuildCustomerSuggestionsList();
     }
+
 
     #region SMessageBox Metods
 
@@ -4491,7 +4503,7 @@ public class MainViewModel : ObservableObject
             NotificationMessageTitle = "";
             NotificationMessageBody = "";
             NotificationMessageIcon = @"\Images\MessageIcons\Info.png";
-            MainWindow.Instance.notificationMessagePanel.Visibility = Visibility.Hidden;
+            NotificationMessageVisibility = Visibility.Collapsed;
             notificationTimer.Stop();
         };
     }
@@ -6210,7 +6222,7 @@ public class MainViewModel : ObservableObject
         NotificationMessageTitle = title;
         NotificationMessageBody = message;
         NotificationMessageIcon = $@"\Images\MessageIcons\{notificationIcon}.png";
-        MainWindow.Instance.notificationMessagePanel.Visibility = Visibility.Visible;
+        NotificationMessageVisibility = Visibility.Visible;
         DoubleAnimation da = new(1, TimeSpan.FromMilliseconds(250));
         MainWindow.Instance.notificationMessagePanel.BeginAnimation(FrameworkElement.OpacityProperty, da);
         
@@ -6418,7 +6430,7 @@ public class MainViewModel : ObservableObject
 
     }
 
-    private void BwBackgroundTasks_DoWork(object? sender, DoWorkEventArgs e)
+    private async void BwBackgroundTasks_DoWork(object? sender, DoWorkEventArgs e)
     {
         string arg = (string)e.Argument!;
         string[] argParts = arg.Split('|');
@@ -6520,6 +6532,8 @@ public class MainViewModel : ObservableObject
                 }
             }));
 
+            await ReportClientLoginToDatabase();
+
             GC.Collect();
         }
 
@@ -6577,12 +6591,12 @@ public class MainViewModel : ObservableObject
     #region >> Initial Tasks at startup
     private void InitialTasksAtApplicationStartup_DoWork(object? sender, DoWorkEventArgs e)
     {
-        Application.Current.Dispatcher.Invoke(new Action(() => 
+        Application.Current.Dispatcher.Invoke(new Action(async () => 
         {
             SplashViewModel.Instance.LoadingText = "Gathering info from database..";
             ThisSite = DatabaseOperations.GetServerSiteName();
             ThreeShapeDirectoryHelper = DatabaseOperations.GetServerFileDirectory();
-            ServerFriendlyNameHelper = DatabaseOperations.GetServerName();
+            //ServerFriendlyNameHelper = DatabaseOperations.GetServerName();
 
             _ = bool.TryParse(ReadLocalSetting("GlassyEffect"), out bool GlassyEffect);
             _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool PanColorCheckWndwIsSnapped);
@@ -6735,8 +6749,11 @@ public class MainViewModel : ObservableObject
             if (StartAppMinimized)
                 MainWindow.Instance.WindowState = WindowState.Minimized;
 
+
+            await ReportClientLoginToDatabase(true);
         }));
     }
+
 
     private async void SetAppVersion()
     {
@@ -7027,5 +7044,4 @@ public class MainViewModel : ObservableObject
         }
     }
     #endregion Looking for Update
-    
 }

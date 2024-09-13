@@ -1315,7 +1315,7 @@
                                         BorderBrush="#DDD"
                                         Background="#66696F"
                                         CornerRadius="10"
-                                        Panel.ZIndex="160"
+                                        Panel.ZIndex="260"
                                         Visibility="{Binding FsCopyPanelShows, Converter={StaticResource BoolToVisibilityConverter}}"
                                         d:Visibility="Visible">
                                     <Border.BitmapEffect>
@@ -3003,6 +3003,8 @@
                     d:Grid.Row="1"
                     Grid.Column="1"
                     x:Name="notificationMessagePanel"
+                    d:Visibility="Visible"
+                    Visibility="{Binding NotificationMessageVisibility}"
                     Panel.ZIndex="150"
                     VerticalAlignment="{Binding NotificationMessageVertAlignment}"
                     d:VerticalAlignment="Bottom"

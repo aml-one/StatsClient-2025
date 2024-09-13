@@ -8,18 +8,97 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Xml;
 using static StatsClient.MVVM.Core.DatabaseConnection;
 using static StatsClient.MVVM.Core.Functions;
-using MessageBox = System.Windows.MessageBox;
 
 namespace StatsClient.MVVM.Core;
 
 public partial class DatabaseOperations
 {
+
+    public static async Task ReportClientLoginToDatabase(bool InitialReport = false)
+    {
+        try
+        {
+            string ComputerName = Environment.MachineName;
+            string Ping = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string AppVersion = await GetAppVersion();
+            string LastLogin = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+
+            string lastPingBefore = await GetLastReportTimeFromClientApp();
+            string pingDifference = "";
+            if (!string.IsNullOrEmpty(lastPingBefore))
+                pingDifference = (DateTime.Parse(Ping) - DateTime.Parse(lastPingBefore)).TotalSeconds.ToString();
+
+            string query = "";
+            if (InitialReport)
+                query = @$"merge dbo.ClientStatus with(HOLDLOCK) as target
+                                 using (values ('{ComputerName}', '{Ping}', '0', '0', '{AppVersion}', '{LastLogin}'))
+                                     as source (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin)
+                                     on target.ComputerName = '{ComputerName}'
+                                 when matched then
+                                     update
+                                     set ComputerName = source.ComputerName,
+                                         Ping = source.Ping,
+                                         PingBefore = source.PingBefore,
+                                         PingDifference = source.PingDifference,
+                                         AppVersion = source.AppVersion,
+                                         LastLogin = source.LastLogin
+                                 when not matched then
+                                     insert (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin)
+                                     values (source.ComputerName, source.Ping, source.PingBefore, source.PingDifference, source.AppVersion, source.LastLogin);
+                                 ";
+            else
+                query = @$"merge dbo.ClientStatus with(HOLDLOCK) as target
+                                 using (values ('{ComputerName}', '{Ping}', '{lastPingBefore}', '{pingDifference}'))
+                                     as source (ComputerName, Ping, PingBefore, PingDifference)
+                                     on target.ComputerName = '{ComputerName}'
+                                 when matched then
+                                     update
+                                     set ComputerName = source.ComputerName,
+                                         Ping = source.Ping,
+                                         PingBefore = source.PingBefore,
+                                         PingDifference = source.PingDifference;
+                                 ";
+
+            RunSQLCommandAsynchronously(query, connectionString);
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private static async Task<string> GetLastReportTimeFromClientApp()
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT Ping FROM dbo.ClientStatus WHERE ComputerName = '{Environment.MachineName}'";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var value = reader["Ping"].ToString();
+                if (value is not null)
+                    return value;
+            }
+        }
+        catch (Exception)
+        {
+        }
+        return "";
+    }
 
     public static async Task<List<string>> GetCustomerSuggestionsReplacementList(string customerName)
     {
@@ -812,7 +891,7 @@ public partial class DatabaseOperations
                     else
                     {
                         // checking if we can find any pan number in the patient name section
-                        String orderIDHelprFromPtName = reader["Patient_LastName"].ToString()!;
+                        string orderIDHelprFromPtName = reader["Patient_LastName"].ToString()!;
                         List<string> orderIDHelprFromPtNameDarabolt = [];
                         orderIDHelprFromPtNameDarabolt = [.. orderIDHelprFromPtName.Split('-')];
                         bool foundPanNumber2 = int.TryParse(orderIDHelprFromPtNameDarabolt[0].ToString(), out int panNr2);
@@ -1324,12 +1403,12 @@ public partial class DatabaseOperations
         return "";
     }
 
-    public static string GetServerName()
+    public static string GetServerAddress()
     {
         try
         {
             string connectionString = ConnectionStrToStatsDatabase();
-            string query = @"SELECT TOP(1) FriendlyName FROM dbo.ThreeShapeServer";
+            string query = @"SELECT TOP(1) ServerAddress FROM dbo.ThreeShapeServer";
 
             using SqlConnection connection = new(connectionString);
             SqlCommand command = new(query, connection);
