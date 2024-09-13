@@ -5832,6 +5832,7 @@ public class MainViewModel : ObservableObject
 
                     bool isTheFilesAccessible = true;               
                     bool generateStCopy = true;
+                    bool hasDesignerHistory = false;
                     bool IsLocked = false;
                     bool IsCheckedOut = false;
                     bool IsCaseWereDesigned = false;
@@ -5853,7 +5854,76 @@ public class MainViewModel : ObservableObject
                         generateStCopy = false;
                     }
 
-                    
+                    List<DesignerHistoryModel> designerHistory = [];
+                    string designedByFile = @$"{ThreeShapeDirectoryHelper}{reader["IntOrderID"]}\History\DesignedBy";
+                    if (File.Exists(designedByFile))
+                    {
+                        try
+                        {
+                            File.ReadAllLines(designedByFile).ToList().ForEach(x => 
+                            {
+                                string[] parts = x.Split(']');
+
+                                _ = DateTime.TryParse(parts[0].Replace("[", ""), out DateTime dtTime);
+
+                                //string dTime = dtTime.ToString("[yyyy] ddd M/d h:mm tt");
+                                string designr = parts[1].Trim();
+                                //designerHistory.Add($"{dTime} - {designr}");
+                                designerHistory.Add(new DesignerHistoryModel()
+                                {
+                                    Year = $"[{dtTime.ToString("yyyy")}]",
+                                    Day = dtTime.ToString("ddd"),
+                                    Date = dtTime.ToString("M/d"),
+                                    Time = dtTime.ToString("h:mm tt"),
+                                    DesignerName = designr
+                                });
+                            });
+
+                            if (designerHistory.Count > 0)
+                                designerHistory.Reverse();
+
+                            hasDesignerHistory = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            AddDebugLine(ex);
+                        }
+                    }
+                    else if (File.Exists(designedByFile.Replace(@"\History\", @"\")))
+                    {
+                        designedByFile = designedByFile.Replace(@"\History\", @"\");
+
+                        try
+                        {
+                            File.ReadAllLines(designedByFile).ToList().ForEach(x =>
+                            {
+                                string[] parts = x.Split(']');
+
+                                _ = DateTime.TryParse(parts[0].Replace("[", ""), out DateTime dtTime);
+
+                                //string dTime = dtTime.ToString("[yyyy] ddd M/d h:mm tt");
+                                string designr = parts[1].Trim();
+                                //designerHistory.Add($"{dTime} - {designr}");
+                                designerHistory.Add(new DesignerHistoryModel()
+                                {
+                                    Year = $"[{dtTime.ToString("yyyy")}]",
+                                    Day = dtTime.ToString("ddd"),
+                                    Date = dtTime.ToString("M/d"),
+                                    Time = dtTime.ToString("h:mm tt"),
+                                    DesignerName = designr
+                                });
+                            });
+
+                            if (designerHistory.Count > 0)
+                                designerHistory.Reverse();
+
+                            hasDesignerHistory = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            AddDebugLine(ex);
+                        }
+                    }
 
 
 
@@ -5916,6 +5986,8 @@ public class MainViewModel : ObservableObject
                         IsCheckedOut = IsCheckedOut,
                         CanBeRenamed = canBeRenamed,
                         CanGenerateStCopy = generateStCopy,
+                        HasDesignerHistory = hasDesignerHistory,
+                        DesignerHistory = designerHistory,
                         HasAnyImage = hasAnyImage,
                     });
 #pragma warning restore CS8604 // Possible null reference argument.

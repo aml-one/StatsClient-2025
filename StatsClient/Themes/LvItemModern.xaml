@@ -497,12 +497,63 @@
                                         <Image  Source="/Images/ToolBar/stcopy.png" />
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                
+
                                 <MenuItem Header="Explore order folder"
                                           Click="MenuItemExploreFolder_Click">
                                     <MenuItem.Icon>
                                         <Image  Source="/Images/folder.png" />
                                     </MenuItem.Icon>
+                                </MenuItem>
+
+                                <Separator Visibility="{Binding HasDesignerHistory, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                                <MenuItem Header="Designer History"
+                                          ItemsSource="{Binding DesignerHistory}"
+                                          Visibility="{Binding HasDesignerHistory, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <MenuItem.Icon>
+                                        <Image  Source="/Images/ListViewIcons/psModelled.png" />
+                                    </MenuItem.Icon>
+                                    <MenuItem.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="32"/>
+                                                    <ColumnDefinition Width="38"/>
+                                                    <ColumnDefinition Width="36"/>
+                                                    <ColumnDefinition Width="52"/>
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Year}"
+                                                           FontFamily="pack://application:,,,/Fonts/#RobotoMono"
+                                                           FontWeight="Normal" 
+                                                           Grid.Column="0"/>
+                                                
+                                                <TextBlock Text="{Binding Date}"
+                                                           FontFamily="pack://application:,,,/Fonts/#RobotoMono"
+                                                           FontWeight="Normal"
+                                                           Margin="4,0,0,0"
+                                                           Grid.Column="1"/>
+                                                
+                                                <TextBlock Text="{Binding Day}"
+                                                           FontFamily="pack://application:,,,/Fonts/#RobotoMono"
+                                                           FontWeight="Normal" 
+                                                           HorizontalAlignment="Center"
+                                                           Grid.Column="2"/>
+                                                
+                                                <TextBlock Text="{Binding Time}"
+                                                           FontFamily="pack://application:,,,/Fonts/#RobotoMono"
+                                                           FontWeight="Normal" 
+                                                           HorizontalAlignment="Right"
+                                                           Grid.Column="3"/>
+                                                
+                                                <TextBlock Text="{Binding DesignerName}"
+                                                           FontFamily="pack://application:,,,/Fonts/#RobotoMono"
+                                                           FontWeight="SemiBold" 
+                                                           Margin="16,0,0,0"
+                                                           Grid.Column="4"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </MenuItem.ItemTemplate>
                                 </MenuItem>
 
 
@@ -644,12 +695,11 @@
                             <!-- Prescription / Image icon -->
                             <StackPanel Grid.Column="2"
                                         VerticalAlignment="Center">
-                                <Image Source="\Images\ListViewIcons\image.png" 
+                                <Image Source="\Images\ListViewIcons\image.png"
                                        Width="21"
                                        Height="22"
                                        ToolTip="This order has images / rx form"
-                                       Visibility="{Binding HasAnyImage, Converter={StaticResource BoolToVisibilityConverter}}"
-                                       />
+                                       Visibility="{Binding HasAnyImage, Converter={StaticResource BoolToVisibilityConverter}}" />
                             </StackPanel>
 
                             <!-- Scanner Info & Other -->
@@ -1181,7 +1231,7 @@
                                 <ColumnDefinition Width="{Binding ElementName=lvIssuesSkipReason, Path=Width}" />
                             </Grid.ColumnDefinitions>
 
-                            
+
                             <TextBlock Text="{Binding OrderID}"
                                        Grid.Column="0"
                                        FontWeight="SemiBold"
@@ -2029,11 +2079,10 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
-                                <Image Grid.Row="0" 
+                                <Image Grid.Row="0"
                                        Source="\Images\AccountInfoIcons\user.png"
                                        Width="10"
-                                       Height="10"
-                                       />
+                                       Height="10" />
 
                                 <TextBlock Text="{Binding Credentials.UserName}"
                                            Grid.Row="0"

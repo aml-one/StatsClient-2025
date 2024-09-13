@@ -45,5 +45,17 @@ public class ThreeShapeOrdersModel{
     public bool IsCheckedOut { get; set; } = false;
     public bool CanBeRenamed { get; set; } = false;
     public bool CanGenerateStCopy { get; set; } = false;
+    public bool HasDesignerHistory { get; set; } = false;
+    public List<DesignerHistoryModel>? DesignerHistory { get; set; } = [];
     public bool HasAnyImage { get; set; } = false;
+}
+
+
+public class DesignerHistoryModel()
+{
+    public string? Year { get; set; }
+    public string? Day { get; set; }
+    public string? Date { get; set; }
+    public string? Time { get; set; }
+    public string? DesignerName { get; set; }
 }

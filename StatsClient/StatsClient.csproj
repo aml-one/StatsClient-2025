@@ -29,6 +29,7 @@
   <ItemGroup>
     <None Remove="eng.traineddata" />
     <None Remove="Executable\BaseSettings.Config" />
+    <None Remove="Fonts\RobotoMono.ttf" />
     <None Remove="Images\AccountInfoIcons\app.png" />
     <None Remove="Images\AccountInfoIcons\key.png" />
     <None Remove="Images\AccountInfoIcons\user.png" />
@@ -170,6 +171,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Fonts\RobotoMono.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\AccountInfoIcons\app.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
