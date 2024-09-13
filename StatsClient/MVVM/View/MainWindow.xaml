@@ -1315,7 +1315,7 @@
                                         BorderBrush="#DDD"
                                         Background="#66696F"
                                         CornerRadius="10"
-                                        Panel.ZIndex="10"
+                                        Panel.ZIndex="160"
                                         Visibility="{Binding FsCopyPanelShows, Converter={StaticResource BoolToVisibilityConverter}}"
                                         d:Visibility="Visible">
                                     <Border.BitmapEffect>
