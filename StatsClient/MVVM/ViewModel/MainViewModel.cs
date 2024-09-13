@@ -352,14 +352,14 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private List<DebugMessagesModel> debugMessages = [];
-    public List<DebugMessagesModel> DebugMessages
+    private static List<DebugMessagesModel> debugMessages = [];
+    public static List<DebugMessagesModel> DebugMessages
     {
         get => debugMessages;
         set
         {
             debugMessages = value;
-            RaisePropertyChanged(nameof(DebugMessages));
+            RaisePropertyChangedStatic(nameof(DebugMessages));
         }
     }
     
@@ -500,18 +500,6 @@ public class MainViewModel : ObservableObject
 
     #region NOTIFICATION MESSAGE PROPERTIES
     
-
-    private Visibility isNotificationMessageShows = Visibility.Hidden;
-    public Visibility IsNotificationMessageShows
-    {
-        get => isNotificationMessageShows;
-        set
-        {
-            isNotificationMessageShows = value;
-            RaisePropertyChanged(nameof(IsNotificationMessageShows));
-        }
-    }
-
     private Thickness notificationMessagePosition = new (15,0,0,20);
     public Thickness NotificationMessagePosition
     {
@@ -1864,6 +1852,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private bool cbSettingModuleDebug = false;
+    public bool CbSettingModuleDebug
+    {
+        get => cbSettingModuleDebug;
+        set
+        {
+            cbSettingModuleDebug = value;
+            RaisePropertyChanged(nameof(CbSettingModuleDebug));
+        }
+    }
+    
     private bool cbSettingModulePrescriptionMaker = false;
     public bool CbSettingModulePrescriptionMaker
     {
@@ -1929,6 +1928,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingExtractIteroZipFiles));
         }
     }
+
     #endregion Settings Tab Properties
 
     private string windowBackground = "#56595F";
@@ -2035,6 +2035,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand CbSettingModuleFolderSubscriptionCommand { get; set; }
     public RelayCommand CbSettingModuleAccountInfosCommand { get; set; }
     public RelayCommand CbSettingModuleSmartOrderNamesCommand { get; set; }
+    public RelayCommand CbSettingModuleDebugCommand { get; set; }
     public RelayCommand CbSettingModulePrescriptionMakerCommand { get; set; }
     public RelayCommand CbSettingModulePendingDigitalsCommand { get; set; }
     
@@ -2232,6 +2233,7 @@ public class MainViewModel : ObservableObject
         CbSettingModuleFolderSubscriptionCommand = new RelayCommand(o => CbSettingModuleFolderSubscriptionMethod());
         CbSettingModuleAccountInfosCommand = new RelayCommand(o => CbSettingModuleAccountInfosMethod());
         CbSettingModuleSmartOrderNamesCommand = new RelayCommand(o => CbSettingModuleSmartOrderNamesMethod());
+        CbSettingModuleDebugCommand = new RelayCommand(o => CbSettingModuleDebugMethod());
         CbSettingModulePrescriptionMakerCommand = new RelayCommand(o => CbSettingModulePrescriptionMakerMethod());
         CbSettingModulePendingDigitalsCommand = new RelayCommand(o => CbSettingModulePendingDigitalsMethod());
 
@@ -2407,8 +2409,9 @@ public class MainViewModel : ObservableObject
         {
             Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AddDebugLine(ex);
         }
     }
     
@@ -2420,8 +2423,9 @@ public class MainViewModel : ObservableObject
         {
             Process.Start(new ProcessStartInfo { FileName = appPath, UseShellExecute = true });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AddDebugLine(ex);
         }
     }
 
@@ -2670,7 +2674,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
     }
 
@@ -2722,9 +2726,8 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-
-                ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
+            AddDebugLine(ex);
+            ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
         }
 
         try
@@ -2733,7 +2736,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
     }
 
@@ -2780,7 +2783,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             ShowNotificationMessage("No access", "The folder you're selected is not accessible!", NotificationIcon.Error, true);
         }
     }
@@ -2812,7 +2815,7 @@ public class MainViewModel : ObservableObject
         }
         else
         {
-            ShowNotificationMessage("Not registered", $"{number} is not registered whitin the system. Please enter a valid pan number!", NotificationIcon.Warning);
+            ShowNotificationMessage("Not registered", $"{number} is not registered within the system. Please enter a valid pan number!", NotificationIcon.Warning);
             PmAddNewNumber = "";
         }
     }
@@ -2834,6 +2837,15 @@ public class MainViewModel : ObservableObject
             FillUpEmptyPanNumberPanel();
             ShowingTakeANumberPanel = Visibility.Hidden;
 
+            try
+            {
+                Directory.CreateDirectory(PmFinalPrescriptionsFolder + DateTime.Now.ToString("MM-dd"));
+            }
+            catch (Exception ex)
+            {
+                AddDebugLine(ex);
+            }
+
             if (PmPanNumberList.Count == 0)
                 PmNextPanNumberInList = "";
         }
@@ -2843,7 +2855,7 @@ public class MainViewModel : ObservableObject
     {
         string panNumberStr = (string)obj;
 
-        SMessageBoxResult res = ShowMessageBox("Delete pan", $"Are you sure you want to delete this pan number: {panNumberStr} ?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
+        SMessageBoxResult res = ShowMessageBox("Delete pan", $"Are you sure you want to delete this pan number:\n                                                               {panNumberStr} ?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
 
         if (res == SMessageBoxResult.Yes)
         {
@@ -2942,7 +2954,7 @@ public class MainViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                 }
             }
         }
@@ -3016,7 +3028,7 @@ public class MainViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
             }
         }
 
@@ -3074,7 +3086,7 @@ public class MainViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                     SironaOrderNumber = "";
                     IsItSironaPrescription = false;
                     return;
@@ -3135,7 +3147,7 @@ public class MainViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                     SironaOrderNumber = "";
                     IsItSironaPrescription = false;
                     return;
@@ -3155,7 +3167,7 @@ public class MainViewModel : ObservableObject
         }
         catch (IOException io)
         {
-            Debug.WriteLine($"[{io.LineNumber()}] {io.Message}");
+            AddDebugLine(io);
             //the file is unavailable because it is:
             //still being written to
             //or being processed by another thread
@@ -3332,7 +3344,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
 
         if (IsItSironaPrescription && !string.IsNullOrEmpty(SironaOrderNumber))
@@ -3402,12 +3414,12 @@ public class MainViewModel : ObservableObject
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                            AddDebugLine(ex);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                        AddDebugLine(ex);
                         ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 20, MainWindow.Instance);
                     }
                 }
@@ -3561,7 +3573,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
 
         
@@ -3582,7 +3594,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 20, MainWindow.Instance);
         }
 
@@ -3684,7 +3696,7 @@ public class MainViewModel : ObservableObject
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                            AddDebugLine(ex);
                             ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                         }
 
@@ -3745,7 +3757,7 @@ public class MainViewModel : ObservableObject
                                         }
                                         catch (Exception ex)
                                         {
-                                            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                                            AddDebugLine(ex);
                                         }
 
                                         PngBitmapEncoder encoder = new();
@@ -3816,7 +3828,7 @@ public class MainViewModel : ObservableObject
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                                AddDebugLine(ex);
                                 ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                             }
 
@@ -3859,7 +3871,7 @@ public class MainViewModel : ObservableObject
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                                    AddDebugLine(ex);
                                     ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                                 }
                             }
@@ -3900,7 +3912,7 @@ public class MainViewModel : ObservableObject
                                         }
                                         catch (Exception ex)
                                         {
-                                            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                                            AddDebugLine(ex);
                                         }
 
                                         await Task.Run(() => CombineImages(files).Save(FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png", System.Drawing.Imaging.ImageFormat.Png));
@@ -3961,7 +3973,7 @@ public class MainViewModel : ObservableObject
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                                AddDebugLine(ex);
                                 ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                             }
 
@@ -3986,7 +3998,7 @@ public class MainViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
                 ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
             }
 
@@ -3999,7 +4011,7 @@ public class MainViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
                 ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
             }
 
@@ -4025,7 +4037,7 @@ public class MainViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                 }
 
                 SMessageBoxResult res = ShowMessageBox("Is it same?", $"Is it same?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
@@ -4359,6 +4371,11 @@ public class MainViewModel : ObservableObject
         WriteLocalSetting("ModuleSmartOrderNames", CbSettingModuleSmartOrderNames.ToString());
     }
     
+    private void CbSettingModuleDebugMethod()
+    {
+        WriteLocalSetting("ModuleDebug", CbSettingModuleDebug.ToString());
+    }
+    
     private void CbSettingModulePrescriptionMakerMethod()
     {
         WriteLocalSetting("ModulePrescriptionMaker", CbSettingModulePrescriptionMaker.ToString());
@@ -4465,11 +4482,16 @@ public class MainViewModel : ObservableObject
     
     private void NotificationTimer_Tick(object? sender, EventArgs e)
     {
-        IsNotificationMessageShows = Visibility.Hidden;
-        NotificationMessageTitle = "";
-        NotificationMessageBody = "";
-        NotificationMessageIcon = @"\Images\MessageIcons\Info.png";
-        notificationTimer.Stop();
+        DoubleAnimation da = new(0, TimeSpan.FromMilliseconds(500));
+        MainWindow.Instance.notificationMessagePanel.BeginAnimation(FrameworkElement.OpacityProperty, da);
+
+        da.Completed += (s, e) =>
+        {
+            NotificationMessageTitle = "";
+            NotificationMessageBody = "";
+            NotificationMessageIcon = @"\Images\MessageIcons\Info.png";
+            notificationTimer.Stop();
+        };
     }
 
     
@@ -4485,9 +4507,9 @@ public class MainViewModel : ObservableObject
             {
                 Process.Start("explorer.exe", $@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                AddDebugLine(ex);
             }
         }
     }
@@ -4533,7 +4555,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             ShowNotificationMessage("Error", ex.Message, NotificationIcon.Error);
         }
     }
@@ -4655,7 +4677,7 @@ public class MainViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
                 itIsACopiedCase = false;
             }
         }
@@ -5912,7 +5934,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             Application.Current.Dispatcher.Invoke(new Action(() => {
                 if (ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
                     ThreeShapeServerIsDown = true;
@@ -6074,7 +6096,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             return false;
         }
     }
@@ -6106,8 +6128,11 @@ public class MainViewModel : ObservableObject
 
         NotificationMessageTitle = title;
         NotificationMessageBody = message;
-        IsNotificationMessageShows = Visibility.Visible;
         NotificationMessageIcon = $@"\Images\MessageIcons\{notificationIcon}.png";
+        DoubleAnimation da = new(1, TimeSpan.FromMilliseconds(250));
+        MainWindow.Instance.notificationMessagePanel.BeginAnimation(FrameworkElement.OpacityProperty, da);
+        
+        notificationTimer.Stop();
         notificationTimer.Start();
     }
 
@@ -6458,7 +6483,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
     }
 
@@ -6495,6 +6520,7 @@ public class MainViewModel : ObservableObject
             _ = bool.TryParse(ReadLocalSetting("ModuleFolderSubscription"), out bool moduleFolderSubscription);
             _ = bool.TryParse(ReadLocalSetting("ModuleAccountInfos"), out bool moduleAccountInfos);
             _ = bool.TryParse(ReadLocalSetting("ModuleSmartOrderNames"), out bool moduleSmartOrderNames);
+            _ = bool.TryParse(ReadLocalSetting("ModuleDebug"), out bool moduleDebug);
             _ = bool.TryParse(ReadLocalSetting("ModulePrescriptionMaker"), out bool modulePrescriptionMaker);
             _ = bool.TryParse(ReadLocalSetting("ModulePendingDigitals"), out bool modulePendingDigitals);
 
@@ -6527,6 +6553,7 @@ public class MainViewModel : ObservableObject
             CbSettingModuleFolderSubscription = moduleFolderSubscription;
             CbSettingModuleAccountInfos = moduleAccountInfos;
             CbSettingModuleSmartOrderNames = moduleSmartOrderNames;
+            CbSettingModuleDebug = moduleDebug;
             CbSettingModulePrescriptionMaker = modulePrescriptionMaker;
             CbSettingModulePendingDigitals = modulePendingDigitals;
 
@@ -6644,8 +6671,6 @@ public class MainViewModel : ObservableObject
         AppIsFullyLoaded = true;
 
         GeneralTimer_Tick(sender, e);
-
-        AddDebugLine("Start", null, "Application started");
     }
 
 
@@ -6670,7 +6695,7 @@ public class MainViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                 }
             }
 
@@ -6687,24 +6712,33 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
     }
 
 
 
-    public void AddDebugLine(string location, Exception? ex, string message)
+    public static void AddDebugLine(Exception? ex = null, string? message = null, string location = "MVM")
     {
         string time = DateTime.Now.ToString("HH:mm:ss");
-        string lineNumber = ex.LineNumber().ToString();
+        string lineNumber = "";
+        if (ex is not null)
+        {
+            lineNumber = ex.LineNumber().ToString();
+            if (message is null)
+                message = ex.Message;
+        }
 
+        if (lineNumber == "-1")
+            lineNumber = "";
 
-        DebugMessages.Add(new DebugMessagesModel(
-            location,
-            lineNumber,
-            time,
-            message
-            ));
+        DebugMessages.Add(new DebugMessagesModel()
+        {
+            DLocation = location,
+            DLineNumber = lineNumber,
+            DTime = time,
+            DMessage = message,
+        });
     }
 
     internal static void StartInitialTasks()
@@ -6739,8 +6773,9 @@ public class MainViewModel : ObservableObject
                 LatestAppVersion = remVersion;
             }));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AddDebugLine(ex);
             //try
             //{
             //    string result = await new HttpClient().GetStringAsync("https://aml.one/CaseChecker/version.txt");
@@ -6855,8 +6890,9 @@ public class MainViewModel : ObservableObject
                 await s.CopyToAsync(fs);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AddDebugLine(ex);
             //try
             //{
             //    if (File.Exists($@"{LocalConfigFolderHelper}StatsClientUpdater.exe"))
@@ -6902,10 +6938,12 @@ public class MainViewModel : ObservableObject
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                AddDebugLine(ex);
                 ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
                 _MainWindow.Cursor = Cursors.Arrow;
             });
         }
     }
     #endregion Looking for Update
+    
 }

@@ -1,9 +1,9 @@
 ﻿using StatsClient.MVVM.Core;
 using StatsClient.MVVM.Model;
 using static StatsClient.MVVM.Core.DatabaseOperations;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 using System.Windows;
 using System.Timers;
-using System.Diagnostics;
 using StatsClient.MVVM.View;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
@@ -285,7 +285,7 @@ public partial class SentOutCasesViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
     }
 }

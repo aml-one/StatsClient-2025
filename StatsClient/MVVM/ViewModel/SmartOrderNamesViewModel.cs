@@ -8,7 +8,6 @@ using StatsClient.MVVM.View;
 using System.Data.SqlClient;
 using System.IO;
 using System.Windows;
-using Syncfusion.XPS;
 using System.Diagnostics;
 using static StatsClient.MVVM.Core.Enums;
 using static StatsClient.MVVM.ViewModel.MainViewModel;
@@ -610,7 +609,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
                 LogMessage = $"Couldn't rename the order's folder! (some app might still use it or 3Shape directory has a folder named already same as the order's new desired name)";
                 ControlsEnabled = true;
                 OrderIDIsValid = true;
@@ -631,7 +630,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
             }
             //
             // END
@@ -819,7 +818,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                     LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
                     LogMessages.Add(LogMessage);
                     error = true;
@@ -836,7 +835,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
                 error = true;
                 LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
                 LogMessages.Add(LogMessage);
@@ -850,7 +849,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         }
         catch (Exception e)
         {
-            Debug.WriteLine($"[{e.LineNumber()}] {e.Message}");
+            AddDebugLine(e);
             error = true;
             LogMessage = $"Error ({e.LineNumber()}): [{e.Message}]";
             LogMessages.Add(LogMessage);
@@ -877,7 +876,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                 }
             }
 
@@ -901,7 +900,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                 }
             }
         }
@@ -936,21 +935,21 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         }
         catch (SqlException ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             LogMessage = $"Error Exception ({ex.LineNumber()}): [{ex.Message}]";
             LogMessages.Add(LogMessage);
             await Task.Delay(300);
         }
         catch (InvalidOperationException ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
             LogMessages.Add(LogMessage);
             await Task.Delay(300);
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             LogMessage = $"Error General ({ex.LineNumber()}): [{ex.Message}]";
             LogMessages.Add(LogMessage);
             await Task.Delay(300);

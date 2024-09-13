@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using static StatsClient.MVVM.Core.DatabaseOperations;
 using static StatsClient.MVVM.Core.Functions;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -297,12 +298,11 @@ public class PanColorCheckViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
         }
 
         LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosTop", "");
         LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosLeft", "");
         LocalSettingsDB.WriteLocalSetting("ColorCheckWindowIsOpen", "false");
     }
-
 }

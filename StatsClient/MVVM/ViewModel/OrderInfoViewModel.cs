@@ -6,12 +6,11 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media;
 using static StatsClient.MVVM.Core.DatabaseOperations;
-using System.Windows.Forms;
 using static StatsClient.MVVM.Core.MessageBoxes;
 using TaskDialog = Ookii.Dialogs.Wpf.TaskDialog;
 using TaskDialogIcon = Ookii.Dialogs.Wpf.TaskDialogIcon;
 using TaskDialogButton = Ookii.Dialogs.Wpf.TaskDialogButton;
-using System.Diagnostics;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -407,7 +406,7 @@ public class OrderInfoViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                AddDebugLine(ex);
             }
 
         }
@@ -425,6 +424,7 @@ public class OrderInfoViewModel : ObservableObject
         //tbOrderUpdated.Visibility = Visibility.Visible;
     }
 
+    
 
     public void WindowClosing()
     {
@@ -748,7 +748,7 @@ public class OrderInfoViewModel : ObservableObject
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                            AddDebugLine(ex);
                         }
                     }
                 }
@@ -785,7 +785,7 @@ public class OrderInfoViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+            AddDebugLine(ex);
             ShowMessage(_InfoWindow.Instance, "Could not prepare the order to receive images!\n\n" + ex.Message, TaskDialogIcon.Error, Buttons.Ok);
             return;
         }
@@ -801,7 +801,7 @@ public class OrderInfoViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
+                    AddDebugLine(ex);
                     using TaskDialog dialog = new ();
                     dialog.WindowTitle = "Stats Client";
                     dialog.Content = fileInfo.Name + " already exists.";

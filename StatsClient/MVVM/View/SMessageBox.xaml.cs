@@ -1,7 +1,6 @@
 ﻿using StatsClient.MVVM.Core;
 using StatsClient.MVVM.ViewModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows;
@@ -141,7 +140,7 @@ namespace StatsClient.MVVM.View
 
         public SMessageBox(string Title, string Message, SMessageBoxButtons Buttons,
                                          NotificationIcon MessageBoxIcon,
-                                         double DismissAfterSeconds = 300,
+                                         double DismissAfterSeconds = 90,
                                          Window? Owner = null)
         {
 

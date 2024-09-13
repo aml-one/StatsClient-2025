@@ -351,7 +351,7 @@
                        Grid.Column="1"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Right"
-                       Margin="0,-2,75,0"
+                       Margin="0,-2,85,0"
                        Panel.ZIndex="50"
                        Width="220"
                        LastChildFill="False"
@@ -1607,7 +1607,7 @@
                                     <RowDefinition Height="50" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
+                                    <ColumnDefinition MaxWidth="690"/>
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
@@ -2007,6 +2007,8 @@
                                                  Width="130"
                                                  HorizontalAlignment="Left"
                                                  FontSize="15"
+                                                 Background="#555"
+                                                 Foreground="Beige"
                                                  Margin="2,0,0,2">
                                             <TextBox.InputBindings>
                                                 <KeyBinding Key="Enter"
@@ -2392,8 +2394,21 @@
                 <!--#region SETTINGS TAB -->
                 <TabItem HorizontalAlignment="Right"
                          DockPanel.Dock="Right"
-                         IsTabStop="False"
-                         Header="Settings">
+                         IsTabStop="False">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Settings" />
+                            <Grid d:Visibility="Visible"
+                                  Visibility="{Binding DebugMessages.Count, Converter={StaticResource ZeroToCollapsedConverter}}">
+                                <TextBlock d:Text="65"
+                                           Foreground="DeepPink"
+                                           Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                           d:Visibility="Visible"
+                                           Margin="4,0,0,0"
+                                           Text="{Binding DebugMessages.Count}"/>
+                            </Grid>
+                        </StackPanel>
+                    </TabItem.Header>
                     <TabControl Grid.Row="1"
                                 Background="#66696F"
                                 BorderThickness="1,0,0,0"
@@ -2539,8 +2554,44 @@
                                               Style="{StaticResource CircleCheckBox}"
                                               Command="{Binding CbSettingModuleSmartOrderNamesCommand}"
                                               Margin="0,6,5,0" />
+                                    
+                                    <CheckBox Content="Debug"
+                                              Foreground="MistyRose"
+                                              VerticalAlignment="Top"
+                                              HorizontalAlignment="Left"
+                                              Cursor="Hand"
+                                              IsChecked="{Binding CbSettingModuleDebug, Mode=TwoWay}"
+                                              Style="{StaticResource CircleCheckBox}"
+                                              Command="{Binding CbSettingModuleDebugCommand}"
+                                              Margin="0,6,5,0" />
 
                                 </StackPanel>
+                            </Grid>
+                        </TabItem>
+
+                        <TabItem Header="Debug"
+                                 Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                 d:Visibility="Visible"
+                                 Style="{StaticResource applicationsTabItem}">
+                            <Grid>
+                                <ListView ItemsSource="{Binding DebugMessages}"
+                                          Background="#555"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                          Foreground="Beige">
+                                    <ListView.View>
+                                        <GridView AllowsColumnReorder="False"
+                                                  ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
+                                            <GridViewColumn Width="80"
+                                                            DisplayMemberBinding="{Binding DTime}" />
+                                            <GridViewColumn Width="60"
+                                                            DisplayMemberBinding="{Binding DLineNumber}" />
+                                            <GridViewColumn Width="60"
+                                                            DisplayMemberBinding="{Binding DLocation}" />
+                                            <GridViewColumn Width="4000"
+                                                            DisplayMemberBinding="{Binding DMessage}" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
                             </Grid>
                         </TabItem>
 
@@ -2951,6 +3002,7 @@
             <Border Grid.Row="{Binding NotificationMessageGridPosition}"
                     d:Grid.Row="1"
                     Grid.Column="1"
+                    x:Name="notificationMessagePanel"
                     Panel.ZIndex="150"
                     VerticalAlignment="{Binding NotificationMessageVertAlignment}"
                     d:VerticalAlignment="Bottom"
@@ -2960,8 +3012,8 @@
                     BorderBrush="#DDD"
                     Background="#66696F"
                     CornerRadius="10"
-                    Visibility="{Binding IsNotificationMessageShows}"
-                    d:Visibility="Visible">
+                    Opacity="0"
+                    d:Opacity="1">
                 <Border.BitmapEffect>
                     <DropShadowBitmapEffect Color="Black"
                                             Direction="270"
