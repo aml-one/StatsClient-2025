@@ -2262,7 +2262,7 @@
 
 
                                                 <GridViewColumn x:Name="pbProcessedTime"
-                                                                Width="100"
+                                                                Width="120"
                                                                 DisplayMemberBinding="{Binding ProcessedTime}">
                                                     <GridViewColumn.Header>
                                                         <GridViewColumnHeader Template="{StaticResource CustomHeader}"
