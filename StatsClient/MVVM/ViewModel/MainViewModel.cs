@@ -6910,12 +6910,15 @@ public class MainViewModel : ObservableObject
     {
         LookingForUpdateNow = true;
         Debug.WriteLine("Looking for update..");
-        if (MainWindow.Instance is not null)
+        Application.Current.Dispatcher.Invoke(new Action(() =>
         {
-            BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
-            sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
-            sb!.Storyboard.Begin();
-        }
+            if (MainWindow.Instance is not null)
+            {
+                BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
+                sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
+                sb!.Storyboard.Begin();
+            }
+        }));
 
         double remoteVersion = 0;
         try
@@ -6998,22 +7001,28 @@ public class MainViewModel : ObservableObject
 
     private void ProgramIconShrinkAnimation_Completed(object? sender, EventArgs e)
     {
-        if (MainWindow.Instance is not null)
+        Application.Current.Dispatcher.Invoke(new Action(() =>
         {
-            BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconGrowAnimation")! as BeginStoryboard;
-            sb!.Storyboard.Completed += ProgramIconGrowAnimation_Completed;
-            sb!.Storyboard.Begin();
-        }
+            if (MainWindow.Instance is not null)
+            {
+                BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconGrowAnimation")! as BeginStoryboard;
+                sb!.Storyboard.Completed += ProgramIconGrowAnimation_Completed;
+                sb!.Storyboard.Begin();
+            }
+        }));
     }
     
     private void ProgramIconGrowAnimation_Completed(object? sender, EventArgs e)
     {
-        if (LookingForUpdateNow && MainWindow.Instance is not null)
+        Application.Current.Dispatcher.Invoke(new Action(() =>
         {
-            BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
-            sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
-            sb!.Storyboard.Begin();
-        }
+            if (LookingForUpdateNow && MainWindow.Instance is not null)
+            {
+                BeginStoryboard? sb = MainWindow.Instance.FindResource("ProgramIconShrinkAnimation")! as BeginStoryboard;
+                sb!.Storyboard.Completed += ProgramIconShrinkAnimation_Completed;
+                sb!.Storyboard.Begin();
+            }
+        }));
     }
 
     private void UpdateCheckTimer_Tick(object? sender, EventArgs e)
