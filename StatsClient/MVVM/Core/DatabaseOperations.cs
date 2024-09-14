@@ -122,11 +122,12 @@ public partial class DatabaseOperations
                                  when matched then
                                      update
                                      set ComputerName = source.ComputerName,
-                                         Ping = source.Ping,
-                                         PingBefore = source.PingBefore,
-                                         PingDifference = source.PingDifference,
-                                         AppVersion = source.AppVersion,
-                                         LastLogin = source.LastLogin
+                                                 Ping = source.Ping,
+                                           PingBefore = source.PingBefore,
+                                       PingDifference = source.PingDifference,
+                                           AppVersion = source.AppVersion,
+                                            LastLogin = source.LastLogin,
+                                          MemoryUsage = source.MemoryUsage
                                  when not matched then
                                      insert (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin, LastCommandId, MemoryUsage)
                                      values (source.ComputerName, source.Ping, source.PingBefore, source.PingDifference, source.AppVersion, source.LastLogin, source.LastCommandId, source.MemoryUsage);
@@ -147,8 +148,9 @@ public partial class DatabaseOperations
 
             RunSQLCommandAsynchronously(query, connectionString);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AddDebugLine(ex, null, "DBO");
         }
     }
 
@@ -164,7 +166,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            AddDebugLine(ex, null, "DBO");
             return 0;
         }
     }
@@ -178,7 +180,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            AddDebugLine(ex, null, "DBO");
             return 0;
         }
     }
@@ -192,7 +194,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            AddDebugLine(ex, null, "DBO");
             return 0;
         }
     }
@@ -216,8 +218,9 @@ public partial class DatabaseOperations
                     return value;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AddDebugLine(ex, null, "DBO");
         }
         return "";
     }
@@ -243,9 +246,9 @@ public partial class DatabaseOperations
                 list.Add(reader["NewName"].ToString()!);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            AddDebugLine(ex, null, "DBO");
         }
 
         return list;
