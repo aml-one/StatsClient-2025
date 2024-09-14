@@ -112,6 +112,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private bool doAForceUpdateNow = false;
+    public bool DoAForceUpdateNow
+    {
+        get => doAForceUpdateNow;
+        set
+        {
+            doAForceUpdateNow = value;
+            RaisePropertyChanged(nameof(DoAForceUpdateNow));
+        }
+    }
+    
     private bool lookingForUpdateNow = false;
     public bool LookingForUpdateNow
     {
@@ -843,6 +854,41 @@ public class MainViewModel : ObservableObject
         {
             cSNewReplacement = value;
             RaisePropertyChanged(nameof(CSNewReplacement));
+        }
+    }
+    
+    
+    
+    private double currentMemoryUsage = 0;
+    public double CurrentMemoryUsage
+    {
+        get => currentMemoryUsage;
+        set
+        {
+            currentMemoryUsage = value;
+            RaisePropertyChanged(nameof(CurrentMemoryUsage));
+        }
+    }
+    
+    private double totalMemory = 0;
+    public double TotalMemory
+    {
+        get => totalMemory;
+        set
+        {
+            totalMemory = value;
+            RaisePropertyChanged(nameof(TotalMemory));
+        }
+    }
+    
+    private double totalMemoryInGiB = 0;
+    public double TotalMemoryInGiB
+    {
+        get => totalMemoryInGiB;
+        set
+        {
+            totalMemoryInGiB = value;
+            RaisePropertyChanged(nameof(TotalMemoryInGiB));
         }
     }
 
@@ -6437,7 +6483,7 @@ public class MainViewModel : ObservableObject
         _ = int.TryParse(argParts[0], out int minute);
         _ = int.TryParse(argParts[1], out int second);
 
-        Application.Current.Dispatcher.Invoke(new Action(() => {
+        Application.Current.Dispatcher.Invoke(new Action(async () => {
             ServerStatus = GetStatsServerStatus();
             ServerIsWritingDatabase = CheckIfServerIsWritingDatabase();
             if (CbSettingModuleFolderSubscription)
@@ -6445,15 +6491,22 @@ public class MainViewModel : ObservableObject
             
             if (ShowBottomInfoBar)
                 LastDCASUpdate = GetLastDCASUpdate();
+
+            await Task.Run(LookForPendingTask);
         }));
 
 
         if (second % 15 == 1 || FirstRun)
         {
+            CurrentMemoryUsage = Math.Round(await GetMemoryUsage() / (1024 * 1024));
+
             if (FirstRun)
             {
                 BuildingUpDates();
                 UpdateOrderIssuesList();
+
+                TotalMemoryInGiB = await GetTotalMemoryInGiB();
+                TotalMemory = Math.Round(await GetTotalMemoryInMiB());
             }
 
             FirstRun = false;
@@ -6540,6 +6593,7 @@ public class MainViewModel : ObservableObject
         if (minute % 59 == 0 && second < 3)
             BuildingUpDates();
     }
+
 
     private void BwGetSentOutIssues_DoWork(object? sender, DoWorkEventArgs e)
     {
@@ -6824,8 +6878,7 @@ public class MainViewModel : ObservableObject
         if (ex is not null)
         {
             lineNumber = ex.LineNumber().ToString();
-            if (message is null)
-                message = ex.Message;
+            message ??= ex.Message;
         }
 
         if (lineNumber == "-1")
@@ -6925,7 +6978,7 @@ public class MainViewModel : ObservableObject
                 }
             }
 
-            if (!AutoUpdateAtStart)
+            if (!AutoUpdateAtStart || DoAForceUpdateNow)
             {
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
             }
@@ -7044,4 +7097,32 @@ public class MainViewModel : ObservableObject
         }
     }
     #endregion Looking for Update
+
+    private async void LookForPendingTask()
+    {
+        TaskModel task = await GetPendingTaskFromDatabase();
+
+        if (string.IsNullOrEmpty(task.Task))
+            return;
+
+        switch (task.Task.ToLower())
+        {
+            case "update":
+                {
+                    await WriteDownLastCommandId(task.Id!);
+                    UpdateMessagePresented = true;
+                    DoAForceUpdateNow = true;
+                    LookForUpdate();
+                    break;
+                }
+            
+            case "report":
+                {
+                    await WriteDownLastCommandId(task.Id!);
+                    await ReportClientLoginToDatabase();
+                    break;
+                }
+        }
+
+    }
 }

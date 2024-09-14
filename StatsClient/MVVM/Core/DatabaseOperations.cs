@@ -1,25 +1,99 @@
 ﻿using Newtonsoft.Json;
 using StatsClient.MVVM.Model;
 using StatsClient.MVVM.ViewModel;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Design;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Xml;
 using static StatsClient.MVVM.Core.DatabaseConnection;
 using static StatsClient.MVVM.Core.Functions;
+using static StatsClient.MVVM.ViewModel.MainViewModel;
 
 namespace StatsClient.MVVM.Core;
 
 public partial class DatabaseOperations
 {
+
+    public static async Task<TaskModel> GetPendingTaskFromDatabase()
+    {
+        string lastCommandID = await GetLastCommandId();
+
+        TaskModel task = new();
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT TOP 1 * FROM dbo.ClientTasks ORDER BY Id DESC";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var value = reader["Task"].ToString();
+                if (value is not null)
+                {
+                    if (reader["Id"].ToString() == lastCommandID)
+                        return task;
+                    else
+                    {
+                        task.Id = reader["Id"].ToString();
+                        task.Task = value;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"{ex.LineNumber()} - {ex.Message}");
+        }
+        return task;
+    }
+
+    private static async Task<string> GetLastCommandId()
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT LastCommandId FROM dbo.ClientStatus WHERE ComputerName = '{Environment.MachineName}'";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var value = reader[0].ToString();
+                if (value is not null)
+                    return value;
+            }
+        }
+        catch (Exception)
+        {
+        }
+        return "-1";
+    }
+    
+    public static async Task WriteDownLastCommandId(string id)
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"UPDATE dbo.ClientStatus SET LastCommandId = '{id}' WHERE ComputerName = '{Environment.MachineName}'";
+
+            RunSQLCommandAsynchronously(query, connectionString);
+        }
+        catch (Exception)
+        {
+        }
+    }
 
     public static async Task ReportClientLoginToDatabase(bool InitialReport = false)
     {
@@ -32,6 +106,8 @@ public partial class DatabaseOperations
 
             string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
 
+            string memoryUsage = Math.Round(await GetMemoryUsage() / (1024 * 1024)).ToString();
+
             string lastPingBefore = await GetLastReportTimeFromClientApp();
             string pingDifference = "";
             if (!string.IsNullOrEmpty(lastPingBefore))
@@ -40,8 +116,8 @@ public partial class DatabaseOperations
             string query = "";
             if (InitialReport)
                 query = @$"merge dbo.ClientStatus with(HOLDLOCK) as target
-                                 using (values ('{ComputerName}', '{Ping}', '0', '0', '{AppVersion}', '{LastLogin}'))
-                                     as source (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin)
+                                 using (values ('{ComputerName}', '{Ping}', '0', '0', '{AppVersion}', '{LastLogin}', '-1', '{memoryUsage}'))
+                                     as source (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin, LastCommandId, MemoryUsage)
                                      on target.ComputerName = '{ComputerName}'
                                  when matched then
                                      update
@@ -52,26 +128,72 @@ public partial class DatabaseOperations
                                          AppVersion = source.AppVersion,
                                          LastLogin = source.LastLogin
                                  when not matched then
-                                     insert (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin)
-                                     values (source.ComputerName, source.Ping, source.PingBefore, source.PingDifference, source.AppVersion, source.LastLogin);
+                                     insert (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin, LastCommandId, MemoryUsage)
+                                     values (source.ComputerName, source.Ping, source.PingBefore, source.PingDifference, source.AppVersion, source.LastLogin, source.LastCommandId, source.MemoryUsage);
                                  ";
             else
                 query = @$"merge dbo.ClientStatus with(HOLDLOCK) as target
-                                 using (values ('{ComputerName}', '{Ping}', '{lastPingBefore}', '{pingDifference}'))
-                                     as source (ComputerName, Ping, PingBefore, PingDifference)
+                                 using (values ('{ComputerName}', '{Ping}', '{lastPingBefore}', '{pingDifference}', '{memoryUsage}'))
+                                     as source (ComputerName, Ping, PingBefore, PingDifference, MemoryUsage)
                                      on target.ComputerName = '{ComputerName}'
                                  when matched then
                                      update
                                      set ComputerName = source.ComputerName,
                                          Ping = source.Ping,
                                          PingBefore = source.PingBefore,
-                                         PingDifference = source.PingDifference;
+                                         PingDifference = source.PingDifference,
+                                         MemoryUsage = source.MemoryUsage;
                                  ";
 
             RunSQLCommandAsynchronously(query, connectionString);
         }
         catch (Exception)
         {
+        }
+    }
+
+    public static async Task<double> GetMemoryUsage()
+    {
+        try
+        {
+            var memory = 0.0;
+            using Process proc = Process.GetCurrentProcess();
+            memory = proc.PrivateMemorySize64;
+            
+            return memory;
+        }
+        catch (Exception ex)
+        {
+            AddDebugLine(ex);
+            return 0;
+        }
+    }
+    
+    public static async Task<double> GetTotalMemoryInGiB()
+    {
+        try
+        {
+            var mem = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
+            return mem / (1024 * 1024 * 1024);
+        }
+        catch (Exception ex)
+        {
+            AddDebugLine(ex);
+            return 0;
+        }
+    }
+    
+    public static async Task<double> GetTotalMemoryInMiB()
+    {
+        try
+        {
+            var mem = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
+            return mem / (1024 * 1024);
+        }
+        catch (Exception ex)
+        {
+            AddDebugLine(ex);
+            return 0;
         }
     }
 
