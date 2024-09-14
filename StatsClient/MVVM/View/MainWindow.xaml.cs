@@ -10,6 +10,7 @@ using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.Functions;
+using System.Diagnostics;
 
 namespace StatsClient.MVVM.View;
 
@@ -166,6 +167,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             WriteLocalSetting("WindowWidth", Width.ToString());
             WriteLocalSetting("WindowHeight", Height.ToString());
         }
+
+        //InfoBackground.MinWidth = Width;
     }
 
     private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -181,6 +184,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             MainViewModel.Instance.Is3ShapeTabSelected = true;
         }
+
+        if (infoTab is not null)
+            if (!infoTab.IsSelected)
+                aboutTab.IsSelected = true;
     }
 
     private void BtnFilter_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -280,5 +287,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (e.Key == Key.Escape)
             tbSearch.Clear();
+    }
+
+    private void SettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        settingsTab.IsSelected = true;
     }
 }

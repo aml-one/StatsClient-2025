@@ -3106,9 +3106,12 @@ public class MainViewModel : ObservableObject
 
     private void PmAddToSentToList()
     {
-        AddNameToSentToList(PmNewSentToName);
-        PmNewSentToName = "";
-        PmSendToList = GetAllSendToEnties();
+        if (PmNewSentToName.Trim().Length > 0)
+        {
+            AddNameToSentToList(PmNewSentToName.Trim());
+            PmNewSentToName = "";
+            PmSendToList = GetAllSendToEnties();
+        }
     }
 
     
