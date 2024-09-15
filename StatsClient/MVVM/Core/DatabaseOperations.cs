@@ -43,8 +43,12 @@ public partial class DatabaseOperations
                         return task;
                     else
                     {
+                        _ = DateTime.TryParse(reader["Time"].ToString(), out DateTime dTime);
+
                         task.Id = reader["Id"].ToString();
                         task.Task = value;
+                        task.ComputerName = reader["ComputerName"].ToString();
+                        task.Time = dTime;
                     }
                 }
             }

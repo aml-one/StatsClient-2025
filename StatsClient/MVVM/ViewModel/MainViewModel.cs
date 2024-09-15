@@ -2476,7 +2476,19 @@ public class MainViewModel : ObservableObject
     private void StartApplication(object obj)
     {
         string appPath = (string)obj;
-        Debug.WriteLine(appPath);
+
+        try
+        {
+            Process.Start(new ProcessStartInfo { FileName = appPath, UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            AddDebugLine(ex);
+        }
+    }    
+    
+    private void StartApplication(string appPath)
+    {
         try
         {
             Process.Start(new ProcessStartInfo { FileName = appPath, UseShellExecute = true });
@@ -7113,11 +7125,35 @@ public class MainViewModel : ObservableObject
     }
     #endregion Looking for Update
 
+
+    private async void InitiateRestart()
+    {
+        try
+        {
+            if (Environment.ProcessPath is not null)
+            {
+                await ResetPingDifferenceInDatabaseOnClose();
+                StartApplication(Environment.ProcessPath);
+                Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
+            }
+        }
+        catch (Exception ex)
+        {
+            AddDebugLine(ex);
+        }
+    }
+
     private async void LookForPendingTask()
     {
         TaskModel task = await GetPendingTaskFromDatabase();
 
         if (string.IsNullOrEmpty(task.Task))
+            return;
+
+        if (!string.IsNullOrEmpty(task.ComputerName) && !task.ComputerName.Equals(Environment.MachineName))
+            return;
+
+        if ((DateTime.Now - task.Time).TotalSeconds > 7200) // if the task is older than 2 hours then skip it..
             return;
 
         switch (task.Task.ToLower())
@@ -7135,6 +7171,21 @@ public class MainViewModel : ObservableObject
                 {
                     await WriteDownLastCommandId(task.Id!);
                     await ReportClientLoginToDatabase();
+                    break;
+                }
+
+            case "close":
+                {
+                    await WriteDownLastCommandId(task.Id!);
+                    await ResetPingDifferenceInDatabaseOnClose();
+                    Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
+                    break;
+                }
+            
+            case "restart":
+                {
+                    await WriteDownLastCommandId(task.Id!);
+                    InitiateRestart();
                     break;
                 }
         }

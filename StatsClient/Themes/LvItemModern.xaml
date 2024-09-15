@@ -32,6 +32,7 @@
 
 
     <!-- LvItemSimple -->
+    <!-- 
     <Style TargetType="ListViewItem"
            x:Key="LvItemSimple">
 
@@ -99,7 +100,7 @@
 
 
 
-                            <!-- Scanner Info & Other -->
+                            
                             <StackPanel Grid.Column="2"
                                         VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal"
@@ -124,7 +125,7 @@
 
 
 
-                            <!-- Customer & Patient info -->
+                            
                             <StackPanel Orientation="Horizontal"
                                         Grid.Column="3"
                                         Margin="5,0,10,0"
@@ -168,7 +169,7 @@
 
 
 
-                            <!-- Items & Manufacturers -->
+                            
                             <StackPanel Grid.Column="4"
                                         VerticalAlignment="Center"
                                         Margin="5,0,0,0">
@@ -248,6 +249,8 @@
         </Setter>
     </Style>
 
+    -->
+    
     <!-- LvItemFolderSubscription -->
     <Style TargetType="ListViewItem"
            x:Key="LvItemFolderSubscription">
@@ -942,6 +945,7 @@
     </Style>
 
     <!-- LvItemDetailedPt -->
+    <!-- 
     <Style TargetType="ListViewItem"
            x:Key="LvItemDetailedPt">
         <Setter Property="Template">
@@ -993,7 +997,7 @@
 
 
 
-                            <!-- OrderID & Creation/Modification dates -->
+                            
                             <StackPanel VerticalAlignment="Top"
                                         Height="32"
                                         Grid.Column="1"
@@ -1045,7 +1049,7 @@
                             </StackPanel>
 
 
-                            <!-- Scanner Info & Other -->
+                            
                             <StackPanel Grid.Column="2"
                                         VerticalAlignment="Top">
                                 <StackPanel Orientation="Horizontal"
@@ -1105,7 +1109,7 @@
 
                             </StackPanel>
 
-                            <!-- Customer & Patient info -->
+                            
                             <StackPanel Orientation="Vertical"
                                         Grid.Column="3"
                                         Margin="5,0,10,0"
@@ -1156,7 +1160,7 @@
 
 
 
-                            <!-- Items & Manufacturers -->
+                            
                             <StackPanel Grid.Column="4"
                                         VerticalAlignment="Top"
                                         Margin="5,0,0,0">
@@ -1223,7 +1227,7 @@
 
 
     </Style>
-
+-->
 
     <!-- LvItemIssues -->
     <Style TargetType="ListViewItem"
@@ -1817,8 +1821,6 @@
     <!-- LvItemSentOutCases -->
     <Style TargetType="ListViewItem"
            x:Key="LvItemSentOutCases">
-        <!--EventSetter Event="PreviewMouseDown"
-                     Handler="ListViewItem_PreviewMouseLeftButtonDown" /-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
