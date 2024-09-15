@@ -94,6 +94,22 @@ public partial class DatabaseOperations
         {
         }
     }
+    
+    public static async Task ResetPingDifferenceInDatabaseOnClose()
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"UPDATE dbo.ClientStatus SET PingDifference = '0',
+                                                    PingDifferenceBefore = '-999'
+                              WHERE ComputerName = '{Environment.MachineName}'";
+
+            RunSQLCommandAsynchronously(query, connectionString);
+        }
+        catch (Exception)
+        {
+        }
+    }
 
     public static async Task ReportClientLoginToDatabase(bool InitialReport = false)
     {
@@ -108,42 +124,39 @@ public partial class DatabaseOperations
 
             string memoryUsage = Math.Round(await GetMemoryUsage() / (1024 * 1024)).ToString();
 
-            string lastPingBefore = await GetLastReportTimeFromClientApp();
-            string pingDifference = "";
-            if (!string.IsNullOrEmpty(lastPingBefore))
-                pingDifference = (DateTime.Parse(Ping) - DateTime.Parse(lastPingBefore)).TotalSeconds.ToString();
-
+            string lastPingDifference = await GetLastReportTimeFromClientApp();
+            string serverPing = ReadStatsSetting("ServerPing");
+                        
             string query = "";
             if (InitialReport)
                 query = @$"merge dbo.ClientStatus with(HOLDLOCK) as target
                                  using (values ('{ComputerName}', '{Ping}', '0', '0', '{AppVersion}', '{LastLogin}', '-1', '{memoryUsage}'))
-                                     as source (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin, LastCommandId, MemoryUsage)
+                                     as source (ComputerName, Ping, PingDifference, PingDifferenceBefore, AppVersion, LastLogin, LastCommandId, MemoryUsage)
                                      on target.ComputerName = '{ComputerName}'
                                  when matched then
                                      update
                                      set ComputerName = source.ComputerName,
                                                  Ping = source.Ping,
-                                           PingBefore = source.PingBefore,
                                        PingDifference = source.PingDifference,
+                                 PingDifferenceBefore = source.PingDifferenceBefore,
                                            AppVersion = source.AppVersion,
                                             LastLogin = source.LastLogin,
                                           MemoryUsage = source.MemoryUsage
                                  when not matched then
-                                     insert (ComputerName, Ping, PingBefore, PingDifference, AppVersion, LastLogin, LastCommandId, MemoryUsage)
-                                     values (source.ComputerName, source.Ping, source.PingBefore, source.PingDifference, source.AppVersion, source.LastLogin, source.LastCommandId, source.MemoryUsage);
+                                     insert (ComputerName, Ping, PingDifference, PingDifferenceBefore, AppVersion, LastLogin, LastCommandId, MemoryUsage)
+                                     values (source.ComputerName, source.Ping, source.PingDifference, source.PingDifferenceBefore, source.AppVersion, source.LastLogin, source.LastCommandId, source.MemoryUsage);
                                  ";
             else
                 query = @$"merge dbo.ClientStatus with(HOLDLOCK) as target
-                                 using (values ('{ComputerName}', '{Ping}', '{lastPingBefore}', '{pingDifference}', '{memoryUsage}'))
-                                     as source (ComputerName, Ping, PingBefore, PingDifference, MemoryUsage)
+                                 using (values ('{ComputerName}', '{Ping}', '{lastPingDifference}', '{memoryUsage}'))
+                                     as source (ComputerName, Ping, PingDifferenceBefore, MemoryUsage)
                                      on target.ComputerName = '{ComputerName}'
                                  when matched then
                                      update
                                      set ComputerName = source.ComputerName,
-                                         Ping = source.Ping,
-                                         PingBefore = source.PingBefore,
-                                         PingDifference = source.PingDifference,
-                                         MemoryUsage = source.MemoryUsage;
+                                                 Ping = source.Ping,
+                                 PingDifferenceBefore = source.PingDifferenceBefore,
+                                          MemoryUsage = source.MemoryUsage;
                                  ";
 
             RunSQLCommandAsynchronously(query, connectionString);
@@ -204,7 +217,7 @@ public partial class DatabaseOperations
         try
         {
             string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
-            string query = $@"SELECT Ping FROM dbo.ClientStatus WHERE ComputerName = '{Environment.MachineName}'";
+            string query = $@"SELECT PingDifference FROM dbo.ClientStatus WHERE ComputerName = '{Environment.MachineName}'";
 
             using SqlConnection connection = new(connectionString);
             SqlCommand command = new(query, connection);
@@ -213,7 +226,7 @@ public partial class DatabaseOperations
             using SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var value = reader["Ping"].ToString();
+                var value = reader[0].ToString();
                 if (value is not null)
                     return value;
             }

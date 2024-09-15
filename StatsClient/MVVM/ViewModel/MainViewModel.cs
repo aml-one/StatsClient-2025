@@ -6588,9 +6588,12 @@ public class MainViewModel : ObservableObject
                 }
             }));
 
-            await ReportClientLoginToDatabase();
-
             GC.Collect();
+        }
+        
+        if (second % 30 == 1)
+        {
+            await ReportClientLoginToDatabase();
         }
 
         if (minute % 59 == 0 && second < 3)

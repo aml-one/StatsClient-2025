@@ -10,7 +10,7 @@ using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.Functions;
-using System.Diagnostics;
+using static StatsClient.MVVM.Core.DatabaseOperations;
 
 namespace StatsClient.MVVM.View;
 
@@ -98,8 +98,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
 
-    private void Window_Closing(object sender, CancelEventArgs e)
+    private async void Window_Closing(object sender, CancelEventArgs e)
     {
+        await ResetPingDifferenceInDatabaseOnClose();
         Application.Current.Shutdown();
     }
 
@@ -141,8 +142,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     }
 
-    private void BtnCloseApplication_Click(object sender, RoutedEventArgs e)
+    private async void BtnCloseApplication_Click(object sender, RoutedEventArgs e)
     {
+        await ResetPingDifferenceInDatabaseOnClose();
         Application.Current.Shutdown();
     }
 
