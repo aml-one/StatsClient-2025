@@ -1221,6 +1221,17 @@ public class MainViewModel : ObservableObject
         }
     }
 
+    private string selectedGroupByItem = "None";
+    public string SelectedGroupByItem
+    {
+        get => selectedGroupByItem;
+        set
+        {
+            selectedGroupByItem = value;
+            RaisePropertyChanged(nameof(SelectedGroupByItem));
+        }
+    }
+
     private ThreeShapeOrdersModel? threeShapeObject;
     public ThreeShapeOrdersModel? ThreeShapeObject
     {
@@ -4862,9 +4873,13 @@ public class MainViewModel : ObservableObject
             _MainWindow.pb3ShapeProgressBar.Value = 0;
 
             _MainWindow.listView3ShapeOrders.Items.GroupDescriptions.Clear();
-            var property = _MainWindow.GroupBy.SelectedItem as string;
+            //var property = _MainWindow.GroupBy.SelectedItem as string;
+            var property = SelectedGroupByItem;
+           
 
-            WriteLocalSetting("GroupBy", property!);
+            if (FilterString != "MyRecent")
+                WriteLocalSetting("GroupBy", property!);
+
 
             if (property == "None" || property is null)
             {
@@ -6162,6 +6177,16 @@ public class MainViewModel : ObservableObject
         //GroupList();
         string filter = (string)obj;
         WriteLocalSetting("FilterUsed", filter);
+
+        if (filter == "MyRecent")
+        {
+            FilterString = "MyRecent";
+            SelectedGroupByItem = "None";
+        }
+        else
+            SelectedGroupByItem = ReadLocalSetting("GroupBy");
+
+
         Search(filter, true);
     }
 
