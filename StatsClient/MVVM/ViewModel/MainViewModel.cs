@@ -452,14 +452,25 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private int searchLimit = 100;
-    public int SearchLimit
+    private string searchLimit = "100";
+    public string SearchLimit
     {
         get => searchLimit;
         set
         {
             searchLimit = value;
             RaisePropertyChanged(nameof(SearchLimit));
+        }
+    }
+    
+    private List<string> searchLimits = ["100","150","200","300","400","500","800","1000","1500","2000","3000"];
+    public List<string> SearchLimits
+    {
+        get => searchLimits;
+        set
+        {
+            searchLimits = value;
+            RaisePropertyChanged(nameof(SearchLimits));
         }
     }
 
@@ -2114,6 +2125,7 @@ public class MainViewModel : ObservableObject
     //public RelayCommand GetInfoOn3ShapeOrderCommand { get; set; }
     
     public RelayCommand GroupBySelectionChangedCommand { get; set; }
+    public RelayCommand SearchLimitSelectionChangedCommand { get; set; }
     public RelayCommand SearchFieldClickedCommand { get; set; }
     public RelayCommand SearchFieldKeyDownCommand { get; set; }
     public RelayCommand HideNotificationCommand { get; set; }
@@ -2228,6 +2240,7 @@ public class MainViewModel : ObservableObject
         ItemClickedCommand = new RelayCommand(o => ItemClicked(o));
         ItemRightClickedCommand = new RelayCommand(o => ItemRightClicked(o));
         GroupBySelectionChangedCommand = new RelayCommand(o => GroupList());
+        SearchLimitSelectionChangedCommand = new RelayCommand(o => SearchLimitSelectionChanged());
         SearchFieldClickedCommand = new RelayCommand(o => _MainWindow.tbSearch.Focus());
         SearchFieldKeyDownCommand = new RelayCommand(o => SearchFieldKeyDown());
         HideNotificationCommand = new RelayCommand(o => HideNotification());
@@ -2386,6 +2399,11 @@ public class MainViewModel : ObservableObject
         #endregion accountinfo bordercolors by category
 
         BuildCustomerSuggestionsList();
+    }
+
+    private void SearchLimitSelectionChanged()
+    {
+        WriteLocalSetting("SearchLimit", SearchLimit);
     }
 
 
@@ -5261,7 +5279,7 @@ public class MainViewModel : ObservableObject
             {
                 case "MyRecent":
                     sFilter = $"WHERE(UserID = '{Environment.MachineName}') ";
-                    TempSearchLimitIgnore = true;
+                    TempSearchLimitIgnore = false;
                     break;
                 
                 case "Today":
@@ -5461,7 +5479,7 @@ public class MainViewModel : ObservableObject
         string queryString = "SELECT ";
 
         if (!TempSearchLimitIgnore && (Filter != "NeverSentAbutments"))
-            queryString += " TOP (" + SearchLimit.ToString() + @") ";
+            queryString += " TOP (" + SearchLimit + @") ";
 
         if (EaseUpSearch)
         {
@@ -5612,8 +5630,10 @@ public class MainViewModel : ObservableObject
                                     ")  src;";
         int countedResults = DatabaseOperations.Counting_result(countingQueryString);
 
-        if (!TempSearchLimitIgnore && countedResults > SearchLimit)
-            countedResults = SearchLimit;
+        _ = int.TryParse(SearchLimit, out int srchLimit);
+
+        if (!TempSearchLimitIgnore && countedResults > srchLimit && srchLimit > 0)
+            countedResults = srchLimit;
 
         Application.Current.Dispatcher.Invoke(new Action(() => {
             if (countedResults < 1)
@@ -6734,7 +6754,11 @@ public class MainViewModel : ObservableObject
 
             TriosInboxFolder = ThreeShapeDirectoryHelper + @"3ShapeCommunicate\Inbox";
 
-            
+
+            string srchLimit = ReadLocalSetting("SearchLimit");
+            if (!string.IsNullOrEmpty(srchLimit))
+                SearchLimit = srchLimit;
+
             if (Directory.Exists(TriosInboxFolder))
             {
                 fswTriosFolderWatcher.Path = TriosInboxFolder;

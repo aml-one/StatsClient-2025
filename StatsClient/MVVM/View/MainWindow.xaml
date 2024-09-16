@@ -2573,16 +2573,19 @@
                                                    Grid.Column="1"
                                                    Foreground="LightGreen"
                                                    Margin="5,0,0,0" />
+                                        
+                                        <TextBlock Text="3Shape Search limit set:"
+                                                   FontSize="12"
+                                                   Grid.Row="4"
+                                                   Margin="2,10,0,0" />
+                                        <TextBlock Text="{Binding SearchLimit}"
+                                                   d:Text="200"
+                                                   FontSize="12"
+                                                   Grid.Row="4"
+                                                   Grid.Column="1"
+                                                   Foreground="White"
+                                                   Margin="5,10,0,0" />
 
-                                        <ProgressBar Maximum="{Binding TotalMemory}"
-                                                     Value="{Binding CurrentMemoryUsage}"
-                                                     d:Value="35"
-                                                     Grid.Row="4"
-                                                     Grid.Column="1"
-                                                     Height="3"
-                                                     Background="#888"
-                                                     BorderThickness="0"
-                                                     Margin="5,5,0,0" />
 
 
                                         <Button Content="Go to settings"
@@ -2659,6 +2662,24 @@
                                                           Style="{StaticResource CircleCheckBox}"
                                                           Command="{Binding CbSettingPanColorCheckWndwIsSnappedCommand}"
                                                           Margin="0,6,5,0" />
+
+                                                <StackPanel Orientation="Horizontal"
+                                                            Margin="6,10,0,0">
+                                                    <TextBlock Text="Search limit in 3Shape" 
+                                                               VerticalAlignment="Center"
+                                                               />
+                                                    <ComboBox Width="72"
+                                                              Margin="4,0"
+                                                              HorizontalContentAlignment="Center"
+                                                              ItemsSource="{Binding SearchLimits}"
+                                                              SelectedItem="{Binding SearchLimit}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding SearchLimitSelectionChangedCommand}" />
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </ComboBox>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Grid>
                                     </TabItem>
