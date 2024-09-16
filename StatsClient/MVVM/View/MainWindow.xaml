@@ -116,7 +116,7 @@
                 <Setter Property="Foreground"
                         Value="Black" />
                 <Setter Property="Background"
-                        Value="#AAA" />
+                        Value="#E8E8E8" />
                 <Setter Property="FontWeight"
                         Value="Normal" />
                 <Style.Triggers>
@@ -531,7 +531,7 @@
 
                                 <TextBlock Text="Selected order: "
                                            VerticalAlignment="Top"
-                                           Margin="318,0,0,0"
+                                           Margin="340,0,0,0"
                                            FontSize="10"
                                            Visibility="{Binding Text, ElementName=selectedOrderId, Converter={StaticResource EmptyToHiddenConverter}}" />
                                 <TextBlock Text="{Binding ThreeShapeObject.IntOrderID}"
@@ -608,6 +608,29 @@
                                 </ComboBox>
 
 
+                                <Button  x:Name="btnMyRecent"
+                                         Width="86"
+                                         Height="22"
+                                         Background="#77779F"
+                                         Cursor="Hand"
+                                         Margin="0,0,4,0"
+                                         Command="{Binding FilterMenuItemCommand}"
+                                         CommandParameter="MyRecent">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image  Source="/Images/FilterIcons/001_OrdersByDate22x22.png" />
+                                        <TextBlock Text="My Recent"
+                                                   VerticalAlignment="Center"
+                                                   Margin="5,0" />
+                                    </StackPanel>
+
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius"
+                                                    Value="1" />
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
                                 <Button  x:Name="btnToday"
                                          Width="80"
                                          Height="22"

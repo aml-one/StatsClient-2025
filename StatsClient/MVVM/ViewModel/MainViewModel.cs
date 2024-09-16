@@ -5259,6 +5259,11 @@ public class MainViewModel : ObservableObject
 
             switch (Filter)
             {
+                case "MyRecent":
+                    sFilter = $"WHERE(UserID = '{Environment.MachineName}') ";
+                    TempSearchLimitIgnore = true;
+                    break;
+                
                 case "Today":
                     sFilter = "WHERE(i.MaxCreateDate > '" + DtToday + RestDayStart + "' AND i.MaxCreateDate < '" + DtToday + RestDayEnd + "') " +
                               sOpenedForDesignFilter;
