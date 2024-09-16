@@ -4871,7 +4871,13 @@ public class MainViewModel : ObservableObject
                 if (DataView is not null)
                 {
                     DataView.SortDescriptions.Clear();
-                    SortDescription sd = new("IntOrderID", ListSortDirection.Ascending);
+                    SortDescription sd;
+
+                    if (FilterString == "MyRecent")
+                        sd = new("LastModificationForSorting", ListSortDirection.Descending);
+                    else
+                        sd = new("IntOrderID", ListSortDirection.Ascending);
+
                     DataView.SortDescriptions.Add(sd);
                     DataView.Refresh();
                 }
@@ -4899,7 +4905,7 @@ public class MainViewModel : ObservableObject
                 SortDescription sd;
                 sd = new SortDescription(property, ListSortDirection.Ascending);
                 DataView.SortDescriptions.Add(sd);
-
+                
                 sd = new SortDescription("LastModificationForSorting", ListSortDirection.Descending);
                 DataView.SortDescriptions.Add(sd);
 
