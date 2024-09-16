@@ -4976,7 +4976,8 @@ public class MainViewModel : ObservableObject
         string panNumber;
 
         //sOrderBy = "i.MaxCreateDate DESC, oh.ModificationDate DESC, i.MaxProcessStatusID DESC ";
-        sOrderBy = "IntOrderID ASC, oh.ModificationDate DESC ";
+        //sOrderBy = "IntOrderID ASC, oh.ModificationDate DESC ";
+        sOrderBy = "oh.ModificationDate DESC, MaxCreateDate DESC, IntOrderID ASC ";
 
 
         #region >> searching for string / keyword
@@ -6040,7 +6041,10 @@ public class MainViewModel : ObservableObject
                     }
 
 
-                    if (MaxProcessStatusID != "psModelled" && IsCaseWereDesigned)
+                    if (MaxProcessStatusID != "psModelled" 
+                     && MaxProcessStatusID != "psClosed"
+                     && MaxProcessStatusID != "psSent"
+                     && IsCaseWereDesigned)
                         previouslyDesigned = true;
 
                     #endregion
