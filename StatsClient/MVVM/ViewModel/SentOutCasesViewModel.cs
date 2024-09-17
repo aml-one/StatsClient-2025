@@ -285,7 +285,7 @@ public partial class SentOutCasesViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            MainViewModel.Instance.AddDebugLine(ex);
         }
     }
 }

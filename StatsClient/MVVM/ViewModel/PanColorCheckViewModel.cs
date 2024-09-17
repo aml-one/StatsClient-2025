@@ -298,7 +298,7 @@ public class PanColorCheckViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            MainViewModel.Instance.AddDebugLine(ex);
         }
 
         LocalSettingsDB.WriteLocalSetting("ColorCheckWindowPosTop", "");

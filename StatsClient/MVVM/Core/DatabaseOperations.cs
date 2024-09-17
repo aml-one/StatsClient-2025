@@ -12,7 +12,6 @@ using System.Windows;
 using System.Xml;
 using static StatsClient.MVVM.Core.DatabaseConnection;
 using static StatsClient.MVVM.Core.Functions;
-using static StatsClient.MVVM.ViewModel.MainViewModel;
 
 namespace StatsClient.MVVM.Core;
 
@@ -167,7 +166,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex, null, "DBO");
+            MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
         }
     }
 
@@ -183,7 +182,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex, null, "DBO");
+            MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
             return 0;
         }
     }
@@ -197,7 +196,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex, null, "DBO");
+            MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
             return 0;
         }
     }
@@ -211,7 +210,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex, null, "DBO");
+            MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
             return 0;
         }
     }
@@ -237,7 +236,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex, null, "DBO");
+            MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
         }
         return "";
     }
@@ -265,7 +264,7 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex, null, "DBO");
+            MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
         }
 
         return list;

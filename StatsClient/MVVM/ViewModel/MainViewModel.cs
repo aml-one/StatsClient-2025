@@ -341,14 +341,15 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private static List<DebugMessagesModel> debugMessages = [];
-    public static List<DebugMessagesModel> DebugMessages
+    private ObservableCollection<DebugMessagesModel> debugMessages = [];
+    public ObservableCollection<DebugMessagesModel> DebugMessages
     {
         get => debugMessages;
         set
         {
             debugMessages = value;
-            RaisePropertyChangedStatic(nameof(DebugMessages));
+            RaisePropertyChanged(nameof(DebugMessages));
+            //CountDebugMessages();
         }
     }
         
@@ -2754,7 +2755,7 @@ public class MainViewModel : ObservableObject
         WriteStatsSetting("fs_RescanNow", "true");
     }
 
-    private static void FsOpenFolder(object obj)
+    private void FsOpenFolder(object obj)
     {
         try
         {
@@ -3262,7 +3263,8 @@ public class MainViewModel : ObservableObject
         }
         catch (IOException io)
         {
-            AddDebugLine(io);
+            if (!io.Message.Contains("The process cannot access the file", StringComparison.CurrentCultureIgnoreCase))
+                AddDebugLine(io);
             //the file is unavailable because it is:
             //still being written to
             //or being processed by another thread
@@ -6289,7 +6291,7 @@ public class MainViewModel : ObservableObject
         DtLastSevenDays = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
     }
 
-    public static bool CheckFolderIsWritable(string folder)
+    public bool CheckFolderIsWritable(string folder)
     {
         string lastCharacter = folder[^1..];
 
@@ -6957,7 +6959,7 @@ public class MainViewModel : ObservableObject
 
 
 
-    public static void AddDebugLine(Exception? ex = null, string? message = null, string location = "MVM")
+    public void AddDebugLine(Exception? ex = null, string? message = null, string location = "MVM")
     {
         string time = DateTime.Now.ToString("HH:mm:ss");
         string lineNumber = "";
@@ -6978,20 +6980,27 @@ public class MainViewModel : ObservableObject
             DMessage = message,
         });
 
-        CountDebugMessages();
+        
     }
 
-    private static void CountDebugMessages()
-    {
-        if (DebugMessages.Count > 0)
-        {
-            Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                MainWindow.Instance.debugMessageCount.Text = DebugMessages.Count.ToString();
-                MainWindow.Instance.debugMessagesCounter.Visibility = Visibility.Visible;
-            }));
-        }
-    }
+    //private void CountDebugMessages()
+    //{
+    //    try
+    //    {
+    //        if (DebugMessages.Count > 0)
+    //        {
+    //            Application.Current.Dispatcher.Invoke(new Action(() =>
+    //            {
+    //                MainWindow.Instance.debugMessageCount.Text = DebugMessages.Count.ToString();
+    //                MainWindow.Instance.debugMessagesCounter.Visibility = Visibility.Visible;
+    //            }));
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        AddDebugLine(ex);
+    //    }
+    //}
 
     internal static void StartInitialTasks()
     {

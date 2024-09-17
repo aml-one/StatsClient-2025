@@ -3634,12 +3634,13 @@
                                    Margin="5,0,15,0" />
                     </StackPanel>
 
-                    <StackPanel Visibility="Collapsed"
+                    <StackPanel Visibility="{Binding DebugMessages.Count, Converter={StaticResource ZeroToCollapsedConverter}}"
                                 d:Visibility="Visible"
                                 x:Name="debugMessagesCounter"
                                 VerticalAlignment="Bottom"
                                 HorizontalAlignment="Left">
-                        <TextBlock Text="87"
+                        <TextBlock Text="{Binding DebugMessages.Count}"
+                                   d:Text="87"
                                    x:Name="debugMessageCount"
                                    Foreground="#fd7aC2"
                                    HorizontalAlignment="Center"

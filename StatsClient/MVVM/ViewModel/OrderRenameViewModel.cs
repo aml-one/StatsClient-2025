@@ -407,7 +407,7 @@ public class OrderRenameViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                AddDebugLine(ex);
+                MainViewModel.Instance.AddDebugLine(ex);
                 LogMessage = $"Couldn't rename the order's folder! (some app might still use it or 3Shape has a folder named as the order's new desired name)";
                 ControlsEnabled = true;
                 OrderIDIsValid = true;
@@ -429,7 +429,7 @@ public class OrderRenameViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                AddDebugLine(ex);
+                MainViewModel.Instance.AddDebugLine(ex);
             }
             //
             // END
@@ -701,7 +701,7 @@ public class OrderRenameViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    AddDebugLine(ex);
+                    MainViewModel.Instance.AddDebugLine(ex);
                     LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
                     LogMessages.Add(LogMessage);
                     error = true;
@@ -718,7 +718,7 @@ public class OrderRenameViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                AddDebugLine(ex);
+                MainViewModel.Instance.AddDebugLine(ex);
                 error = true;
                 LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
                 LogMessages.Add(LogMessage);
@@ -732,7 +732,7 @@ public class OrderRenameViewModel : ObservableObject
         }
         catch (Exception e)
         {
-            AddDebugLine(e);
+            MainViewModel.Instance.AddDebugLine(e);
             error = true;
             LogMessage = $"Error ({e.LineNumber()}): [{e.Message}]";
             LogMessages.Add(LogMessage);
@@ -760,7 +760,7 @@ public class OrderRenameViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    AddDebugLine(ex);
+                    MainViewModel.Instance.AddDebugLine(ex);
                 }
             }
 
@@ -784,7 +784,7 @@ public class OrderRenameViewModel : ObservableObject
                 }
                 catch (Exception ex)
                 {
-                    AddDebugLine(ex);
+                    MainViewModel.Instance.AddDebugLine(ex);
                 }
             }
         }
@@ -820,21 +820,21 @@ public class OrderRenameViewModel : ObservableObject
         }
         catch (SqlException ex)
         {
-            AddDebugLine(ex);
+            MainViewModel.Instance.AddDebugLine(ex);
             LogMessage = $"Error Exception ({ex.LineNumber()}): [{ex.Message}]";
             LogMessages.Add(LogMessage);
             await Task.Delay(300);
         }
         catch (InvalidOperationException ex)
         {
-            AddDebugLine(ex);
+            MainViewModel.Instance.AddDebugLine(ex);
             LogMessage = $"Error ({ex.LineNumber()}): [{ex.Message}]";
             LogMessages.Add(LogMessage);
             await Task.Delay(300);
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            MainViewModel.Instance.AddDebugLine(ex);
             LogMessage = $"Error General ({ex.LineNumber()}): [{ex.Message}]";
             LogMessages.Add(LogMessage);
             await Task.Delay(300);

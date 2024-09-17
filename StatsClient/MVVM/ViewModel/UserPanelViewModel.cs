@@ -675,7 +675,7 @@ public partial class UserPanelViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                AddDebugLine(ex);
+                MainViewModel.Instance.AddDebugLine(ex);
                 ShowErrorMessage(ex);
             }
         }

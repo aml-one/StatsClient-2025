@@ -140,7 +140,7 @@ public class SplashViewModel : ObservableObject
         catch (Exception ex)
         {
             Debug.WriteLine($"[{ex.LineNumber()}] {ex.Message}");
-            AddDebugLine(ex);
+            MainViewModel.Instance.AddDebugLine(ex);
             if (ex.Message.Contains("Login failed for user"))
             {
                 ShowMessageBox("Error", $"{ex.Message}\n\nApplication will shutdown!", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, SplashWindow.Instance);
@@ -165,7 +165,7 @@ public class SplashViewModel : ObservableObject
                 }
                 catch (Exception exx)
                 {
-                    AddDebugLine(exx);
+                    MainViewModel.Instance.AddDebugLine(exx);
                     Debug.WriteLine($"[{exx.LineNumber()}] {exx.Message}");
                     isEverythingOkay = false;
                     LoadingText = "Couldn't connect to server..";
