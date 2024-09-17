@@ -980,15 +980,45 @@
                             </DockPanel>
                         </Grid>
 
-                        <Image Source="/Images/stats_2025_Q512.png"
-                               Grid.Row="1"
-                               Height="180"
-                               Width="180"
-                               Opacity="1"
-                               Panel.ZIndex="1"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Bottom"
-                               Margin="0,0,20,10" />
+                        
+
+                        <StackPanel Orientation="Vertical"
+                                    Grid.Row="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Margin="0,0,20,10"
+                                    Panel.ZIndex="1">
+                            <Image Source="/Images/stats_2025_Q512.png"
+                                   Grid.Row="1"
+                                   Height="110"
+                                   Width="110"
+                                   Panel.ZIndex="1"
+                                   Margin="-127,0,0,0"
+                                   Opacity="1"/>
+                            <core:OutlinedTextBlock Stroke="#000"
+                                                    StrokePosition="Outside"
+                                                    FontSize="70"
+                                                    FontWeight="SemiBold"
+                                                    Fill="OrangeRed"
+                                                    StrokeThickness="1"
+                                                    Margin="0,-42,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Text="Stats Systems"
+                                                    Opacity="0.80"
+                                                    Panel.ZIndex="2" />
+                            
+                            <core:OutlinedTextBlock Stroke="#000"
+                                                    StrokePosition="Outside"
+                                                    FontSize="14"
+                                                    FontWeight="SemiBold"
+                                                    Fill="Black"
+                                                    StrokeThickness="1"
+                                                    Margin="156,-17,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Text="by AmL"
+                                                    Opacity="0.80"
+                                                    Panel.ZIndex="2" />
+                        </StackPanel>
 
                         <TextBlock Name="empty"
                                    Grid.Row="1"
@@ -1355,157 +1385,7 @@
                                             Command="{Binding SelectTargetFolderCommand}" />
                                 </DockPanel>
 
-                                <!-- Conrtrol panel for Copy-->
-
-                                <Border Grid.Row="1"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Bottom"
-                                        HorizontalAlignment="Left"
-                                        Margin="15,0,0,20"
-                                        BorderThickness="0.85"
-                                        BorderBrush="#DDD"
-                                        Background="#66696F"
-                                        CornerRadius="10"
-                                        Panel.ZIndex="460"
-                                        Visibility="{Binding FsCopyPanelShows, Converter={StaticResource BoolToVisibilityConverter}}"
-                                        d:Visibility="Visible">
-                                    <Border.BitmapEffect>
-                                        <DropShadowBitmapEffect Color="Black"
-                                                                Direction="270"
-                                                                ShadowDepth="3"
-                                                                Opacity="0.55"
-                                                                Softness="2" />
-                                    </Border.BitmapEffect>
-                                    <Grid Grid.Row="1"
-                                          MinWidth="300"
-                                          MaxWidth="700"
-                                          MaxHeight="420"
-                                          Height="80"
-                                          Panel.ZIndex="400"
-                                          Margin="10,5"
-                                          VerticalAlignment="Bottom"
-                                          HorizontalAlignment="Left">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150" />
-                                            <ColumnDefinition Width="25" />
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-
-                                        <TextBlock Text="╳"
-                                                   Grid.Column="3"
-                                                   Cursor="Hand"
-                                                   FontSize="10"
-                                                   HorizontalAlignment="Right"
-                                                   Margin="-20,3,4,0">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="MouseDown">
-                                                    <i:InvokeCommandAction Command="{Binding FsHideNotificationCommand}" />
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </TextBlock>
-
-                                        <StackPanel Orientation="Horizontal"
-                                                    Grid.Column="0"
-                                                    Grid.ColumnSpan="3">
-                                            <TextBlock Text="Selected:"
-                                                       Margin="0,3,0,0" />
-                                            <Image Source="/Images/folder.png"
-                                                   Width="20"
-                                                   Height="20"
-                                                   Margin="0,1,0,0"
-                                                   VerticalAlignment="Top" />
-                                            <TextBlock Text="{Binding FsSelectedFolderObject.FolderName}"
-                                                       d:Text="Example Folder "
-                                                       Foreground="BlanchedAlmond"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       FontWeight="SemiBold"
-                                                       FontSize="16"
-                                                       Cursor="Hand"
-                                                       ToolTip="Click here to open up folder"
-                                                       Margin="2,0,20,0">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="MouseDown">
-                                                        <i:InvokeCommandAction Command="{Binding FsOpenFolderCommand}"
-                                                                               CommandParameter="{Binding FsSelectedFolderObject.Path}" />
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </TextBlock>
-                                        </StackPanel>
-
-                                        <TextBlock Text="Copy over with number:"
-                                                   Grid.Row="0"
-                                                   Grid.Column="0"
-                                                   Visibility="{Binding SelectedPendingDigiNumber, Converter={StaticResource EmptyToHiddenConverter}}"
-                                                   d:Visibility="Visible"
-                                                   VerticalAlignment="Bottom" />
-                                        <Button FontSize="25"
-                                                Grid.Row="1"
-                                                Grid.Column="0"
-                                                Visibility="{Binding SelectedPendingDigiNumber, Converter={StaticResource EmptyToHiddenConverter}}"
-                                                d:Visibility="Visible"
-                                                Command="{Binding FsCopyFolderOverCommand}"
-                                                CommandParameter="{Binding SelectedPendingDigiNumber}"
-                                                Margin="0,4">
-                                            <StackPanel Orientation="Horizontal"
-                                                        Margin="-20,0,0,0">
-                                                <Image Source="\Images\ToolBar\stcopy.png"
-                                                       Width="30"
-                                                       Height="20" />
-                                                <TextBlock Text="{Binding SelectedPendingDigiNumber}"
-                                                           d:Text="125"
-                                                           Margin="0,-3,0,0" />
-                                            </StackPanel>
-                                        </Button>
-
-                                        <TextBlock Text="or"
-                                                   Grid.Row="1"
-                                                   Grid.Column="1"
-                                                   Visibility="{Binding SelectedPendingDigiNumber, Converter={StaticResource EmptyToHiddenConverter}}"
-                                                   d:Visibility="Visible"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Right" />
-
-
-                                        <TextBlock Text="Giva a number:"
-                                                   Grid.Row="0"
-                                                   Grid.Column="2"
-                                                   Margin="12,0,0,0"
-                                                   VerticalAlignment="Bottom" />
-                                        <StackPanel Orientation="Horizontal"
-                                                    HorizontalAlignment="Left"
-                                                    Margin="14,0,0,0"
-                                                    Grid.Row="1"
-                                                    Grid.Column="2">
-                                            <TextBox Width="80"
-                                                     FontSize="25"
-                                                     Text="{Binding FsCustomNumber, Mode=TwoWay}"
-                                                     d:Text="4004"
-                                                     HorizontalContentAlignment="Center"
-                                                     Height="32"
-                                                     Margin="0,0,0,0" />
-
-
-                                            <Button Margin="4,4,0,4"
-                                                    Command="{Binding FsCopyFolderOverCommand}"
-                                                    CommandParameter="{Binding FsCustomNumber}"
-                                                    Width="40">
-                                                <StackPanel Orientation="Horizontal"
-                                                            Margin="0,0,0,0">
-                                                    <Image Source="\Images\ToolBar\stcopy.png"
-                                                           Width="20"
-                                                           Height="20" />
-                                                </StackPanel>
-                                            </Button>
-                                        </StackPanel>
-                                    </Grid>
-
-                                </Border>
-                                <!-- END OF Conrtrol panel for Copy-->
+                               
 
                                 <Border Grid.Row="1"
                                         Grid.Column="0"
@@ -3220,6 +3100,161 @@
                 <!--#endregion SETTINGS TAB -->
             </TabControl>
             <!-- END OF MAIN AREA -->
+
+
+
+            <!--#region Conrtrol panel for Copy-->
+
+            <Border Grid.Row="1"
+                    Grid.Column="1"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Margin="150,0,0,34"
+                    BorderThickness="0.85"
+                    BorderBrush="#DDD"
+                    Background="#66696F"
+                    CornerRadius="10"
+                    Panel.ZIndex="460"
+                    Visibility="{Binding FsCopyPanelShows, Converter={StaticResource BoolToVisibilityConverter}}"
+                    d:Visibility="Hidden">
+                <Border.BitmapEffect>
+                    <DropShadowBitmapEffect Color="Black"
+                                            Direction="270"
+                                            ShadowDepth="3"
+                                            Opacity="0.55"
+                                            Softness="2" />
+                </Border.BitmapEffect>
+                <Grid Grid.Row="1"
+                      MinWidth="300"
+                      MaxWidth="700"
+                      MaxHeight="420"
+                      Height="80"
+                      Panel.ZIndex="400"
+                      Margin="10,5"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="25" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="╳"
+                               Grid.Column="3"
+                               Cursor="Hand"
+                               FontSize="10"
+                               HorizontalAlignment="Right"
+                               Margin="-20,3,4,0">
+             <i:Interaction.Triggers>
+                 <i:EventTrigger EventName="MouseDown">
+                     <i:InvokeCommandAction Command="{Binding FsHideNotificationCommand}" />
+                 </i:EventTrigger>
+             </i:Interaction.Triggers>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3">
+                        <TextBlock Text="Selected:"
+                                   Margin="0,3,0,0" />
+                        <Image Source="/Images/folder.png"
+                               Width="20"
+                               Height="20"
+                               Margin="0,1,0,0"
+                               VerticalAlignment="Top" />
+                        <TextBlock Text="{Binding FsSelectedFolderObject.FolderName}"
+                                   d:Text="Example Folder "
+                                   Foreground="BlanchedAlmond"
+                                   TextTrimming="CharacterEllipsis"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Cursor="Hand"
+                                   ToolTip="Click here to open up folder"
+                                   Margin="2,0,20,0">
+                 <i:Interaction.Triggers>
+                     <i:EventTrigger EventName="MouseDown">
+                         <i:InvokeCommandAction Command="{Binding FsOpenFolderCommand}"
+                                                CommandParameter="{Binding FsSelectedFolderObject.Path}" />
+                     </i:EventTrigger>
+                 </i:Interaction.Triggers>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <TextBlock Text="Copy over with number:"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Visibility="{Binding SelectedPendingDigiNumber, Converter={StaticResource EmptyToHiddenConverter}}"
+                               d:Visibility="Visible"
+                               VerticalAlignment="Bottom" />
+                    <Button FontSize="25"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Visibility="{Binding SelectedPendingDigiNumber, Converter={StaticResource EmptyToHiddenConverter}}"
+                            d:Visibility="Visible"
+                            Command="{Binding FsCopyFolderOverCommand}"
+                            CommandParameter="{Binding SelectedPendingDigiNumber}"
+                            Margin="0,4">
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="-20,0,0,0">
+                            <Image Source="\Images\ToolBar\stcopy.png"
+                                   Width="30"
+                                   Height="20" />
+                            <TextBlock Text="{Binding SelectedPendingDigiNumber}"
+                                       d:Text="125"
+                                       Margin="0,-3,0,0" />
+                        </StackPanel>
+                    </Button>
+
+                    <TextBlock Text="or"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               Visibility="{Binding SelectedPendingDigiNumber, Converter={StaticResource EmptyToHiddenConverter}}"
+                               d:Visibility="Visible"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Right" />
+
+
+                    <TextBlock Text="Giva a number:"
+                               Grid.Row="0"
+                               Grid.Column="2"
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Bottom" />
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                Margin="14,0,0,0"
+                                Grid.Row="1"
+                                Grid.Column="2">
+                        <TextBox Width="80"
+                                 FontSize="25"
+                                 Text="{Binding FsCustomNumber, Mode=TwoWay}"
+                                 d:Text="4004"
+                                 HorizontalContentAlignment="Center"
+                                 Height="32"
+                                 Margin="0,0,0,0" />
+
+
+                        <Button Margin="4,4,0,4"
+                                Command="{Binding FsCopyFolderOverCommand}"
+                                CommandParameter="{Binding FsCustomNumber}"
+                                Width="40">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,0,0,0">
+                                <Image Source="\Images\ToolBar\stcopy.png"
+                                       Width="20"
+                                       Height="20" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+            </Border>
+            <!--#endregion Conrtrol panel for Copy-->
+
 
             <!-- NOTIFICATION MESSAGE -->
             <Border Grid.Row="{Binding NotificationMessageGridPosition}"
