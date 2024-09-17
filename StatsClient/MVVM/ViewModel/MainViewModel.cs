@@ -2404,13 +2404,16 @@ public class MainViewModel : ObservableObject
                                               double DismissAfterSeconds = 300,
                                               Window? Owner = null)
     {
-        SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
-        if (Owner is null)
-            sMessageBox.Owner = MainWindow.Instance;
-        else
-            sMessageBox.Owner = Owner;
-        
-        sMessageBox.ShowDialog();
+        Application.Current.Dispatcher.Invoke(new Action(() =>
+        {
+            SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
+            if (Owner is null)
+                sMessageBox.Owner = MainWindow.Instance;
+            else
+                sMessageBox.Owner = Owner;
+
+            sMessageBox.ShowDialog();
+        }));
 
         return SMessageBoxxResult;
     }
@@ -6961,7 +6964,8 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            if (!ex.Message.Contains("because it is being used by another process", StringComparison.CurrentCultureIgnoreCase))
+                AddDebugLine(ex);
         }
     }
 
