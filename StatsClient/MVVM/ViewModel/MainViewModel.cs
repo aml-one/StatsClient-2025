@@ -6921,7 +6921,7 @@ public class MainViewModel : ObservableObject
         if (string.IsNullOrEmpty(exportFolder))
             return;
 
-        bool success = false;
+        //bool success = false;
         try
         {
             if (Directory.Exists($@"{exportFolder}\{e.Name!.Replace(".zip", "")}"))
@@ -6936,12 +6936,21 @@ public class MainViewModel : ObservableObject
                 }
             }
 
+            // blocking the thread until the file is released / dowloaded for a time of maximum 11 seconds
+            int i = 0;
+            FileInfo file = new(e.FullPath);
+            while (IsFileLocked(file) || i > 10)
+            {
+                await Task.Delay(1000);
+                i++;
+            }
+
             await Task.Run(() => ZipFile.ExtractToDirectory(e.FullPath, $@"{exportFolder}\{e.Name!.Replace(".zip", "")}", true));
 
             LastIteroZipFileId = e.Name!.Replace(".zip", "").Replace("iTero_Export_", "");
-            success = true;
-            if (success)
-                File.Delete(e.FullPath);
+            //success = true;
+            //if (success)
+            File.Delete(e.FullPath);
 
             Application.Current.Dispatcher.Invoke(new Action(async () =>
             {
