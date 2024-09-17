@@ -90,25 +90,15 @@ public class MainViewModel : ObservableObject
     }
 
 
-    private bool appJustStarted = true;
-    public bool AppJustStarted
-    {
-        get => appJustStarted;
-        set
-        {
-            appJustStarted = value;
-            RaisePropertyChanged(nameof(AppJustStarted));
-        }
-    }
     
-    private bool autoUpdateAtStart = false;
-    public bool AutoUpdateAtStart
+    private bool startAutoUpdateCuzAppJustStarted = true;
+    public bool StartAutoUpdateCuzAppJustStarted
     {
-        get => autoUpdateAtStart;
+        get => startAutoUpdateCuzAppJustStarted;
         set
         {
-            autoUpdateAtStart = value;
-            RaisePropertyChanged(nameof(AutoUpdateAtStart));
+            startAutoUpdateCuzAppJustStarted = value;
+            RaisePropertyChanged(nameof(StartAutoUpdateCuzAppJustStarted));
         }
     }
     
@@ -133,19 +123,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LookingForUpdateNow));
         }
     }
-    
-    private bool updateMessagePresented = false;
-    public bool UpdateMessagePresented
-    {
-        get => updateMessagePresented;
-        set
-        {
-            updateMessagePresented = value;
-            RaisePropertyChanged(nameof(UpdateMessagePresented));
-        }
-    }
-
-    
+     
     
 
     private double appVersionDouble = 0;
@@ -373,8 +351,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChangedStatic(nameof(DebugMessages));
         }
     }
-    
-
+        
     private string activeSearchString = "";
     public string ActiveSearchString
     {
@@ -2182,6 +2159,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand SwitchToOrderIssuesTabCommand { get; set; }
     public RelayCommand SwitchToFolderSubscriptionTabCommand { get; set; }
     public RelayCommand SwitchToPendingDigiCasesTabCommand { get; set; }
+    public RelayCommand SwitchToDebugMessagesTabCommand { get; set; }
     public RelayCommand RequestDCASUpdateCommand { get; set; }
 
     #region AccountInfos RelayCommands
@@ -2328,6 +2306,7 @@ public class MainViewModel : ObservableObject
         SwitchToPrescriptionMakerTabCommand = new RelayCommand(o => SwitchToPrescriptionMakerTab());
         SwitchToOrderIssuesTabCommand = new RelayCommand(o => SwitchToOrderIssuesTab());
         SwitchToFolderSubscriptionTabCommand = new RelayCommand(o => SwitchToFolderSubscriptionTab());
+        SwitchToDebugMessagesTabCommand = new RelayCommand(o => SwitchToDebugMessagesTab());
         SwitchToPendingDigiCasesTabCommand = new RelayCommand(o => SwitchToPendingDigiCasesTab());
 
         RequestDCASUpdateCommand = new RelayCommand(o => RequestDCASUpdate());
@@ -2572,7 +2551,7 @@ public class MainViewModel : ObservableObject
         if (LastDCASUpdate.Contains("minute"))
         {
             WriteStatsSetting("dcas_CheckForEmails", "true");
-            ShowNotificationMessage("Success", "Request for DCAS update sent!", NotificationIcon.Success, false, true);
+            ShowNotificationMessage("Success", "Request for DCAS update sent!", NotificationIcon.Success, false, ShowBottomInfoBar);
         }
     }
     
@@ -2600,6 +2579,17 @@ public class MainViewModel : ObservableObject
         {
             _MainWindow.applicationsTabControl.SelectedItem = _MainWindow.folderSubscriptionTab;
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
+        });
+    }
+    
+    private void SwitchToDebugMessagesTab()
+    {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            _MainWindow.mainTabControl.SelectedItem = _MainWindow.infoTab;
+            _MainWindow.infoTabControl.SelectedItem = _MainWindow.settingsTab;
+            _MainWindow.settingsTabControl.SelectedItem = _MainWindow.debugTab;
+
         });
     }
     
@@ -4585,7 +4575,7 @@ public class MainViewModel : ObservableObject
     
     private void NotificationTimer_Tick(object? sender, EventArgs e)
     {
-        DoubleAnimation da = new(0, TimeSpan.FromMilliseconds(500));
+        DoubleAnimation da = new(0.01, TimeSpan.FromMilliseconds(500));
         MainWindow.Instance.notificationMessagePanel.BeginAnimation(FrameworkElement.OpacityProperty, da);
 
         da.Completed += (s, e) =>
@@ -6232,12 +6222,17 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private void StartProgramUpdate()
+    private async void StartProgramUpdate()
     {
 #if DEBUG
         if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
 #endif
-        _MainWindow.Cursor = Cursors.Wait;
+        await Task.Delay(1500);
+
+        Application.Current.Dispatcher.Invoke(new Action(() =>
+        {
+            _MainWindow.Cursor = Cursors.Wait;
+        }));
 
         var Processes = Process.GetProcesses()
                             .Where(pr => pr.ProcessName == "StatsClientUpdater");
@@ -6904,7 +6899,9 @@ public class MainViewModel : ObservableObject
         SplashViewModel.Instance.mainWindow!.Show();
         SplashWindow.Instance.Hide();
         AppIsFullyLoaded = true;
-
+#if DEBUG
+        AddDebugLine(null, "App started");
+#endif
         GeneralTimer_Tick(sender, e);
     }
 
@@ -6941,7 +6938,7 @@ public class MainViewModel : ObservableObject
             if (success)
                 File.Delete(e.FullPath);
 
-            ShowNotificationMessage("iTero Case Downloaded", $"There is a new Itero case placed into Export folder! Id: {LastIteroZipFileId}", NotificationIcon.Success, false, true);
+            ShowNotificationMessage("iTero Case Downloaded", $"There is a new Itero case placed into Export folder! Id: {LastIteroZipFileId}", NotificationIcon.Success, false, ShowBottomInfoBar);
             SystemSounds.Beep.Play();
             await BlinkWindow("green");
         }
@@ -6973,6 +6970,17 @@ public class MainViewModel : ObservableObject
             DTime = time,
             DMessage = message,
         });
+
+        CountDebugMessages();
+    }
+
+    private static void CountDebugMessages()
+    {
+        if (DebugMessages.Count > 0)
+        {
+            MainWindow.Instance.debugMessageCount.Text = DebugMessages.Count.ToString();
+            MainWindow.Instance.debugMessagesCounter.Visibility = Visibility.Visible;
+        }
     }
 
     internal static void StartInitialTasks()
@@ -7013,67 +7021,25 @@ public class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             AddDebugLine(ex);
-            //try
-            //{
-            //    string result = await new HttpClient().GetStringAsync("https://aml.one/CaseChecker/version.txt");
-            //    _ = double.TryParse(result[..result.IndexOf('-')].Trim(), out remoteVersion);
-            //    Application.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        string remVersion = remoteVersion.ToString();
-            //        if (!remVersion.Contains('.'))
-            //            remVersion += ".0";
-            //        versionLabel.ToolTip = $"{(string)Lang["lastAvailableVersion"]}: v{remVersion}";
-            //    }));
-            //}
-            //catch (Exception ex)
-            //{
-            //    Application.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        MainViewModel.Instance.AddToDebug("#10e: " + ex.Message);
-            //    }));
-            //}
         }
 
         if (remoteVersion > AppVersionDouble)
         {
-            UpdateAvailable = true;
-            if (!AppJustStarted)
-            {
-                if (!UpdateMessagePresented)
-                {
 #if DEBUG
-                    return;
+return;
 #endif
-                    UpdateMessagePresented = true;
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        SMessageBoxResult result = ShowMessageBox("Question", $"New version available! Would you like to update the program to the new version?", SMessageBoxButtons.YesLater, NotificationIcon.Question, 120, MainWindow.Instance);
-                        if (result == SMessageBoxResult.Yes)
-                        {
-                            StartProgramUpdate();
-                        }
-                        else
-                        {
-                            UpdateCheckTimer.Stop();
-                            UpdateCheckTimer.Interval = new TimeSpan(0, 0, 60);
-                            UpdateCheckTimer.Start();
-                            AutoUpdateAtStart = true;
-                        }
-                    }));
-                }
-            }
-
-            if (!AutoUpdateAtStart || DoAForceUpdateNow)
+            UpdateAvailable = true;
+            
+            if (StartAutoUpdateCuzAppJustStarted || DoAForceUpdateNow)
             {
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
             }
-
-            AppJustStarted = false;
         }
         else
+        {
             UpdateAvailable = false;
-
-        AutoUpdateAtStart = true;
+            StartAutoUpdateCuzAppJustStarted = false;
+        }
 
         LookingForUpdateNow = false;
     }
@@ -7117,8 +7083,6 @@ public class MainViewModel : ObservableObject
     private async void DownloadUpdater()
     {
         Thread.Sleep(500);
-
-        string appPath = Path.GetDirectoryName(AppContext.BaseDirectory)!;
         try
         {
             if (File.Exists($@"{LocalConfigFolderHelper}StatsClientUpdater.exe"))
@@ -7136,22 +7100,6 @@ public class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             AddDebugLine(ex);
-            //try
-            //{
-            //    if (File.Exists($@"{LocalConfigFolderHelper}StatsClientUpdater.exe"))
-            //        File.Delete($@"{LocalConfigFolderHelper}StatsClientUpdater.exe");
-
-            //    if (!File.Exists($@"{LocalConfigFolderHelper}StatsClientUpdater.exe"))
-            //    {
-            //        using var client = new HttpClient();
-            //        using var s = await client.GetStreamAsync("https://aml.one/CaseChecker---2025/CaseCheckerUpdater.exe");
-            //        using var fs = new FileStream($@"{LocalConfigFolderHelper}StatsClientUpdater.exe", FileMode.OpenOrCreate);
-            //        await s.CopyToAsync(fs);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //}
         }
 
         Thread.Sleep(3000);
@@ -7225,7 +7173,6 @@ public class MainViewModel : ObservableObject
             case "update":
                 {
                     await WriteDownLastCommandId(task.Id!);
-                    UpdateMessagePresented = true;
                     DoAForceUpdateNow = true;
                     LookForUpdate();
                     break;

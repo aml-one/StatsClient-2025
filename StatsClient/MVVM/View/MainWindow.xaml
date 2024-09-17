@@ -309,6 +309,8 @@
                     </Button.Style>
                 </Button>
 
+                
+
 
                 <Grid Height="39"
                       DockPanel.Dock="Bottom">
@@ -374,7 +376,7 @@
                        Grid.Column="1"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Right"
-                       Margin="0,-2,65,0"
+                       Margin="0,-2,45,0"
                        Panel.ZIndex="50"
                        Width="220"
                        LastChildFill="False"
@@ -404,9 +406,9 @@
                 <core:OutlinedTextBlock Stroke="#333"
                                         StrokePosition="Outside"
                                         VerticalAlignment="Center"
-                                        FontSize="16"
+                                        FontSize="14"
                                         FontWeight="SemiBold"
-                                        Fill="Orange"
+                                        Fill="PaleGreen"
                                         Cursor="Hand"
                                         ToolTip="Click here to start updating.."
                                         StrokeThickness="1"
@@ -430,7 +432,7 @@
                        Background="Transparent"
                        Panel.ZIndex="10"
                        Height="27"
-                       Margin="190,0,60,0"
+                       Margin="190,0,44,0"
                        VerticalAlignment="Top"
                        PreviewMouseDown="TitleBar_PreviewMouseDown">
 
@@ -1364,7 +1366,7 @@
                                         BorderBrush="#DDD"
                                         Background="#66696F"
                                         CornerRadius="10"
-                                        Panel.ZIndex="260"
+                                        Panel.ZIndex="460"
                                         Visibility="{Binding FsCopyPanelShows, Converter={StaticResource BoolToVisibilityConverter}}"
                                         d:Visibility="Visible">
                                     <Border.BitmapEffect>
@@ -2474,20 +2476,12 @@
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Info" />
-                            <Grid d:Visibility="Visible"
-                                  Visibility="{Binding DebugMessages.Count, Converter={StaticResource ZeroToCollapsedConverter}}">
-                                <TextBlock d:Text="65"
-                                           Foreground="DeepPink"
-                                           Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
-                                           d:Visibility="Visible"
-                                           Margin="4,0,0,0"
-                                           Text="{Binding DebugMessages.Count}" />
-                            </Grid>
                         </StackPanel>
                     </TabItem.Header>
 
                     <TabControl BorderThickness="0"
                                 d:TabStripPlacement="Top"
+                                x:Name="infoTabControl"
                                 Style="{StaticResource hiddenTabsTabControl}"
                                 Grid.Row="1">
                         <TabControl.Background>
@@ -2613,6 +2607,7 @@
                                             Background="#66696F"
                                             BorderThickness="1,1,1,1"
                                             Margin="15"
+                                            x:Name="settingsTabControl"
                                             Style="{StaticResource applicationsTabControl}"
                                             TabStripPlacement="Left">
 
@@ -2763,14 +2758,21 @@
                                     <TabItem Header="Debug"
                                              Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
                                              d:Visibility="Visible"
+                                             x:Name="debugTab"
                                              Style="{StaticResource applicationsTabItem}">
                                         <Grid>
+                                            <TextBlock Text="Messages"
+                                                       FontSize="26"
+                                                       Margin="10,0,0,0"
+                                                       FontWeight="Thin" />
                                             <ListView ItemsSource="{Binding DebugMessages}"
-                                                      Background="#555"
+                                                      Background="Transparent"
+                                                      Padding="6"
                                                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                                      Margin="-2"
+                                                      Margin="0,38,0,0"
                                                       IsTabStop="True"
                                                       BorderThickness="0"
+                                                      x:Name="debugMessageListView"
                                                       Foreground="Beige">
                                                 <ListView.View>
                                                     <GridView AllowsColumnReorder="False"
@@ -2785,6 +2787,28 @@
                                                                         DisplayMemberBinding="{Binding DMessage}" />
                                                     </GridView>
                                                 </ListView.View>
+
+                                                <ListView.ItemContainerStyle>
+                                                    <Style TargetType="{x:Type ListViewItem}">
+                                                        <Setter Property="Background"
+                                                                Value="Transparent" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                                    <Border BorderBrush="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Background="{TemplateBinding Background}">
+                                                                        <GridViewRowPresenter HorizontalAlignment="Stretch"
+                                                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                                              Width="Auto"
+                                                                                              Margin="0"
+                                                                                              Content="{TemplateBinding Content}" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ListView.ItemContainerStyle>
                                             </ListView>
                                         </Grid>
                                     </TabItem>
@@ -3565,6 +3589,34 @@
                                    Foreground="White"
                                    FontSize="8"
                                    Visibility="{Binding DigiCasesIn3ShapeTodayCount, Converter={StaticResource ZeroToCollapsedConverter}}"
+                                   d:Visibility="Visible"
+                                   Margin="5,0,15,0" />
+                    </StackPanel>
+
+                    <StackPanel Visibility="Collapsed"
+                                d:Visibility="Visible"
+                                x:Name="debugMessagesCounter"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Left">
+                        <TextBlock Text="87"
+                                   x:Name="debugMessageCount"
+                                   Foreground="#fd7aC2"
+                                   HorizontalAlignment="Center"
+                                   Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                   d:Visibility="Visible"
+                                   Margin="5,0,15,-6"
+                                   Cursor="Hand"
+                                   FontSize="26">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction Command="{Binding SwitchToDebugMessagesTabCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
+                        <TextBlock Text="Debug Messages"
+                                   Foreground="White"
+                                   FontSize="8"
+                                   Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
                                    d:Visibility="Visible"
                                    Margin="5,0,15,0" />
                     </StackPanel>

@@ -232,8 +232,8 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         }
     }
     
-    private ThreeShapeOrdersModel selectedOrder;
-    public ThreeShapeOrdersModel SelectedOrder
+    private ThreeShapeOrdersModel? selectedOrder;
+    public ThreeShapeOrdersModel? SelectedOrder
     {
         get => selectedOrder;
         set
@@ -245,16 +245,16 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                 PreviouslySelectedOrder = selectedOrder;
                 RaisePropertyChanged(nameof(SelectedOrder));
                 FocusOnPanNumberBox();
-                SelectedOrder = null;
                 FirstOrderSelected = true;
+                //SelectedOrder = null;
+                Debug.WriteLine("val:" + value);
             }
-
         }
     }
       
 
-    private ThreeShapeOrdersModel previouslySelectedOrder;
-    public ThreeShapeOrdersModel PreviouslySelectedOrder
+    private ThreeShapeOrdersModel? previouslySelectedOrder;
+    public ThreeShapeOrdersModel? PreviouslySelectedOrder
     {
         get => previouslySelectedOrder;
         set
@@ -421,7 +421,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             SelectedDigitalSystem = "None";
             SelectedShade = "";
             OrderNamePreview = string.Empty;
-            SelectedOrder = null;
+            //SelectedOrder = null;
             PreviouslySelectedOrder = null;
             CustomerSuggestionsList = [];   
         });
