@@ -3255,6 +3255,9 @@ public class MainViewModel : ObservableObject
 
         try
         {
+            if (!file.Exists)
+                return false;
+
             stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
         }
         catch (IOException io)
@@ -6939,9 +6942,12 @@ public class MainViewModel : ObservableObject
             if (success)
                 File.Delete(e.FullPath);
 
-            ShowNotificationMessage("iTero Case Downloaded", $"There is a new Itero case placed into Export folder! Id: {LastIteroZipFileId}", NotificationIcon.Success, false, ShowBottomInfoBar);
-            SystemSounds.Beep.Play();
-            await BlinkWindow("green");
+            Application.Current.Dispatcher.Invoke(new Action(async () =>
+            {
+                ShowNotificationMessage("iTero Case Downloaded", $"There is a new Itero case placed into Export folder! Id: {LastIteroZipFileId}", NotificationIcon.Success, false, ShowBottomInfoBar);
+                SystemSounds.Beep.Play();
+                await BlinkWindow("green");
+            }));
         }
         catch (Exception ex)
         {
