@@ -3216,6 +3216,7 @@ public class MainViewModel : ObservableObject
                             SystemSounds.Beep.Play();
                             ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
                             NoMorePanNumberBoxShowed = true;
+                            SwitchToPrescriptionMakerTab();
                         }
                         SironaOrderNumber = "";
                         IsItSironaPrescription = false;
@@ -3292,6 +3293,7 @@ public class MainViewModel : ObservableObject
                             SystemSounds.Beep.Play();
                             ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
                             NoMorePanNumberBoxShowed = true;
+                            SwitchToPrescriptionMakerTab();
                         }
                         else
                             NoMorePanNumberBoxShowed = false;
@@ -7007,14 +7009,14 @@ public class MainViewModel : ObservableObject
                 }
             }
 
-            // blocking the thread until the file is released / dowloaded for a time of maximum 11 seconds
-            int i = 0;
-            FileInfo file = new(e.FullPath);
-            while (IsFileLocked(file) || i > 10)
-            {
-                await Task.Delay(1000);
-                i++;
-            }
+            //// blocking the thread until the file is released / dowloaded for a time of maximum 11 seconds
+            //int i = 0;
+            //FileInfo file = new(e.FullPath);
+            //while (IsFileLocked(file) || i > 10)
+            //{
+            //    await Task.Delay(1000);
+            //    i++;
+            //}
 
             await Task.Run(() => ZipFile.ExtractToDirectory(e.FullPath, $@"{exportFolder}\{e.Name!.Replace(".zip", "")}", true));
 
