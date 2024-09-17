@@ -1577,6 +1577,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private bool noMorePanNumberBoxShowed = false;
+    public bool NoMorePanNumberBoxShowed
+    {
+        get => noMorePanNumberBoxShowed;
+        set
+        {
+            noMorePanNumberBoxShowed = value;
+            RaisePropertyChanged(nameof(NoMorePanNumberBoxShowed));
+        }
+    }
+    
     private string pDFTemp = "";
     public string PDFTemp
     {
@@ -2664,6 +2675,30 @@ public class MainViewModel : ObservableObject
             WindowBackground = "#56695F";
             await Task.Delay(50);
         }
+        
+        if (color == "red")
+        {
+            WindowBackground = "#56595F";
+            await Task.Delay(50);
+            WindowBackground = "#66595F";
+            await Task.Delay(50);
+            WindowBackground = "#76595F";
+            await Task.Delay(50);
+            WindowBackground = "#86595F";
+            await Task.Delay(50);
+            WindowBackground = "#96595F";
+            await Task.Delay(50);
+            WindowBackground = "#A6595F";
+            await Task.Delay(50);
+            WindowBackground = "#86595F";
+            await Task.Delay(50);
+            WindowBackground = "#76595F";
+            await Task.Delay(50);
+            WindowBackground = "#66595F";
+            await Task.Delay(50);
+            WindowBackground = "#56595F";
+            await Task.Delay(50);
+        }
 
         WindowBackground = FinalColor;
     }
@@ -2890,7 +2925,7 @@ public class MainViewModel : ObservableObject
         string number = obj.ToString()!;
         _ = int.TryParse(number, out int num);
 
-        if (GetPanColorByNumber(num) != "")
+        if (GetPanColorByNumber(num) != "0-0-0")
         {
             if (!PmPanNumberList.Contains(number))
             {
@@ -3174,7 +3209,14 @@ public class MainViewModel : ObservableObject
                     }
                     else
                     {
-                        ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
+                        if (!NoMorePanNumberBoxShowed)
+                        {
+                            SystemSounds.Beep.Play();
+                            await BlinkWindow("red");
+                            SystemSounds.Beep.Play();
+                            ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
+                            NoMorePanNumberBoxShowed = true;
+                        }
                         SironaOrderNumber = "";
                         IsItSironaPrescription = false;
                     }
@@ -3204,6 +3246,14 @@ public class MainViewModel : ObservableObject
                 {
                     if (PmPanNumberList.Count > 0)
                     {
+                        int i = 0;
+                        FileInfo file = new(e.FullPath);
+                        while (IsFileLocked(file) || i > 10)
+                        {
+                            await Task.Delay(1000);
+                            i++;
+                        }
+
                         Application.Current.Dispatcher.Invoke(new Action(() => {
                             ProcessingDigiPrescriptionNow = Visibility.Visible;
                             PmSavedPrescription = null;
@@ -3235,7 +3285,17 @@ public class MainViewModel : ObservableObject
                     }
                     else
                     {
-                        ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
+                        if (!NoMorePanNumberBoxShowed)
+                        {
+                            SystemSounds.Beep.Play();
+                            await BlinkWindow("red");
+                            SystemSounds.Beep.Play();
+                            ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
+                            NoMorePanNumberBoxShowed = true;
+                        }
+                        else
+                            NoMorePanNumberBoxShowed = false;
+
                         SironaOrderNumber = "";
                         IsItSironaPrescription = false;
                     }
@@ -3532,7 +3592,7 @@ public class MainViewModel : ObservableObject
         IsItSironaPrescription = false;
     }
 
-    private void EditPDF(string FilePath, string NextPanNumber = "", bool MarkAsRush = false, bool MarkAsSentTo = false, string SentTo = "")
+    private async void EditPDF(string FilePath, string NextPanNumber = "", bool MarkAsRush = false, bool MarkAsSentTo = false, string SentTo = "")
     {
         string SavedPDF = "";
         string SavedPDFCopy;
@@ -3569,7 +3629,15 @@ public class MainViewModel : ObservableObject
                 //Save the document.
                 SavedPDF = PDFTemp + "\\" + NextPanNumber + ".pdf";
                 SavedPDFCopy = PDFTemp + "\\" + NextPanNumber + "-copy.pdf";
-            
+
+                int i = 0;
+                FileInfo file = new(SavedPDF);
+                while (IsFileLocked(file) || i > 10)
+                {
+                    await Task.Delay(1000);
+                    i++;
+                }
+
                 doc.Save(SavedPDF);
                 doc.Save(SavedPDFCopy);
             
