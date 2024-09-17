@@ -3523,7 +3523,13 @@
                                    Foreground="Yellow"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,-6"
-                                   FontSize="26" />
+                                   FontSize="26">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding SwitchToPrescriptionMakerTabCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                        </TextBlock>
                         <TextBlock Text="Last grabbed number"
                                    Foreground="White"
                                    FontSize="8" />

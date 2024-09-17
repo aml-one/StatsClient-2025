@@ -4573,19 +4573,20 @@ public class MainViewModel : ObservableObject
     }
     
     
-    private void NotificationTimer_Tick(object? sender, EventArgs e)
+    private async void NotificationTimer_Tick(object? sender, EventArgs e)
     {
         DoubleAnimation da = new(0.01, TimeSpan.FromMilliseconds(500));
         MainWindow.Instance.notificationMessagePanel.BeginAnimation(FrameworkElement.OpacityProperty, da);
 
-        da.Completed += (s, e) =>
-        {
-            NotificationMessageTitle = "";
-            NotificationMessageBody = "";
-            NotificationMessageIcon = @"\Images\MessageIcons\Info.png";
-            NotificationMessageVisibility = Visibility.Collapsed;
-            notificationTimer.Stop();
-        };
+
+        await Task.Delay(1000);
+
+        NotificationMessageTitle = "";
+        NotificationMessageBody = "";
+        NotificationMessageIcon = @"\Images\MessageIcons\Info.png";
+        NotificationMessagePosition = new Thickness(-500, 0, 0, -500);
+        NotificationMessageVisibility = Visibility.Collapsed;
+        notificationTimer.Stop();
     }
 
     
@@ -6978,8 +6979,11 @@ public class MainViewModel : ObservableObject
     {
         if (DebugMessages.Count > 0)
         {
-            MainWindow.Instance.debugMessageCount.Text = DebugMessages.Count.ToString();
-            MainWindow.Instance.debugMessagesCounter.Visibility = Visibility.Visible;
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                MainWindow.Instance.debugMessageCount.Text = DebugMessages.Count.ToString();
+                MainWindow.Instance.debugMessagesCounter.Visibility = Visibility.Visible;
+            }));
         }
     }
 
