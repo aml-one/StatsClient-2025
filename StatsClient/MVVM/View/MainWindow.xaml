@@ -3523,6 +3523,7 @@
                                    Foreground="Yellow"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,-6"
+                                   Cursor="Hand"
                                    FontSize="26">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseDown">

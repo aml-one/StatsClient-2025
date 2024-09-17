@@ -6936,7 +6936,7 @@ public class MainViewModel : ObservableObject
                 }
             }
 
-            await Task.Run(() => ZipFile.ExtractToDirectory(e.FullPath, $@"{exportFolder}\{e.Name!.Replace(".zip", "")}"));
+            await Task.Run(() => ZipFile.ExtractToDirectory(e.FullPath, $@"{exportFolder}\{e.Name!.Replace(".zip", "")}", true));
 
             LastIteroZipFileId = e.Name!.Replace(".zip", "").Replace("iTero_Export_", "");
             success = true;
