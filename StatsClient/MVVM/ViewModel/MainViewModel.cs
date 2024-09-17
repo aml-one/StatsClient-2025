@@ -349,7 +349,6 @@ public class MainViewModel : ObservableObject
         {
             debugMessages = value;
             RaisePropertyChanged(nameof(DebugMessages));
-            //CountDebugMessages();
         }
     }
         
@@ -6972,35 +6971,18 @@ public class MainViewModel : ObservableObject
         if (lineNumber == "-1")
             lineNumber = "";
 
-        DebugMessages.Add(new DebugMessagesModel()
+        Application.Current.Dispatcher.Invoke(new Action(async () =>
         {
-            DLocation = location,
-            DLineNumber = lineNumber,
-            DTime = time,
-            DMessage = message,
-        });
-
-        
+            DebugMessages.Add(new DebugMessagesModel()
+            {
+                DLocation = location,
+                DLineNumber = lineNumber,
+                DTime = time,
+                DMessage = message,
+            });
+        }));
     }
 
-    //private void CountDebugMessages()
-    //{
-    //    try
-    //    {
-    //        if (DebugMessages.Count > 0)
-    //        {
-    //            Application.Current.Dispatcher.Invoke(new Action(() =>
-    //            {
-    //                MainWindow.Instance.debugMessageCount.Text = DebugMessages.Count.ToString();
-    //                MainWindow.Instance.debugMessagesCounter.Visibility = Visibility.Visible;
-    //            }));
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        AddDebugLine(ex);
-    //    }
-    //}
 
     internal static void StartInitialTasks()
     {
