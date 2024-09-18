@@ -2294,6 +2294,7 @@
                                  IsTabStop="False"
                                  Visibility="{Binding CbSettingModuleSmartOrderNames, Converter={StaticResource BoolToVisibilityConverter}}"
                                  d:Visibility="Visible"
+                                 x:Name="smartOrderNamesTab"
                                  Style="{StaticResource applicationsTabItem}">
                             <localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}"
                                                            Margin="-1,1,-1,0" />

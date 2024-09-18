@@ -11,6 +11,7 @@ using System.Windows;
 using System.Diagnostics;
 using static StatsClient.MVVM.Core.Enums;
 using static StatsClient.MVVM.ViewModel.MainViewModel;
+using System.Text.RegularExpressions;
 
 
 
@@ -58,7 +59,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         }
     }
 
-    private readonly List<string> digitalSystems = ["None", "ABUTMENT-ONLY", "CARESTREAM", "DEXIS", "DSCORE", "DROPBOX", "EMAIL", "MEDIT", "TRIOS", "iTERO", "IS3D", "SIRONA"  ];
+    private readonly List<string> digitalSystems = ["None", "ABUTMENT-ONLY", "ATLANTIS", "CARESTREAM", "DEXIS", "DSCORE", "DROPBOX", "EMAIL", "MEDIT", "TRIOS", "iTERO", "IS3D", "SIRONA"  ];
     public List<string> DigitalSystems
     {
         get => digitalSystems;
@@ -118,6 +119,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         {
             panNumber = value;
             RaisePropertyChanged(nameof(PanNumber));
+        }
+    }
+    
+    private string carestreamID = "";
+    public string CarestreamID
+    {
+        get => carestreamID;
+        set
+        {
+            carestreamID = value;
+            RaisePropertyChanged(nameof(CarestreamID));
         }
     }
 
@@ -247,6 +259,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
                 FocusOnPanNumberBox();
                 
                 PanNumber = "";
+                CarestreamID = "";
                 IsScrewRetained = false;
                 SelectedDigitalSystem = "None";
                 SelectedShade = "";
@@ -276,6 +289,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         {
             firstOrderSelected = value;
             RaisePropertyChanged(nameof(FirstOrderSelected));
+        }
+    }
+    
+    private bool jumpToSmartOrderNamesTabWhenNewOrder = false;
+    public bool JumpToSmartOrderNamesTabWhenNewOrder
+    {
+        get => jumpToSmartOrderNamesTabWhenNewOrder!;
+        set
+        {
+            jumpToSmartOrderNamesTabWhenNewOrder = value;
+            RaisePropertyChanged(nameof(JumpToSmartOrderNamesTabWhenNewOrder));
         }
     }
     
@@ -364,6 +388,11 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             {
                 FirstOrderSelected = true;
                 SelectedOrder = NewOrdersByMe[0];
+                if (MainViewModel.Instance.CbSettingModuleSmartOrderNames && JumpToSmartOrderNamesTabWhenNewOrder)
+                {
+                    MainViewModel.Instance.SwitchToSmartOrderNamesTab();
+
+                }
             }
         }
     }
@@ -421,11 +450,11 @@ public partial class SmartOrderNamesViewModel : ObservableObject
     {
         Application.Current.Dispatcher.Invoke(() => {
             PanNumber = "";
+            CarestreamID = "";
             IsScrewRetained = false;
             SelectedDigitalSystem = "None";
             SelectedShade = "";
             OrderNamePreview = string.Empty;
-            //SelectedOrder = null;
             PreviouslySelectedOrder = null;
             CustomerSuggestionsList = [];   
         });
@@ -444,7 +473,16 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         string customer = SelectedOrder.Customer!;
         string shade = $"-{SelectedShade}";
         string digiSystem = $"-{SelectedDigitalSystem}";
+        string carestreamDexisId = CarestreamID.Trim();
 
+        if (await ValidateCarestreamID(carestreamDexisId))
+        {
+            carestreamDexisId = "-" + carestreamDexisId;
+        }
+        else
+        {
+            carestreamDexisId = "";
+        }
 
         patientName = patientName.Replace(" ", "_")
                                 .Replace(",", "")
@@ -529,7 +567,7 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             finalName = $"{PanNumber}{customer}{patientName}{ToothNumbersString}{shade}{digiSystem}{screwRetained}";
 
         if (NamingCustomerLast)
-            finalName = $"{PanNumber}{ToothNumbersString}{shade}{patientName}{customer}{digiSystem}{screwRetained}";
+            finalName = $"{PanNumber}{ToothNumbersString}{shade}{carestreamDexisId}{patientName}{customer}{digiSystem}{screwRetained}";
 
         finalName = finalName.Replace(" ", "_")
                              .Replace("'","")
@@ -549,7 +587,15 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             RenameOrder();
     }
 
+    private async Task<bool> ValidateCarestreamID(string carestreamDexisId)
+    {
+        return CSIdRegex().IsMatch(carestreamDexisId);
+    }
+
     
+
+    [GeneratedRegex(@"[A-Za-z][A-Za-z][A-Za-z]-\d\d\d\d", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex CSIdRegex();
 
     private async Task Refresh()
     {
@@ -981,4 +1027,6 @@ public partial class SmartOrderNamesViewModel : ObservableObject
 
         return MainViewModel.Instance.SMessageBoxxResult;
     }
+
+    
 }

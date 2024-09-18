@@ -2580,6 +2580,15 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    public void SwitchToSmartOrderNamesTab()
+    {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            _MainWindow.applicationsTabControl.SelectedItem = _MainWindow.smartOrderNamesTab;
+            _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
+        });
+    }
+    
     private void SwitchToPrescriptionMakerTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -3223,11 +3232,13 @@ public class MainViewModel : ObservableObject
                         if (!NoMorePanNumberBoxShowed)
                         {
                             SystemSounds.Beep.Play();
+                            SwitchToPrescriptionMakerTab();
                             await BlinkWindow("red");
                             SystemSounds.Beep.Play();
                             ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
                             NoMorePanNumberBoxShowed = true;
-                            SwitchToPrescriptionMakerTab();
+                            if (File.Exists(e.FullPath))
+                                File.Delete(e.FullPath);
                         }
                         SironaOrderNumber = "";
                         IsItSironaPrescription = false;
@@ -3300,11 +3311,13 @@ public class MainViewModel : ObservableObject
                         if (!NoMorePanNumberBoxShowed)
                         {
                             SystemSounds.Beep.Play();
+                            SwitchToPrescriptionMakerTab();
                             await BlinkWindow("red");
                             SystemSounds.Beep.Play();
                             ShowMessageBox("No more pan numbers", $"No more available pan numbers!", SMessageBoxButtons.Ok, NotificationIcon.Warning, 20, MainWindow.Instance);
                             NoMorePanNumberBoxShowed = true;
-                            SwitchToPrescriptionMakerTab();
+                            if (File.Exists(e.FullPath))
+                                File.Delete(e.FullPath);
                         }
                         else
                             NoMorePanNumberBoxShowed = false;
