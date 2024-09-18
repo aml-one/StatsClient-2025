@@ -84,17 +84,10 @@
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0.5"
                                          EndPoint="1,0.5">
-                        <GradientStop Color="#66696F"
+                        <GradientStop Color="#C6C9CF"
                                       Offset="0.0" />
-                        <GradientStop Color="#56595F"
-                                      Offset="0.15" />
-                        <GradientStop Color="#6b634e"
-                                      Offset="0.25" />
-                        <GradientStop Color="#56597F"
-                                      Offset="0.75" />
-                        <GradientStop Color="#66595F"
-                                      Offset="0.95" />
-                        <GradientStop Color="#76595F"
+                        
+                        <GradientStop Color="#B6B9BF"
                                       Offset="1.0" />
                     </LinearGradientBrush>
                 </Border.Background>
@@ -137,7 +130,7 @@
                                 <TextBlock Text="{Binding SMessageTitle}"
                                            d:Text="Message Title"
                                            FontWeight="SemiBold"
-                                           Foreground="Beige"
+                                           Foreground="Black"
                                            Padding="2,2"
                                            Margin="0,0,0,0"
                                            FontSize="14"
@@ -146,7 +139,7 @@
                                 <TextBlock d:Text="113"
                                            HorizontalAlignment="Right"
                                            VerticalAlignment="Center"
-                                           Foreground="#BBB"
+                                           Foreground="#333"
                                            FontSize="10"
                                            x:Name="countDownTimer"
                                            Margin="6,0" />
@@ -164,20 +157,20 @@
                                        VerticalAlignment="Center"
                                        Padding="26,4,6,4"
                                        TextWrapping="Wrap"
-                                       Foreground="White"
+                                       Foreground="#000"
                                        FontSize="15"
                                        Visibility="Collapsed"
                                        d:Visibility="Visible"
                                        FontFamily="Arial" />
 
-                            <core:OutlinedTextBlock Stroke="#EEE"
+                            <core:OutlinedTextBlock Stroke="#777"
                                                     StrokePosition="Outside"
                                                     FontSize="15"
                                                     FontFamily="Arial"
                                                     VerticalAlignment="Center"
                                                     TextWrapping="Wrap"
                                                     FontWeight="Normal"
-                                                    Fill="LightYellow"
+                                                    Fill="#111"
                                                     StrokeThickness="0.35"
                                                     Margin="26,4,6,4"
                                                     Grid.Column="1"

@@ -403,6 +403,7 @@
                     </i:Interaction.Triggers>
                 </core:OutlinedTextBlock>
 
+                
                 <core:OutlinedTextBlock Stroke="#333"
                                         StrokePosition="Outside"
                                         VerticalAlignment="Center"
@@ -412,7 +413,7 @@
                                         Cursor="Hand"
                                         ToolTip="Click here to start updating.."
                                         StrokeThickness="1"
-                                        Text="Update available!"
+                                        Text="{Binding UpdateAvailableText}"
                                         Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
                                         d:Visibility="Visible"
                                         DockPanel.Dock="Right"

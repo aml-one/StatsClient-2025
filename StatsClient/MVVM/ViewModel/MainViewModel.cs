@@ -137,6 +137,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private string updateAvailableText = "Update available!";
+    public string UpdateAvailableText
+    {
+        get => updateAvailableText;
+        set
+        {
+            updateAvailableText = value;
+            RaisePropertyChanged(nameof(UpdateAvailableText));
+        }
+    }
+    
     private string softwareVersion = "0";
     public string SoftwareVersion
     {
@@ -6305,6 +6316,7 @@ public class MainViewModel : ObservableObject
 #if DEBUG
         if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
 #endif
+        UpdateAvailableText = "Updating now...";
         await Task.Delay(1500);
 
         Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -7114,10 +7126,12 @@ return;
 #endif
             UpdateAvailable = true;
             
-            if (StartAutoUpdateCuzAppJustStarted || DoAForceUpdateNow)
-            {
+            if (StartAutoUpdateCuzAppJustStarted && remoteVersion - AppVersionDouble > 20)
+                    Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
+            
+            
+            if (DoAForceUpdateNow)
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
-            }
         }
         else
         {
