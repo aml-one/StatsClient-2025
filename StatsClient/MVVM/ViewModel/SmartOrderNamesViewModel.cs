@@ -241,13 +241,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             if (value is not null)
             {
                 selectedOrder = value;
-                ResetNameForm();
-                PreviouslySelectedOrder = selectedOrder;
+                
                 RaisePropertyChanged(nameof(SelectedOrder));
+                PreviouslySelectedOrder = value;
                 FocusOnPanNumberBox();
-                FirstOrderSelected = true;
-                //SelectedOrder = null;
-                Debug.WriteLine("val:" + value);
+                
+                PanNumber = "";
+                IsScrewRetained = false;
+                SelectedDigitalSystem = "None";
+                SelectedShade = "";
+                OrderNamePreview = string.Empty;
+                CustomerSuggestionsList = [];
             }
         }
     }
@@ -583,6 +587,12 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         await RenamingProcess();
         ResetNameForm();
         OrderNamePreview = string.Empty;
+        FirstOrderSelected = false;
+
+        if (AutoSelectFirstOrder && NewOrdersByMe.Count > 0)
+        {
+            SelectFirstOrder();
+        }
     }
 
 

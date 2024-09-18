@@ -144,7 +144,7 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="Focusable"
-                            Value="false" />
+                            Value="true" />
                     <Setter Property="Background"
                             Value="Transparent" />
                     <Setter Property="Template">
