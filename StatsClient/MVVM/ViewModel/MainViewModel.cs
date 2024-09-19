@@ -1464,6 +1464,34 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSendToButtonShows));
         }
     }
+    
+    private Visibility pmMissingButtonShows = Visibility.Hidden;
+    public Visibility PmMissingButtonShows
+    {
+        get => pmMissingButtonShows;
+        set
+        {
+            pmMissingButtonShows = value;
+            RaisePropertyChanged(nameof(PmMissingButtonShows));
+        }
+    }
+
+    private List<string> pmMissingList = ["NEED SCAN BODY INFO", "NEED IMPLANT INFO", "NEED SCAN BODY / IMPLANT INFO", "WRONG SCAN", "WRONG SCAN BODY", "NOT ENOUGH INFO", "INCORRECT INFO", "NO SCAN, ONLY PRESCRIPTION CAME", "NO PREP, NO INFO"];
+    public List<string> PmMissingList
+    {
+        get => pmMissingList;
+    }
+
+    private string pmSelectedMissing = "";
+    public string PmSelectedMissing
+    {
+        get => pmSelectedMissing;
+        set
+        {
+            pmSelectedMissing = value;
+            RaisePropertyChanged(nameof(PmSelectedMissing));
+        }
+    }
 
     private List<string> pmSendToList = [];
     public List<string> PmSendToList
@@ -1475,7 +1503,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSendToList));
         }
     }
-    
+        
     private string pmNewSentToName = "";
     public string PmNewSentToName
     {
@@ -2153,6 +2181,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand PmAddToSentToListCommand { get; set; }
     public RelayCommand PmRemoveFromSentToListCommand { get; set; }
     public RelayCommand PmAddSendToLabelCommand { get; set; }
+    public RelayCommand PmAddMissingLabelCommand { get; set; }
     public RelayCommand TakeAPanNumberCommand { get; set; }
     public RelayCommand PmCancelTakingANumberCommand { get; set; }
     public RelayCommand GrabAPanNumberCommand { get; set; }
@@ -2268,6 +2297,7 @@ public class MainViewModel : ObservableObject
         PmAddToSentToListCommand = new RelayCommand(o => PmAddToSentToList());
         PmRemoveFromSentToListCommand = new RelayCommand(o => PmRemoveFromSentToList());
         PmAddSendToLabelCommand = new RelayCommand(o => PmMarkCaseWithLabelSendTo());
+        PmAddMissingLabelCommand = new RelayCommand(o => PmMarkCaseWithLabelMissing());
         TakeAPanNumberCommand = new RelayCommand(o => TakeAPanNumber());
         ClickOnPanNumberCommand = new RelayCommand(o => ClickOnPanNumber(o));
 
@@ -3286,6 +3316,7 @@ public class MainViewModel : ObservableObject
 
                             PmRushButtonShows = Visibility.Visible;
                             PmSendToButtonShows = Visibility.Visible;
+                            PmMissingButtonShows = Visibility.Visible;
 
                             //Load the PDF document as a stream
                             using FileStream inputStream = DocumentStreamPixelCheck;
@@ -3596,6 +3627,18 @@ public class MainViewModel : ObservableObject
                         {
                             if (OpenUpFolder)
                                 Process.Start("explorer.exe", "\"" + $@"{sironaFolder}{finalFolderName}\" + "\"");
+
+                            if (Directory.Exists($@"{sironaFolder}{finalFolderName}\"))
+                            {
+                                Clipboard.SetText($@"{sironaFolder}{finalFolderName}\");
+
+                                var item = new System.Windows.Forms.NotifyIcon()
+                                {
+                                    Visible = true,
+                                    Icon = System.Drawing.SystemIcons.Information
+                                };
+                                item.ShowBalloonTip(40000, "", $"Scan path was copied to clipboard!", System.Windows.Forms.ToolTipIcon.Info);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -3618,7 +3661,7 @@ public class MainViewModel : ObservableObject
         IsItSironaPrescription = false;
     }
 
-    private async void EditPDF(string FilePath, string NextPanNumber = "", bool MarkAsRush = false, bool MarkAsSentTo = false, string SentTo = "")
+    private async void EditPDF(string FilePath, string NextPanNumber = "", bool MarkAsRush = false, bool MarkAsSentTo = false, string SentTo = "", bool MarkAsMissing = false, string MissingText = "")
     {
         string SavedPDF = "";
         string SavedPDFCopy;
@@ -3626,7 +3669,7 @@ public class MainViewModel : ObservableObject
         try
         {
             // INJECTING PAN NUMBER TO PDF
-            if (!MarkAsRush && !MarkAsSentTo && !string.IsNullOrEmpty(NextPanNumber))
+            if (!MarkAsRush && !MarkAsSentTo && !MarkAsMissing && !string.IsNullOrEmpty(NextPanNumber))
             {
                 //Load a PDF document.
                 PdfLoadedDocument doc = new (FilePath);
@@ -3760,6 +3803,57 @@ public class MainViewModel : ObservableObject
 
                 doc.Close(true);
 
+                PmSelectedSentTo = "";
+
+                SavePrescriptionFromPdfToImage(SavedPDFCopy, true);
+            }
+            // INJECTING MISSING LABEL TO PDF
+            else if (MarkAsMissing && !string.IsNullOrEmpty(MissingText))
+            {
+                string lastPanNr = ReadLocalSetting("LastPanNumber");
+                string LastFile = ReadLocalSetting("LastFile");
+
+
+                //Load a PDF document.
+                PdfLoadedDocument doc = new(LastFile);
+                Thread.Sleep(600);
+                //Get first page from document.
+                PdfLoadedPage page = (doc.Pages[0] as PdfLoadedPage)!;
+                //Create PDF graphics for the page
+                PdfGraphics graphics = page.Graphics;
+
+                //Set the standard font.
+                float fontSize = 30;
+
+                if (MissingText.Length > 20)
+                    fontSize = 20;
+
+                PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, fontSize, PdfFontStyle.Bold);
+                //Draw the text.
+                if (PageHeaderIsHigh == "1") // iTero high header
+                    graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(220, 225));
+                else if (PageHeaderIsHigh == "0") // iTero low header
+                    graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(220, 205));
+                else if (PageHeaderIsHigh == "3") // blue header Intelliscan / IS3D / Shining 3D type of prescr
+                    graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(120, 383));
+                else if (PageHeaderIsHigh == "4") // Sirona type of prescr
+                    graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(180, 312));
+                else if (PageHeaderIsHigh == "5") // Medit type of prescr
+                    graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(190, 235));
+                else if (PageHeaderIsHigh == "6") // DSCore type of prescr
+                    graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(190, 205));
+
+
+                //Save the document.
+                SavedPDF = PDFTemp + "\\" + lastPanNr + ".pdf";
+                SavedPDFCopy = PDFTemp + "\\" + lastPanNr + "-copy.pdf";
+
+                doc.Save(SavedPDF);
+                doc.Save(SavedPDFCopy);
+
+                doc.Close(true);
+
+                PmSelectedMissing = "";
                 SavePrescriptionFromPdfToImage(SavedPDFCopy, true);
             }
 
@@ -3820,7 +3914,28 @@ public class MainViewModel : ObservableObject
         if (res == SMessageBoxResult.Yes)
         {
             PmSendToButtonShows = Visibility.Hidden;
+            PmMissingButtonShows = Visibility.Hidden;
             await Task.Run(() => EditPDF("", "", false, true, PmSelectedSentTo));
+        }
+        else
+            return;
+    }
+    
+    private async void PmMarkCaseWithLabelMissing()
+    {
+        if (PmSelectedMissing is null || PmSelectedMissing == "")
+        {
+            ShowMessageBox("Error", $"Please choose one option from the dropdow first", SMessageBoxButtons.Ok, NotificationIcon.Warning, 15, MainWindow.Instance);
+            return;
+        }
+
+        SMessageBoxResult res = ShowMessageBox("Adding label", $"Sure you want to add label '{PmSelectedMissing}' to prescription?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
+
+        if (res == SMessageBoxResult.Yes)
+        {
+            PmMissingButtonShows = Visibility.Hidden;
+            PmSendToButtonShows = Visibility.Hidden;
+            await Task.Run(() => EditPDF("", "", false, false, "", true, PmSelectedMissing));
         }
         else
             return;

@@ -95,21 +95,20 @@
                              TargetType="GridViewColumnHeader">
                 <Border BorderBrush="#888"
                         BorderThickness="0,0,0,1">
-                    
-                <Grid Background="#E8E8E8"
-                      Height="20"
-                      Margin="-2,0,0,0">
-                    <TextBlock Background="#E8E8E8"
-                               Foreground="Black"
-                               FontWeight="SemiBold"
-                               Text="{TemplateBinding Tag}"
-                               VerticalAlignment="Center" />
-                    <Thumb x:Name="PART_HeaderGripper"
-                           HorizontalAlignment="Right"
-                           
-                           Margin="0"
-                           Width="1" />
-                </Grid>
+
+                    <Grid Background="#E8E8E8"
+                          Height="20"
+                          Margin="-2,0,0,0">
+                        <TextBlock Background="#E8E8E8"
+                                   Foreground="Black"
+                                   FontWeight="SemiBold"
+                                   Text="{TemplateBinding Tag}"
+                                   VerticalAlignment="Center" />
+                        <Thumb x:Name="PART_HeaderGripper"
+                               HorizontalAlignment="Right"
+                               Margin="0"
+                               Width="1" />
+                    </Grid>
                 </Border>
             </ControlTemplate>
 
@@ -309,7 +308,7 @@
                     </Button.Style>
                 </Button>
 
-                
+
 
 
                 <Grid Height="39"
@@ -403,7 +402,7 @@
                     </i:Interaction.Triggers>
                 </core:OutlinedTextBlock>
 
-                
+
                 <core:OutlinedTextBlock Stroke="#333"
                                         StrokePosition="Outside"
                                         VerticalAlignment="Center"
@@ -981,7 +980,7 @@
                             </DockPanel>
                         </Grid>
 
-                        
+
 
                         <StackPanel Orientation="Vertical"
                                     Grid.Row="1"
@@ -995,7 +994,7 @@
                                    Width="110"
                                    Panel.ZIndex="1"
                                    Margin="-127,0,0,0"
-                                   Opacity="1"/>
+                                   Opacity="1" />
                             <core:OutlinedTextBlock Stroke="#000"
                                                     StrokePosition="Outside"
                                                     FontSize="70"
@@ -1007,7 +1006,7 @@
                                                     Text="Stats Systems"
                                                     Opacity="0.80"
                                                     Panel.ZIndex="2" />
-                            
+
                             <core:OutlinedTextBlock Stroke="#000"
                                                     StrokePosition="Outside"
                                                     FontSize="14"
@@ -1386,7 +1385,7 @@
                                             Command="{Binding SelectTargetFolderCommand}" />
                                 </DockPanel>
 
-                               
+
 
                                 <Border Grid.Row="1"
                                         Grid.Column="0"
@@ -1889,9 +1888,14 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
                                     <Button Content="Grab a number"
                                             Background="#56795F"
                                             Grid.Column="0"
+                                            Grid.RowSpan="2"
                                             Margin="0,0,5,0"
                                             IsEnabled="{Binding PmPanNumberList.Count, Converter={StaticResource ZeroToFalseConverter}}"
                                             Command="{Binding GrabAPanNumberCommand}" />
@@ -1899,13 +1903,14 @@
                                             Background="#76595F"
                                             Grid.Column="1"
                                             Margin="5,0,5,0"
+                                            Grid.RowSpan="2"
                                             Visibility="{Binding PmRushButtonShows}"
                                             d:Visibility="Visible"
                                             Command="{Binding PmMarkCaseAsRushCommand}" />
                                     <Button Content="Add Send To line"
                                             Background="#96995F"
                                             Grid.Column="2"
-                                            Margin="5,0,5,0"
+                                            Margin="5,0,5,1"
                                             Command="{Binding PmAddSendToLabelCommand}"
                                             Visibility="{Binding PmSendToButtonShows}"
                                             d:Visibility="Visible" />
@@ -1913,6 +1918,24 @@
                                               ItemsSource="{Binding PmSendToList}"
                                               SelectedItem="{Binding PmSelectedSentTo}"
                                               Visibility="{Binding PmSendToButtonShows}"
+                                              Margin="0,0,0,1"
+                                              d:Visibility="Visible" />
+
+
+                                    <Button Content="Add Missing line"
+                                            Background="#76995F"
+                                            Grid.Column="2"
+                                            Grid.Row="1"
+                                            Margin="5,1,5,0"
+                                            Command="{Binding PmAddMissingLabelCommand}"
+                                            Visibility="{Binding PmMissingButtonShows}"
+                                            d:Visibility="Visible" />
+                                    <ComboBox Grid.Column="3"
+                                              Grid.Row="1"
+                                              ItemsSource="{Binding PmMissingList}"
+                                              SelectedItem="{Binding PmSelectedMissing}"
+                                              Visibility="{Binding PmMissingButtonShows}"
+                                              Margin="0,1,0,0"
                                               d:Visibility="Visible" />
                                 </Grid>
 
@@ -2013,9 +2036,10 @@
                                             Grid.Row="3"
                                             VerticalAlignment="Bottom"
                                             HorizontalAlignment="Right"
+                                            Panel.ZIndex="5"
                                             Visibility="{Binding PdfPageCount, Converter={StaticResource EmptyToHiddenConverter}}"
                                             d:Visibility="Visible"
-                                            Margin="0,0,0,0">
+                                            Margin="0,0,10,6">
                                     <TextBlock Text="{Binding PdfPageCount}"
                                                d:Text="2"
                                                FontSize="30"
@@ -2027,10 +2051,15 @@
 
                                 </StackPanel>
 
-                                <Image Source="{Binding PmSavedPrescription}"
-                                       Grid.Column="1"
-                                       Grid.Row="0"
-                                       Grid.RowSpan="4" />
+                                <Border Grid.Column="1"
+                                        Grid.Row="0"
+                                        Grid.RowSpan="4"
+                                        Margin="5,0,0,0"
+                                        BorderBrush="#777"
+                                        BorderThickness="1"
+                                        Background="#56595F">
+                                    <Image Source="{Binding PmSavedPrescription}" />
+                                </Border>
 
                                 <ProgressBar Grid.Column="1"
                                              Grid.Row="0"
@@ -2452,7 +2481,7 @@
                                                    Grid.Column="1"
                                                    Foreground="LightGreen"
                                                    Margin="5,0,0,0" />
-                                        
+
                                         <TextBlock Text="3Shape Search limit set:"
                                                    FontSize="12"
                                                    Grid.Row="4"
@@ -2545,9 +2574,8 @@
 
                                                 <StackPanel Orientation="Horizontal"
                                                             Margin="6,10,0,0">
-                                                    <TextBlock Text="Search limit in 3Shape" 
-                                                               VerticalAlignment="Center"
-                                                               />
+                                                    <TextBlock Text="Search limit in 3Shape"
+                                                               VerticalAlignment="Center" />
                                                     <ComboBox Width="72"
                                                               Margin="4,0"
                                                               HorizontalContentAlignment="Center"
