@@ -205,6 +205,7 @@
         <Setter Property="Cursor"
                 Value="Hand" />
 
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -230,6 +231,15 @@
                         Value="#CCC" />
                 <Setter Property="BorderBrush"
                         Value="#666" />
+                <Setter Property="Button.Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="Black"
+                                          Direction="320"
+                                          ShadowDepth="3"
+                                          BlurRadius="5"
+                                          Opacity="0.15" />
+                    </Setter.Value>
+                </Setter>
             </Trigger>
 
             <Trigger Property="IsMouseOver"
@@ -237,9 +247,19 @@
                 <Setter Property="Background"
                         Value="#86898F" />
                 <Setter Property="Foreground"
-                        Value="BlanchedAlmond" />
+                        Value="White" />
                 <Setter Property="BorderBrush"
                         Value="BlanchedAlmond" />
+                
+                <Setter Property="Button.Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="Black"
+                                          Direction="320"
+                                          ShadowDepth="3"
+                                          BlurRadius="5"
+                                          Opacity="0.5" />
+                    </Setter.Value>
+                </Setter>
             </Trigger>
             
             <Trigger Property="IsFocused"

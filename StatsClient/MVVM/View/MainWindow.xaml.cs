@@ -11,6 +11,7 @@ using Button = System.Windows.Controls.Button;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.Functions;
 using static StatsClient.MVVM.Core.DatabaseOperations;
+using System.Diagnostics;
 
 namespace StatsClient.MVVM.View;
 
@@ -170,7 +171,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             WriteLocalSetting("WindowHeight", Height.ToString());
         }
 
-        //InfoBackground.MinWidth = Width;
+       
     }
 
     private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

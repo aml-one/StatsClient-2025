@@ -7,6 +7,7 @@
         xmlns:core="clr-namespace:StatsClient.MVVM.Core"
         xmlns:converter="clr-namespace:StatsClient.MVVM.Converters"
         xmlns:localView="clr-namespace:StatsClient.MVVM.View"
+        xmlns:uc="clr-namespace:StatsClient.UserControls"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:sf="clr-namespace:Syncfusion.Windows.PdfViewer;assembly=Syncfusion.PdfViewer.WPF"
         mc:Ignorable="d"
@@ -174,7 +175,7 @@
 
 
 
-            <!-- TITLEBAR-->
+            <!--#region TITLEBAR-->
 
 
 
@@ -366,9 +367,9 @@
                 </Border>
 
             </DockPanel>
-            <!-- END OF TITLEBAR -->
+            <!--#endregion END OF TITLEBAR -->
 
-            <!-- MAIN AREA -->
+            <!--#region MAIN AREA -->
 
             <!--#region UNIT NUMBER DISPLAY -->
             <DockPanel Grid.Row="1"
@@ -1530,7 +1531,8 @@
                                  Visibility="{Binding CbSettingModulePrescriptionMaker, Converter={StaticResource BoolToVisibilityConverter}}"
                                  d:Visibility="Visible"
                                  Style="{StaticResource applicationsTabItem}">
-                            <Grid Margin="5">
+                            <Grid Margin="5"
+                                  x:Name="prescriptionMakerTabGrid">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition Height="70" />
@@ -1549,286 +1551,15 @@
                                         Grid.Row="0">
                                     <WrapPanel x:Name="pmPanelPanek"
                                                Orientation="Horizontal">
-                                        <Border Background="Red"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Yellow"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Purple"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="WhiteSmoke"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Blue"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
-                                        <Border Background="Green"
-                                                Width="70"
-                                                Height="36"
-                                                Margin="3"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                CornerRadius="2">
-                                            <Grid Background="White"
-                                                  Margin="8,6">
-                                                <Border BorderBrush="#DDD"
-                                                        BorderThickness="1">
-
-                                                    <TextBlock Text="18008"
-                                                               Foreground="Black"
-                                                               FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center"
-                                                               FontSize="16" />
-                                                </Border>
-                                            </Grid>
-                                        </Border>
+                                        <uc:Pan />
+                                        <uc:Pan />
+                                        <uc:Pan />
+                                        <uc:Pan />
+                                        <uc:Pan />
+                                        <uc:Pan />
+                                        <uc:Pan />
+                                        <uc:Pan />
+                                        <uc:Pan />
                                     </WrapPanel>
                                 </Border>
 
@@ -1857,7 +1588,7 @@
                                                                     FontWeight="SemiBold"
                                                                     Fill="Yellow"
                                                                     StrokeThickness="1"
-                                                                    Margin="0,2,8,0" />
+                                                                    x:Name="pmBigTakeNumberTb" />
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="160" />
@@ -1874,6 +1605,8 @@
                                                         Background="#C6696F"
                                                         Grid.Column="2"
                                                         Command="{Binding PmCancelTakingANumberCommand}" />
+
+
                                             </Grid>
                                         </StackPanel>
                                     </Grid>
@@ -2428,6 +2161,7 @@
                                             <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Text="Current app version:"
@@ -2501,6 +2235,12 @@
                                                 Height="24"
                                                 Margin="0,30,0,0"
                                                 Click="SettingsButton_Click" />
+
+                                        <uc:Pan Grid.Row="6"
+                                                PanColor="Blue"
+                                                PanNumber="8008"
+                                                ClickCommand="{Binding ClickOnPanNumberCommand}"
+                                                />
                                     </Grid>
                                 </StackPanel>
 
@@ -3129,7 +2869,7 @@
                 </TabItem>
                 <!--#endregion SETTINGS TAB -->
             </TabControl>
-            <!-- END OF MAIN AREA -->
+            <!--#endregion END OF MAIN AREA -->
 
 
 
@@ -3286,12 +3026,12 @@
             <!--#endregion Conrtrol panel for Copy-->
 
 
-            <!-- NOTIFICATION MESSAGE -->
+            <!--#region NOTIFICATION MESSAGE -->
             <Border Grid.Row="{Binding NotificationMessageGridPosition}"
                     d:Grid.Row="1"
                     Grid.Column="1"
                     x:Name="notificationMessagePanel"
-                    d:Visibility="Visible"
+                    d:Visibility="Hidden"
                     Visibility="{Binding NotificationMessageVisibility}"
                     Panel.ZIndex="150"
                     VerticalAlignment="{Binding NotificationMessageVertAlignment}"
@@ -3382,10 +3122,10 @@
                     </TextBlock>
                 </Grid>
             </Border>
-            <!-- END OF NOTIFICATION MESSAGE -->
+            <!--#endregion END OF NOTIFICATION MESSAGE -->
 
 
-            <!-- FOOTER -->
+            <!--#region FOOTER -->
             <Grid Grid.Row="2"
                   Grid.Column="1"
                   Margin="0,0,0,1">
@@ -3746,7 +3486,7 @@
                     </DockPanel>
                 </StackPanel>
             </Grid>
-            <!-- END OF FOOTER -->
+            <!--#endregion END OF FOOTER -->
         </Grid>
     </Border>
 </Window>

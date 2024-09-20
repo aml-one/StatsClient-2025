@@ -34,6 +34,8 @@ using Clipboard = System.Windows.Clipboard;
 using System.Net.Http;
 using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
+using StatsClient.UserControls;
+using System.Windows.Media.Effects;
 
 
 
@@ -598,6 +600,17 @@ public class MainViewModel : ObservableObject
         {
             sMessageBoxxResult = value;
             RaisePropertyChanged(nameof(SMessageBoxxResult));
+        }
+    }
+    
+    private bool messageBoxPresent = false;
+    public bool MessageBoxPresent
+    {
+        get => messageBoxPresent;
+        set
+        {
+            messageBoxPresent = value;
+            RaisePropertyChanged(nameof(MessageBoxPresent));
         }
     }
     #endregion SMessageBox PROPERTIES
@@ -1387,7 +1400,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmLastPrescriptionSize));
         }
     }
-    
+        
     private string pmNextPanNumberInList = "";
     public string PmNextPanNumberInList
     {
@@ -2187,8 +2200,8 @@ public class MainViewModel : ObservableObject
     public RelayCommand GrabAPanNumberCommand { get; set; }
     public RelayCommand ClickOnPanNumberCommand { get; set; }
     
-   
     
+
 
     public RelayCommand PcCheckPanColorCommand { get; set; }
     
@@ -2224,6 +2237,7 @@ public class MainViewModel : ObservableObject
     #endregion AccountInfos RelayCommands
 
 
+    public RelayCommand ClickCommand { get; set; }
 
 
     #endregion RelayCommands
@@ -2249,6 +2263,8 @@ public class MainViewModel : ObservableObject
     public MainViewModel()
     {
         Instance = this;
+
+        ClickCommand = new RelayCommand(o => TestCommandMethod(o));
 
         GeneralTimer.Tick += GeneralTimer_Tick;
         GeneralTimer.Interval = new TimeSpan(0, 0, 1);
@@ -2309,7 +2325,7 @@ public class MainViewModel : ObservableObject
         ClearAccInfoSearchCommand = new RelayCommand(o => ClearAccInfoSearch());
         
         PmCancelTakingANumberCommand = new RelayCommand(o => { ShowingTakeANumberPanel = Visibility.Hidden; });
-        GrabAPanNumberCommand = new RelayCommand(o => { 
+        GrabAPanNumberCommand = new RelayCommand(o => {
             ShowingTakeANumberPanel = Visibility.Visible;
             PmSavedPrescription = null;
         });
@@ -2443,6 +2459,12 @@ public class MainViewModel : ObservableObject
         BuildCustomerSuggestionsList();
     }
 
+    private void TestCommandMethod(object obj)
+    {
+        Debug.WriteLine("clicked");
+        Debug.WriteLine(obj);
+    }
+
     private void SearchLimitSelectionChanged()
     {
         WriteLocalSetting("SearchLimit", SearchLimit);
@@ -2458,13 +2480,18 @@ public class MainViewModel : ObservableObject
     {
         Application.Current.Dispatcher.Invoke(new Action(() =>
         {
-            SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
-            if (Owner is null)
-                sMessageBox.Owner = MainWindow.Instance;
-            else
-                sMessageBox.Owner = Owner;
+            if (!MessageBoxPresent)
+            {
+                MessageBoxPresent = true;
+                SMessageBox sMessageBox = new(Title, Message, Buttons, MessageBoxIcon, DismissAfterSeconds);
+                if (Owner is null)
+                    sMessageBox.Owner = MainWindow.Instance;
+                else
+                    sMessageBox.Owner = Owner;
 
-            sMessageBox.ShowDialog();
+                sMessageBox.ShowDialog();
+                MessageBoxPresent = false;
+            }
         }));
 
         return SMessageBoxxResult;
@@ -3072,7 +3099,7 @@ public class MainViewModel : ObservableObject
                     _ = int.TryParse(panColorParts[2], out int colorB);
 
                     Brush panColor = new SolidColorBrush(Color.FromArgb(255, (byte)colorR, (byte)colorG, (byte)colorB));
-
+                    
                     Button btn = new()
                     {
                         Tag = number,
@@ -3084,7 +3111,7 @@ public class MainViewModel : ObservableObject
                         Height = 42,
                         Command = ClickOnPanNumberCommand,
                         CommandParameter = number,
-                        Style = Application.Current.Resources["panBoxStyle"] as Style
+                        //Style = Application.Current.Resources["panBoxStyle"] as Style
                     };
 
                     Border panBack = new()
@@ -3094,20 +3121,30 @@ public class MainViewModel : ObservableObject
                         Background = panColor,
                         Width = 70,
                         Height = 36,
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Top,
+                        ClipToBounds = true,
+                        BorderBrush = Brushes.DimGray,
+                        BorderThickness = new Thickness(0.5),
+                    };
 
+                    panBack.Effect = new DropShadowEffect
+                    {
+                        Color = Colors.Black,
+                        Direction = 320,
+                        ShadowDepth = 3,
+                        Opacity = 0.5,
+                        BlurRadius = 5
                     };
 
                     Border stickerBorder = new()
                     {
                         BorderBrush = Brushes.Silver,
-                        BorderThickness = new Thickness(1),
+                        BorderThickness = new Thickness(0.5),
                     };
 
                     Grid panSticker = new()
                     {
                         Background = Brushes.White,
+                        Height = 20,
                         Margin = new Thickness(8, 6, 8, 6),
                     };
 
@@ -3119,14 +3156,17 @@ public class MainViewModel : ObservableObject
                         Foreground = Brushes.Black,
                         Cursor = Cursors.Hand,
                         HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Padding = new Thickness(4, 0, 4, 0),
+                        Margin = new Thickness(0, -2, 0, 0),
                     };
 
 
-                    panSticker.Children.Add(panNumber);
-                    stickerBorder.Child = panSticker;
-                    panBack.Child = stickerBorder;
+                    stickerBorder.Child = panNumber;
+                    panSticker.Children.Add(stickerBorder);
+                    panBack.Child = panSticker;
                     btn.Content = panBack;
-
+                    
                     MainWindow.Instance.pmPanelPanek.Children.Add(btn);
                 }
                 catch (Exception ex)
@@ -3159,7 +3199,6 @@ public class MainViewModel : ObservableObject
                     ClipToBounds = true,
                     Command = ClickOnPanNumberCommand,
                     CommandParameter = panNumbr,
-                    Style = Application.Current.Resources["panBoxStyle"] as Style
                 };
 
                 Border panBack = new()
@@ -3169,19 +3208,30 @@ public class MainViewModel : ObservableObject
                     Background = panColor,
                     Width = 70,
                     Height = 36,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top
+                    ClipToBounds = true,
+                    BorderBrush = Brushes.DimGray,
+                    BorderThickness = new Thickness(0.5)
+                };
+
+                panBack.Effect = new DropShadowEffect
+                {
+                    Color = Colors.Black,
+                    Direction = 320,
+                    ShadowDepth = 3,
+                    Opacity = 0.5,
+                    BlurRadius = 5
                 };
 
                 Border stickerBorder = new()
                 {
                     BorderBrush = Brushes.Silver,
-                    BorderThickness = new Thickness(1),
+                    BorderThickness = new Thickness(0.5),
                 };
 
                 Grid panSticker = new()
                 {
                     Background = Brushes.White,
+                    Height = 20,
                     Margin = new Thickness(8, 6, 8, 6),
                 };
 
@@ -3192,11 +3242,14 @@ public class MainViewModel : ObservableObject
                     FontWeight = FontWeights.SemiBold,
                     Foreground = Brushes.Black,
                     HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Padding = new Thickness(4, 0, 4, 0),
+                    Margin = new Thickness(0, -2, 0, 0),
                 };
 
-                panSticker.Children.Add(panNumber);
-                stickerBorder.Child = panSticker;
-                panBack.Child = stickerBorder;
+                stickerBorder.Child = panNumber;
+                panSticker.Children.Add(stickerBorder);
+                panBack.Child = panSticker;
                 btn.Content = panBack;
 
                 MainWindow.Instance.pmPanelPanek.Children.Add(btn);
@@ -6444,7 +6497,7 @@ public class MainViewModel : ObservableObject
 #if DEBUG
         if (DesignerProperties.GetIsInDesignMode(new DependencyObject())) return;
 #endif
-        UpdateAvailableText = "Updating now...";
+        UpdateAvailableText = "Starting App Updater..";
         await Task.Delay(1500);
 
         Application.Current.Dispatcher.Invoke(new Action(() =>
