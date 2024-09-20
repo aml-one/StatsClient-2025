@@ -272,38 +272,38 @@ public class MainViewModel : ObservableObject
     }
     
     
-    private bool showBottomInfoBar = false;
-    public bool ShowBottomInfoBar
-    {
-        get => showBottomInfoBar;
-        set
-        {
-            showBottomInfoBar = value;
-            RaisePropertyChanged(nameof(ShowBottomInfoBar));
-        }
-    }
+    //private bool showBottomInfoBar = false;
+    //public bool ShowBottomInfoBar
+    //{
+    //    get => showBottomInfoBar;
+    //    set
+    //    {
+    //        showBottomInfoBar = value;
+    //        RaisePropertyChanged(nameof(ShowBottomInfoBar));
+    //    }
+    //}
 
-    private string serverStatus = "Idle";
-    public string ServerStatus
-    {
-        get => serverStatus;
-        set
-        {
-            serverStatus = value;
-            RaisePropertyChanged(nameof(ServerStatus));
-        }
-    }
+    //private string serverStatus = "Idle";
+    //public string ServerStatus
+    //{
+    //    get => serverStatus;
+    //    set
+    //    {
+    //        serverStatus = value;
+    //        RaisePropertyChanged(nameof(ServerStatus));
+    //    }
+    //}
     
-    private int bottomBarSize = 35;
-    public int BottomBarSize
-    {
-        get => bottomBarSize;
-        set
-        {
-            bottomBarSize = value;
-            RaisePropertyChanged(nameof(BottomBarSize));
-        }
-    }
+    //private int bottomBarSize = 35;
+    //public int BottomBarSize
+    //{
+    //    get => bottomBarSize;
+    //    set
+    //    {
+    //        bottomBarSize = value;
+    //        RaisePropertyChanged(nameof(BottomBarSize));
+    //    }
+    //}
     
         
     private int digiPrescriptionsTodayCount = 0;
@@ -2004,16 +2004,16 @@ public class MainViewModel : ObservableObject
         }
     }
     
-    private bool cbSettingShowDigiDetails = true;
-    public bool CbSettingShowDigiDetails
-    {
-        get => cbSettingShowDigiDetails;
-        set
-        {
-            cbSettingShowDigiDetails = value;
-            RaisePropertyChanged(nameof(CbSettingShowDigiDetails));
-        }
-    }
+    //private bool cbSettingShowDigiDetails = true;
+    //public bool CbSettingShowDigiDetails
+    //{
+    //    get => cbSettingShowDigiDetails;
+    //    set
+    //    {
+    //        cbSettingShowDigiDetails = value;
+    //        RaisePropertyChanged(nameof(CbSettingShowDigiDetails));
+    //    }
+    //}
     
     private bool cbSettingWatchFolderPrescriptionMaker = true;
     public bool CbSettingWatchFolderPrescriptionMaker
@@ -2140,9 +2140,9 @@ public class MainViewModel : ObservableObject
     public RelayCommand CbSettingGlassyEffectCommand { get; set; }
     public RelayCommand CbSettingPanColorCheckWndwIsSnappedCommand { get; set; }
     public RelayCommand CbSettingStartAppMinimizedCommand { get; set; }
-    public RelayCommand CbSettingShowBottomInfoBarCommand { get; set; }
+    //public RelayCommand CbSettingShowBottomInfoBarCommand { get; set; }
     public RelayCommand CbSettingShowDigiCasesCommand { get; set; }
-    public RelayCommand CbSettingShowDigiDetailsCommand { get; set; }
+    //public RelayCommand CbSettingShowDigiDetailsCommand { get; set; }
     public RelayCommand CbSettingShowEmptyPanCountCommand { get; set; }
     public RelayCommand CbSettingWatchFolderPrescriptionMakerCommand { get; set; }
     public RelayCommand CbSettingOpenUpSironaScanFolderCommand { get; set; }
@@ -2346,9 +2346,9 @@ public class MainViewModel : ObservableObject
         CbSettingGlassyEffectCommand = new RelayCommand(o => CbSettingGlassyEffectMethod());
         CbSettingPanColorCheckWndwIsSnappedCommand = new RelayCommand(o => CbSettingPanColorCheckWndwIsSnappedMethod());
         CbSettingStartAppMinimizedCommand = new RelayCommand(o => CbSettingStartAppMinimizedMethod());
-        CbSettingShowBottomInfoBarCommand = new RelayCommand(o => CbSettingShowBottomInfoBarMethod());
+        //CbSettingShowBottomInfoBarCommand = new RelayCommand(o => CbSettingShowBottomInfoBarMethod());
         CbSettingShowDigiCasesCommand = new RelayCommand(o => CbSettingShowDigiCasesMethod());
-        CbSettingShowDigiDetailsCommand = new RelayCommand(o => CbSettingShowDigiDetailsMethod());
+        //CbSettingShowDigiDetailsCommand = new RelayCommand(o => CbSettingShowDigiDetailsMethod());
         CbSettingWatchFolderPrescriptionMakerCommand = new RelayCommand(o => CbSettingWatchFolderPrescriptionMakerMethod());
         CbSettingOpenUpSironaScanFolderCommand = new RelayCommand(o => CbSettingOpenUpSironaScanFolderMethod());
         CbSettingExtractIteroZipFilesCommand = new RelayCommand(o => CbSettingExtractIteroZipFilesMethod());
@@ -2633,7 +2633,7 @@ public class MainViewModel : ObservableObject
         if (LastDCASUpdate.Contains("minute"))
         {
             WriteStatsSetting("dcas_CheckForEmails", "true");
-            ShowNotificationMessage("Success", "Request for DCAS update sent!", NotificationIcon.Success, false, ShowBottomInfoBar);
+            ShowNotificationMessage("Success", "Request for DCAS update sent!", NotificationIcon.Success, false);
         }
     }
     
@@ -2890,13 +2890,13 @@ public class MainViewModel : ObservableObject
 
         if (await Task.Run(() => CopyDirectory(FsSelectedFolderObject.Path!, $@"{FsubscrTargetFolder}{number}-{FsSelectedFolderObject.FolderName}")))
         {
-            ShowNotificationMessage("Success", $"Folder with name: '{number}-{FsSelectedFolderObject.FolderName}' copied over successfully", NotificationIcon.Success, true, false, 35);
+            ShowNotificationMessage("Success", $"Folder with name: '{number}-{FsSelectedFolderObject.FolderName}' copied over successfully", NotificationIcon.Success, true, 35);
             FsSearchString = "";
             await Task.Run(() => MarkPanNumberAsCollected(number));
             FillUpPendingDigiCaseNumberList(true);
         }
         else
-            ShowNotificationMessage("Error", "Error occured during the copy process!", NotificationIcon.Error, true, false, 35);
+            ShowNotificationMessage("Error", "Error occured during the copy process!", NotificationIcon.Error, true, 35);
     }
 
     
@@ -2982,7 +2982,7 @@ public class MainViewModel : ObservableObject
             }
             else
             {
-                ShowNotificationMessage("Folder not found", "The folder you're selected does not exist anymore", NotificationIcon.Error, true, false, 35);
+                ShowNotificationMessage("Folder not found", "The folder you're selected does not exist anymore", NotificationIcon.Error, true, 35);
             }
         }
         catch (Exception ex)
@@ -3040,6 +3040,9 @@ public class MainViewModel : ObservableObject
             RemovePanNumberFromAvailablePans(PmNextPanNumberInList);
             FillUpEmptyPanNumberPanel();
             ShowingTakeANumberPanel = Visibility.Hidden;
+            PmRushButtonShows = Visibility.Hidden;
+            PmSendToButtonShows = Visibility.Hidden;
+            PmMissingButtonShows = Visibility.Hidden;
 
             try
             {
@@ -4636,18 +4639,18 @@ public class MainViewModel : ObservableObject
     }
     
     
-    private void CbSettingShowBottomInfoBarMethod()
-    {
-        WriteLocalSetting("ShowBottomInfoBar", ShowBottomInfoBar.ToString());
-        if (ShowBottomInfoBar)
-            BottomBarSize = 120;
-        else
-        {
-            CbSettingShowDigiDetails = false;
-            WriteLocalSetting("ShowDigiDetails", CbSettingShowDigiDetails.ToString());
-            BottomBarSize = 35;
-        }
-    }
+    //private void CbSettingShowBottomInfoBarMethod()
+    //{
+    //    WriteLocalSetting("ShowBottomInfoBar", ShowBottomInfoBar.ToString());
+    //    if (ShowBottomInfoBar)
+    //        BottomBarSize = 120;
+    //    else
+    //    {
+    //        CbSettingShowDigiDetails = false;
+    //        WriteLocalSetting("ShowDigiDetails", CbSettingShowDigiDetails.ToString());
+    //        BottomBarSize = 35;
+    //    }
+    //}
     
     private void CbSettingShowDigiCasesMethod()
     {
@@ -4665,15 +4668,15 @@ public class MainViewModel : ObservableObject
         WriteLocalSetting("IncludePendingDigiCases", CbSettingIncludePendingDigiCasesInNewlyArrived.ToString());    
     }
     
-    private void CbSettingShowDigiDetailsMethod()
-    {
-        if (!ShowBottomInfoBar)
-        {
-            CbSettingShowDigiDetails = false;
-            ShowNotificationMessage("Cannot activate!", "This option only works when the \"Show bottom info bar\" option is active", NotificationIcon.Warning);
-        }
-        WriteLocalSetting("ShowDigiDetails", CbSettingShowDigiDetails.ToString());
-    }
+    //private void CbSettingShowDigiDetailsMethod()
+    //{
+    //    if (!ShowBottomInfoBar)
+    //    {
+    //        CbSettingShowDigiDetails = false;
+    //        ShowNotificationMessage("Cannot activate!", "This option only works when the \"Show bottom info bar\" option is active", NotificationIcon.Warning);
+    //    }
+    //    WriteLocalSetting("ShowDigiDetails", CbSettingShowDigiDetails.ToString());
+    //}
     
     private void CbSettingWatchFolderPrescriptionMakerMethod()
     {
@@ -6582,29 +6585,29 @@ public class MainViewModel : ObservableObject
     }
 
     public void ShowNotificationMessage(string title, string message, NotificationIcon notificationIcon = NotificationIcon.Info, 
-                                        bool notificationWindowPulledIn = false, bool notificationWindowOnInfoBar = false, 
+                                        bool notificationWindowPulledIn = false, 
                                         double pullUpFromBottomEdge = 20 )
     {
         
-        if (FsCopyPanelShows && !notificationWindowOnInfoBar && notificationWindowPulledIn)
+        if (FsCopyPanelShows && notificationWindowPulledIn)
             pullUpFromBottomEdge = 155;
 
 
-        if (notificationWindowOnInfoBar)
-        {
-            NotificationMessageGridPosition = "2";
-            NotificationMessagePosition = new Thickness(1, 10, 0, pullUpFromBottomEdge);
-            NotificationMessageVertAlignment = VerticalAlignment.Top;
-        }
-        else
-        {
+        //if (notificationWindowOnInfoBar)
+        //{
+        //    NotificationMessageGridPosition = "2";
+        //    NotificationMessagePosition = new Thickness(1, 10, 0, pullUpFromBottomEdge);
+        //    NotificationMessageVertAlignment = VerticalAlignment.Top;
+        //}
+        //else
+        //{
             NotificationMessageVertAlignment = VerticalAlignment.Bottom;
             if (notificationWindowPulledIn)
                 NotificationMessagePosition = new Thickness(151, 0, 0, pullUpFromBottomEdge);
             else
                 NotificationMessagePosition = new Thickness(15, 0, 0, pullUpFromBottomEdge);
             NotificationMessageGridPosition = "1";
-        }
+        //}
 
         NotificationMessageTitle = title;
         NotificationMessageBody = message;
@@ -6668,28 +6671,28 @@ public class MainViewModel : ObservableObject
 
             ResetDigiSystemColors();
 
-            MainWindow.Instance.panelDigiCases.Children.Clear();
+            //MainWindow.Instance.panelDigiCases.Children.Clear();
             MainWindow.Instance.panelNewlyArrivedDigitalCasesList.Children.Clear();
 
             int countedCases = 0;
 
-            if (PendingDigiNumbersWaitingToProcessInt > 0 && CbSettingIncludePendingDigiCasesInNewlyArrived)
-            {
-                string pendingDigiName = PendingDigiCasesReplacementName.Trim();
-                if (pendingDigiName == "")
-                    pendingDigiName = "PendingDigi";
+            //if (PendingDigiNumbersWaitingToProcessInt > 0 && CbSettingIncludePendingDigiCasesInNewlyArrived)
+            //{
+            //    string pendingDigiName = PendingDigiCasesReplacementName.Trim();
+            //    if (pendingDigiName == "")
+            //        pendingDigiName = "PendingDigi";
 
-                TextBlock textBlock = new()
-                {
-                    Text = $"{pendingDigiName} ⇢ Got {PendingDigiNumbersWaitingToProcessInt} new case (In-house)",
-                    FontSize = fontSize,
-                    Foreground = new BrushConverter().ConvertFromString("#FF8ce4ff") as SolidColorBrush,
-                    FontWeight = FontWeights.SemiBold,
-                };
+            //    TextBlock textBlock = new()
+            //    {
+            //        Text = $"{pendingDigiName} ⇢ Got {PendingDigiNumbersWaitingToProcessInt} new case (In-house)",
+            //        FontSize = fontSize,
+            //        Foreground = new BrushConverter().ConvertFromString("#FF8ce4ff") as SolidColorBrush,
+            //        FontWeight = FontWeights.SemiBold,
+            //    };
 
 
-                MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
-            }
+            //    MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
+            //}
             
             if (NewTriosCaseInInboxCount > 0)
             {
@@ -6709,7 +6712,7 @@ public class MainViewModel : ObservableObject
                     FontWeight = FontWeights.SemiBold,
                 };
 
-                MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
+                //MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
 
                 MainWindow.Instance.panelNewlyArrivedDigitalCasesList.Children.Add(textBlockCopy);
             }
@@ -6756,7 +6759,7 @@ public class MainViewModel : ObservableObject
                 };
 
                 countedCases += item.Value;
-                MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
+                //MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
                 
                 MainWindow.Instance.panelNewlyArrivedDigitalCasesList.Children.Add(textBlockCopy);
             }
@@ -6796,7 +6799,7 @@ public class MainViewModel : ObservableObject
                 };
 
                 countedCases += item.Value;
-                MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
+                //MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
 
                 MainWindow.Instance.panelNewlyArrivedDigitalCasesList.Children.Add(textBlockCopy);
             }
@@ -6825,20 +6828,19 @@ public class MainViewModel : ObservableObject
         _ = int.TryParse(argParts[1], out int second);
 
         Application.Current.Dispatcher.Invoke(new Action(async () => {
-            ServerStatus = GetStatsServerStatus();
+            //ServerStatus = GetStatsServerStatus();
             ServerIsWritingDatabase = CheckIfServerIsWritingDatabase();
             if (CbSettingModuleFolderSubscription)
                 FsLastDatabaseUpdate = GetLastDatabaseUpdate();
             
-            if (ShowBottomInfoBar)
-                LastDCASUpdate = GetLastDCASUpdate();
-
             await Task.Run(LookForPendingTask);
         }));
 
 
-        if (second % 15 == 1 || FirstRun)
+        if (second % 15 == 0 || FirstRun)
         {
+            LastDCASUpdate = GetLastDCASUpdate();
+
             CurrentMemoryUsage = Math.Round(await GetMemoryUsage() / (1024 * 1024));
 
             if (FirstRun)
@@ -6999,8 +7001,8 @@ public class MainViewModel : ObservableObject
             _ = bool.TryParse(ReadLocalSetting("GlassyEffect"), out bool GlassyEffect);
             _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool PanColorCheckWndwIsSnapped);
             _ = bool.TryParse(ReadLocalSetting("StartAppMinimized"), out bool StartAppMinimized);
-            _ = bool.TryParse(ReadLocalSetting("ShowBottomInfoBar"), out bool showBottomInfoBar);
-            _ = bool.TryParse(ReadLocalSetting("ShowDigiDetails"), out bool showDigiDetails);
+            //_ = bool.TryParse(ReadLocalSetting("ShowBottomInfoBar"), out bool showBottomInfoBar);
+            //_ = bool.TryParse(ReadLocalSetting("ShowDigiDetails"), out bool showDigiDetails);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiCases"), out bool showDigiCases);
             _ = bool.TryParse(ReadLocalSetting("ActivePrescriptionMaker"), out bool activePrescriptionMaker);
             _ = bool.TryParse(ReadLocalSetting("OpenUpSironaScanFolder"), out bool openUpSironaScanFolder);
@@ -7031,8 +7033,8 @@ public class MainViewModel : ObservableObject
             if (MainWindow.Instance is not null)
                 MainWindow.Instance.PancolorCheckWindowIsSnapped = PanColorCheckWndwIsSnapped;
             CbSettingStartAppMinimized = StartAppMinimized;
-            ShowBottomInfoBar = showBottomInfoBar;
-            CbSettingShowDigiDetails = showDigiDetails;
+            //ShowBottomInfoBar = showBottomInfoBar;
+            //CbSettingShowDigiDetails = showDigiDetails;
             CbSettingShowDigiCases = showDigiCases;
             CbSettingWatchFolderPrescriptionMaker = activePrescriptionMaker;
             CbSettingOpenUpSironaScanFolder = openUpSironaScanFolder;
@@ -7101,10 +7103,10 @@ public class MainViewModel : ObservableObject
                 PmDownloadFolder = Environment.GetEnvironmentVariable("USERPROFILE") + @"\" + @"Downloads\";
             }
 
-            if (ShowBottomInfoBar)
-                BottomBarSize = 120;
-            else
-                BottomBarSize = 35;
+            //if (ShowBottomInfoBar)
+            //    BottomBarSize = 120;
+            //else
+            //    BottomBarSize = 35;
 
             SetAppVersion();
 
@@ -7220,7 +7222,7 @@ public class MainViewModel : ObservableObject
 
             Application.Current.Dispatcher.Invoke(new Action(async () =>
             {
-                ShowNotificationMessage("iTero Case Downloaded", $"There is a new Itero case placed into Export folder! Id: {LastIteroZipFileId}", NotificationIcon.Success, false, ShowBottomInfoBar);
+                ShowNotificationMessage("iTero Case Downloaded", $"There is a new Itero case placed into Export folder! Id: {LastIteroZipFileId}", NotificationIcon.Success, false);
                 SystemSounds.Beep.Play();
                 await BlinkWindow("green");
             }));

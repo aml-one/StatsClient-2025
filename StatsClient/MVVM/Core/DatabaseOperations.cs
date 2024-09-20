@@ -1411,7 +1411,8 @@ public partial class DatabaseOperations
         }
         catch (Exception Ex)
         {
-            if (Ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
+            if (Ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase)
+                || Ex.Message.Contains("handshake", StringComparison.CurrentCultureIgnoreCase))
                 MainViewModel.Instance.ThreeShapeServerIsDown = true;
             else
             {

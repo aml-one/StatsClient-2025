@@ -165,8 +165,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="0" />
                 <RowDefinition />
-                <RowDefinition Height="{Binding BottomBarSize}"
-                               d:Height="135" />
+                <RowDefinition Height="35" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="35" />
@@ -371,6 +370,10 @@
 
             <!--#region MAIN AREA -->
 
+
+
+            
+            
             <!--#region UNIT NUMBER DISPLAY -->
             <DockPanel Grid.Row="1"
                        Grid.Column="1"
@@ -436,7 +439,6 @@
                        Margin="190,0,44,0"
                        VerticalAlignment="Top"
                        PreviewMouseDown="TitleBar_PreviewMouseDown">
-
                 <StackPanel Orientation="Horizontal"
                             x:Name="panelDesignerOpen"
                             DockPanel.Dock="Left"
@@ -1021,22 +1023,45 @@
                                                     Panel.ZIndex="2" />
                         </StackPanel>
 
-                        <TextBlock Name="empty"
-                                   Grid.Row="1"
-                                   Panel.ZIndex="3"
-                                   Text="No items found"
-                                   Foreground="Black"
-                                   Visibility="{Binding OrderCount, Converter={StaticResource ZeroToVisibleConverter}}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
+                        
 
                         <Border Grid.Row="1"
                                 Panel.ZIndex="2"
                                 BorderBrush="#777"
                                 BorderThickness="0,1,0,0"
                                 Opacity="0.93">
+                            <Grid>
+                                <Border Background="#222"
+                                        Opacity="0.78"
+                                        Visibility="{Binding ThreeShapeServerIsDown, Converter={StaticResource BoolToVisibilityConverter}}"
+                                        d:Visibility="Hidden"
+                                        Panel.ZIndex="10">
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Margin="2,-52,5,0">
+                                        <core:OutlinedTextBlock Stroke="#222"
+                                                                StrokePosition="Outside"
+                                                                FontSize="35"
+                                                                FontWeight="SemiBold"
+                                                                Fill="#ffabb6"
+                                                                StrokeThickness="0.5"
+                                                                Margin="0,0,8,0"
+                                                                Text="Lost connection to 3Shape Server" />
 
-                            <ListView x:Name="listView3ShapeOrders"
+                                    </StackPanel>
+                                </Border>
+
+                                <TextBlock Name="empty"
+                                           Grid.Row="1"
+                                           Panel.ZIndex="3"
+                                           Text="No items found"
+                                           Foreground="Black"
+                                           Visibility="{Binding OrderCount, Converter={StaticResource ZeroToVisibleConverter}}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+
+                                <ListView x:Name="listView3ShapeOrders"
                                       ScrollViewer.CanContentScroll="False"
                                       BorderThickness="0,0,0,0"
                                       Margin="0,-1,0,0"
@@ -1070,7 +1095,8 @@
                                                         Width="30">
                                             <GridViewColumn.Header>
                                                 <GridViewColumnHeader Template="{StaticResource CustomHeader}"
-                                                                      Tag="   Rx" />
+                                                                      Tag="   Rx"
+                                                                      SizeChanged="GridViewForRxColumnHeader_SizeChanged" />
                                             </GridViewColumn.Header>
                                         </GridViewColumn>
                                         <GridViewColumn x:Name="headerScanInfo"
@@ -1197,6 +1223,7 @@
 
 
                             </ListView>
+                            </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
@@ -2126,6 +2153,7 @@
                     <TabControl BorderThickness="0"
                                 d:TabStripPlacement="Top"
                                 x:Name="infoTabControl"
+                                d:Margin="0,0,0,0"
                                 Style="{StaticResource hiddenTabsTabControl}"
                                 Grid.Row="1">
                         <TabControl.Background>
@@ -2150,7 +2178,7 @@
                                           HorizontalAlignment="Left">
 
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
 
@@ -2166,7 +2194,8 @@
 
                                         <TextBlock Text="Current app version:"
                                                    FontSize="12"
-                                                   Margin="2,0,0,0" />
+                                                   Margin="2,0,10,0"
+                                                   HorizontalAlignment="Right"/>
                                         <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
                                                    d:Text="v1"
                                                    FontSize="12"
@@ -2181,7 +2210,8 @@
                                                    Grid.Row="1"
                                                    d:Visibility="Visible"
                                                    Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                   Margin="2,0,0,0" />
+                                                   Margin="2,0,10,0"
+                                                   HorizontalAlignment="Right"/>
                                         <TextBlock Text="{Binding LatestAppVersion, StringFormat='v\{0}'}"
                                                    d:Text="v2"
                                                    FontSize="12"
@@ -2195,7 +2225,8 @@
                                         <TextBlock Text="Total System Memory:"
                                                    FontSize="12"
                                                    Grid.Row="2"
-                                                   Margin="2,10,0,0" />
+                                                   Margin="2,10,10,0"
+                                                   HorizontalAlignment="Right"/>
                                         <TextBlock Text="{Binding TotalMemoryInGiB, StringFormat='\{0} GiB'}"
                                                    d:Text="350 MB"
                                                    FontSize="12"
@@ -2207,7 +2238,8 @@
                                         <TextBlock Text="App's memory usage:"
                                                    FontSize="12"
                                                    Grid.Row="3"
-                                                   Margin="2,0,0,0" />
+                                                   Margin="2,0,10,0"
+                                                   HorizontalAlignment="Right"/>
                                         <TextBlock Text="{Binding CurrentMemoryUsage, StringFormat='\{0} MiB'}"
                                                    d:Text="350 MB"
                                                    FontSize="12"
@@ -2219,7 +2251,8 @@
                                         <TextBlock Text="3Shape Search limit set:"
                                                    FontSize="12"
                                                    Grid.Row="4"
-                                                   Margin="2,10,0,0" />
+                                                   Margin="2,10,10,0"
+                                                   HorizontalAlignment="Right"/>
                                         <TextBlock Text="{Binding SearchLimit}"
                                                    d:Text="200"
                                                    FontSize="12"
@@ -2228,19 +2261,31 @@
                                                    Foreground="White"
                                                    Margin="5,10,0,0" />
 
+                                        <TextBlock Text="Last D.C.A.S. update:"
+                                                   FontSize="12"
+                                                   Grid.Row="5"
+                                                   Margin="2,0,10,0"
+                                                   HorizontalAlignment="Right"
+                                                   Visibility="{Binding IsDCASIsActive, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                   d:Visibility="Visible" />
+                                        <TextBlock d:Text="38 seconds ago"
+                                                   Text="{Binding LastDCASUpdate}"
+                                                   FontSize="12"
+                                                   Grid.Row="5"
+                                                   Grid.Column="1"
+                                                   Foreground="White"
+                                                   Margin="5,0,0,0"
+                                                   Visibility="{Binding IsDCASIsActive, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                   d:Visibility="Visible" />
 
 
                                         <Button Content="Go to settings"
-                                                Grid.Row="5"
+                                                Grid.Row="6"
                                                 Height="24"
                                                 Margin="0,30,0,0"
                                                 Click="SettingsButton_Click" />
 
-                                        <uc:Pan Grid.Row="6"
-                                                PanColor="Blue"
-                                                PanNumber="8008"
-                                                ClickCommand="{Binding ClickOnPanNumberCommand}"
-                                                />
+                                        
                                     </Grid>
                                 </StackPanel>
 
@@ -2472,15 +2517,7 @@
                                                            FontSize="26"
                                                            FontWeight="Thin" />
 
-                                                <CheckBox Content="Show bottom info bar"
-                                                          Foreground="Azure"
-                                                          VerticalAlignment="Top"
-                                                          HorizontalAlignment="Left"
-                                                          Cursor="Hand"
-                                                          IsChecked="{Binding ShowBottomInfoBar, Mode=TwoWay}"
-                                                          Style="{StaticResource CircleCheckBox}"
-                                                          Command="{Binding CbSettingShowBottomInfoBarCommand}"
-                                                          Margin="0,6,5,0" />
+                                                
 
                                                 <CheckBox Content="Show newly arrived digital cases count"
                                                           Foreground="MintCream"
@@ -2494,21 +2531,6 @@
                                                           d:Visibility="Visible"
                                                           Margin="0,6,5,0" />
 
-                                                <Grid Visibility="{Binding CbSettingModulePendingDigitals, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                      d:Visibility="Visible">
-
-                                                    <CheckBox Content="Show detailed info of arrived digi cases"
-                                                              Foreground="MintCream"
-                                                              VerticalAlignment="Top"
-                                                              HorizontalAlignment="Left"
-                                                              Cursor="Hand"
-                                                              IsChecked="{Binding CbSettingShowDigiDetails, Mode=TwoWay}"
-                                                              Style="{StaticResource CircleCheckBox}"
-                                                              Command="{Binding CbSettingShowDigiDetailsCommand}"
-                                                              Visibility="{Binding ShowBottomInfoBar, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                              d:Visibility="Visible"
-                                                              Margin="0,6,5,0" />
-                                                </Grid>
 
                                                 <CheckBox Content="Show waiting for collect 'Pending Digi' cases coming from CasePoster"
                                                           Foreground="#8ce4ff"
@@ -2920,11 +2942,11 @@
                                FontSize="10"
                                HorizontalAlignment="Right"
                                Margin="-20,3,4,0">
-             <i:Interaction.Triggers>
-                 <i:EventTrigger EventName="MouseDown">
-                     <i:InvokeCommandAction Command="{Binding FsHideNotificationCommand}" />
-                 </i:EventTrigger>
-             </i:Interaction.Triggers>
+                         <i:Interaction.Triggers>
+                             <i:EventTrigger EventName="MouseDown">
+                                 <i:InvokeCommandAction Command="{Binding FsHideNotificationCommand}" />
+                             </i:EventTrigger>
+                         </i:Interaction.Triggers>
                     </TextBlock>
 
                     <StackPanel Orientation="Horizontal"
@@ -3134,114 +3156,6 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
 
-                <!--ProgressBar IsIndeterminate="True"
-                             Grid.ColumnSpan="2"
-                             Margin="0,-1,0,0"
-                             Panel.ZIndex="-10"
-                             Height="4"
-                             VerticalAlignment="Top"
-                             Opacity="0.95"
-                             BorderBrush="#55595F"
-                             Background="#55595F"
-                             Foreground="#ede505"
-                             Visibility="{Binding ServerIsWritingDatabase, Converter={StaticResource BoolToVisibilityConverter}}" /-->
-
-                <StackPanel Visibility="{Binding ShowBottomInfoBar, Converter={StaticResource BoolToVisibilityConverter}}"
-                            d:Visibility="Visible">
-
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Margin="2,2,5,0">
-                        <core:OutlinedTextBlock Stroke="#222"
-                                                StrokePosition="Outside"
-                                                FontSize="20"
-                                                FontWeight="SemiBold"
-                                                Fill="LightYellow"
-                                                StrokeThickness="0.5"
-                                                Margin="0,2,8,0"
-                                                Text="Server is" />
-
-                        <Grid>
-                            <core:OutlinedTextBlock Stroke="#333"
-                                                    StrokePosition="Outside"
-                                                    FontSize="20"
-                                                    FontWeight="SemiBold"
-                                                    Fill="NavajoWhite"
-                                                    StrokeThickness="0.5"
-                                                    Margin="-2,2,0,0"
-                                                    Text="{Binding ServerStatus}" />
-                        </Grid>
-
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Margin="2,2,5,0"
-                                Visibility="{Binding ThreeShapeServerIsDown, Converter={StaticResource BoolToVisibilityConverter}}"
-                                d:Visibility="Visible">
-                        <core:OutlinedTextBlock Stroke="#222"
-                                                StrokePosition="Outside"
-                                                FontSize="15"
-                                                FontWeight="SemiBold"
-                                                Fill="#ffabb6"
-                                                StrokeThickness="0.5"
-                                                Margin="0,0,8,0"
-                                                Text="Lost connection to 3Shape Server" />
-
-                    </StackPanel>
-
-                    <Grid Visibility="{Binding IsDCASIsActive, Converter={StaticResource BoolToVisibilityConverter}}"
-                          d:Visibility="Visible">
-                        <DockPanel HorizontalAlignment="Left"
-                                   VerticalAlignment="Top"
-                                   Margin="2,0,5,0"
-                                   MaxWidth="265"
-                                   MinWidth="245"
-                                   Visibility="{Binding LastDCASUpdate, Converter={StaticResource EmptyToCollapsedConverter}}"
-                                   d:Visibility="Visible">
-                            <core:OutlinedTextBlock Stroke="#222"
-                                                    StrokePosition="Outside"
-                                                    FontSize="15"
-                                                    FontWeight="SemiBold"
-                                                    Fill="LightYellow"
-                                                    StrokeThickness="0.5"
-                                                    Margin="0,0,8,0"
-                                                    Text="Last D.C.A.S. update" />
-                            <core:OutlinedTextBlock Stroke="#222"
-                                                    StrokePosition="Outside"
-                                                    HorizontalAlignment="Right"
-                                                    FontSize="15"
-                                                    FontWeight="SemiBold"
-                                                    Fill="NavajoWhite"
-                                                    StrokeThickness="0.5"
-                                                    Margin="0,0,0,0"
-                                                    d:Text="38 seconds ago"
-                                                    Text="{Binding LastDCASUpdate}" />
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseDown">
-                                    <i:InvokeCommandAction Command="{Binding RequestDCASUpdateCommand}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </DockPanel>
-                    </Grid>
-
-                    <StackPanel Orientation="Horizontal"
-                                Margin="3,4,0,0"
-                                VerticalAlignment="Bottom">
-
-                        <TextBlock Text="List updatable"
-                                   Foreground="#AAA"
-                                   FontSize="8" />
-                        <TextBlock Text="{Binding ListUpdateable}"
-                                   Foreground="#CCC"
-                                   FontSize="8"
-                                   Margin="3,0,0,0" />
-                    </StackPanel>
-                </StackPanel>
-
-
                 <DockPanel VerticalAlignment="Bottom"
                            HorizontalAlignment="Left"
                            MinWidth="220">
@@ -3433,6 +3347,8 @@
                                    d:Visibility="Visible"
                                    Margin="5,0,15,0" />
                     </StackPanel>
+
+                    
                 </DockPanel>
 
 
@@ -3440,50 +3356,38 @@
 
 
                 <StackPanel Grid.Column="1"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Left"
                             Visibility="{Binding NewDigiCaseArrivedCount, Converter={StaticResource ZeroToCollapsedConverter}}"
                             d:Visibility="Visible">
                     <Grid>
-                        <core:OutlinedTextBlock Stroke="#333"
-                                                StrokePosition="Outside"
-                                                FontSize="20"
-                                                FontWeight="SemiBold"
-                                                Fill="LightYellow"
-                                                StrokeThickness="0.5"
-                                                Visibility="{Binding CbSettingShowDigiCases, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                d:Visibility="Visible"
-                                                Margin="0,2,8,0"
-                                                Cursor="Hand"
-                                                Text="{Binding NewDigiCaseArrivedCount, StringFormat='\{0} new digital case arrived'}">
+                        <StackPanel Visibility="{Binding CbSettingShowDigiCases, Converter={StaticResource BoolToVisibilityConverter}}"
+                                    d:Visibility="Visible">
+                            <TextBlock Text="{Binding NewDigiCaseArrivedCount}"
+                                       d:Text="17"
+                                       Foreground="#7dfaC2"
+                                       HorizontalAlignment="Center"
+                                       Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                       d:Visibility="Visible"
+                                       Margin="5,0,15,-6"
+                                       Cursor="Hand"
+                                       FontSize="26">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDown">
                                     <i:InvokeCommandAction Command="{Binding SwitchToPendingDigiCasesTabCommand}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </core:OutlinedTextBlock>
+                            </TextBlock>
+                            <TextBlock Text="Digital Case Arrived"
+                                       Foreground="White"
+                                       FontSize="8"
+                                       Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                       d:Visibility="Visible"
+                                       Margin="5,0,15,0" />
+                        </StackPanel>
+
+                        
                     </Grid>
-
-                    <DockPanel HorizontalAlignment="Left"
-                               VerticalAlignment="Top">
-
-                        <ScrollViewer VerticalAlignment="Top"
-                                      DockPanel.Dock="Left"
-                                      VerticalScrollBarVisibility="Visible"
-                                      HorizontalScrollBarVisibility="Disabled"
-                                      CanContentScroll="True"
-                                      ClipToBounds="True"
-                                      Visibility="{Binding CbSettingShowDigiDetails, Converter={StaticResource BoolToVisibilityConverter}}"
-                                      d:Visibility="Visible"
-                                      Margin="1,1,10,1">
-
-                            <StackPanel x:Name="panelDigiCases"
-                                        Margin="0,0,3,0"
-                                        VerticalAlignment="Top">
-                                <TextBlock FontSize="10"
-                                           FontWeight="SemiBold"
-                                           Text="Medit ⇢ Got 7 new case (Example Lab)" />
-                            </StackPanel>
-                        </ScrollViewer>
-                    </DockPanel>
                 </StackPanel>
             </Grid>
             <!--#endregion END OF FOOTER -->
