@@ -372,8 +372,8 @@
 
 
 
-            
-            
+
+
             <!--#region UNIT NUMBER DISPLAY -->
             <DockPanel Grid.Row="1"
                        Grid.Column="1"
@@ -1023,7 +1023,7 @@
                                                     Panel.ZIndex="2" />
                         </StackPanel>
 
-                        
+
 
                         <Border Grid.Row="1"
                                 Panel.ZIndex="2"
@@ -1062,167 +1062,167 @@
                                            VerticalAlignment="Center" />
 
                                 <ListView x:Name="listView3ShapeOrders"
-                                      ScrollViewer.CanContentScroll="False"
-                                      BorderThickness="0,0,0,0"
-                                      Margin="0,-1,0,0"
-                                      MouseDown="listView3ShapeOrders_MouseDown"
-                                      BorderBrush="#666"
-                                      AlternationCount="2"
-                                      SelectedItem="{Binding SelectedItem}"
-                                      ItemContainerStyle="{StaticResource LvItemDetailed}">
-                                <ListView.View>
+                                          ScrollViewer.CanContentScroll="False"
+                                          BorderThickness="0,0,0,0"
+                                          Margin="0,-1,0,0"
+                                          MouseDown="listView3ShapeOrders_MouseDown"
+                                          BorderBrush="#666"
+                                          AlternationCount="2"
+                                          SelectedItem="{Binding SelectedItem}"
+                                          ItemContainerStyle="{StaticResource LvItemDetailed}">
+                                    <ListView.View>
 
-                                    <GridView AllowsColumnReorder="False">
-                                        <GridViewColumn x:Name="headerIcon"
-                                                        Width="47"
-                                                        DisplayMemberBinding="{Binding PanNumber}">
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}"
-                                                                      SizeChanged="GridViewColumnHeader_SizeChanged" />
-                                            </GridViewColumn.Header>
-                                        </GridViewColumn>
-                                        <GridViewColumn x:Name="headerCaseID"
-                                                        Width="400"
-                                                        DisplayMemberBinding="{Binding IntOrderID}">
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}"
-                                                                      Tag="  Case ID" />
-                                            </GridViewColumn.Header>
-                                        </GridViewColumn>
-
-
-                                        <GridViewColumn x:Name="headerPrescription"
-                                                        Width="30">
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}"
-                                                                      Tag="   Rx"
-                                                                      SizeChanged="GridViewForRxColumnHeader_SizeChanged" />
-                                            </GridViewColumn.Header>
-                                        </GridViewColumn>
-                                        <GridViewColumn x:Name="headerScanInfo"
-                                                        Width="140"
-                                                        DisplayMemberBinding="{Binding ScanSource}">
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}"
-                                                                      Tag="  Scan Info" />
-                                            </GridViewColumn.Header>
-                                        </GridViewColumn>
-                                        <GridViewColumn x:Name="headerCustomer"
-                                                        Width="242"
-                                                        DisplayMemberBinding="{Binding Customer}">
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}"
-                                                                      Tag="  Customer + Patient" />
-                                            </GridViewColumn.Header>
-                                        </GridViewColumn>
-                                        <GridViewColumn x:Name="headerItems"
-                                                        Width="400"
-                                                        DisplayMemberBinding="{Binding Items}">
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}"
-                                                                      Tag="  Items" />
-                                            </GridViewColumn.Header>
-                                        </GridViewColumn>
-                                        <GridViewColumn x:Name="headerDates"
-                                                        Width="1560"
-                                                        DisplayMemberBinding="{Binding Patient_LastName}">
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader Template="{StaticResource CustomHeader}" />
-                                            </GridViewColumn.Header>
-                                        </GridViewColumn>
-
-                                    </GridView>
-
-                                </ListView.View>
+                                        <GridView AllowsColumnReorder="False">
+                                            <GridViewColumn x:Name="headerIcon"
+                                                            Width="47"
+                                                            DisplayMemberBinding="{Binding PanNumber}">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                          SizeChanged="GridViewColumnHeader_SizeChanged" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
+                                            <GridViewColumn x:Name="headerCaseID"
+                                                            Width="400"
+                                                            DisplayMemberBinding="{Binding IntOrderID}">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                          Tag="  Case ID" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
 
 
-                                <ListView.GroupStyle>
-                                    <GroupStyle>
-                                        <GroupStyle.ContainerStyle>
-                                            <Style TargetType="{x:Type GroupItem}">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate>
-                                                            <Expander IsExpanded="True"
-                                                                      Margin="0,10,0,0"
-                                                                      x:Name="expander">
+                                            <GridViewColumn x:Name="headerPrescription"
+                                                            Width="30">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                          Tag="   Rx"
+                                                                          SizeChanged="GridViewForRxColumnHeader_SizeChanged" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
+                                            <GridViewColumn x:Name="headerScanInfo"
+                                                            Width="140"
+                                                            DisplayMemberBinding="{Binding ScanSource}">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                          Tag="  Scan Info" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
+                                            <GridViewColumn x:Name="headerCustomer"
+                                                            Width="242"
+                                                            DisplayMemberBinding="{Binding Customer}">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                          Tag="  Customer + Patient" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
+                                            <GridViewColumn x:Name="headerItems"
+                                                            Width="400"
+                                                            DisplayMemberBinding="{Binding Items}">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                          Tag="  Items" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
+                                            <GridViewColumn x:Name="headerDates"
+                                                            Width="1560"
+                                                            DisplayMemberBinding="{Binding Patient_LastName}">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
 
-                                                                <i:Interaction.Triggers>
-                                                                    <i:EventTrigger EventName="Loaded">
-                                                                        <i:InvokeCommandAction Command="{Binding DataContext.ExpanderLoadedCommand, 
+                                        </GridView>
+
+                                    </ListView.View>
+
+
+                                    <ListView.GroupStyle>
+                                        <GroupStyle>
+                                            <GroupStyle.ContainerStyle>
+                                                <Style TargetType="{x:Type GroupItem}">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate>
+                                                                <Expander IsExpanded="True"
+                                                                          Margin="0,10,0,0"
+                                                                          x:Name="expander">
+
+                                                                    <i:Interaction.Triggers>
+                                                                        <i:EventTrigger EventName="Loaded">
+                                                                            <i:InvokeCommandAction Command="{Binding DataContext.ExpanderLoadedCommand, 
                                                                                                      RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
-                                                                                               CommandParameter="{Binding ElementName=expander}" />
-                                                                    </i:EventTrigger>
-                                                                    <i:EventTrigger EventName="Collapsed">
-                                                                        <i:InvokeCommandAction Command="{Binding DataContext.ExpanderCollapsedCommand, 
+                                                                                                   CommandParameter="{Binding ElementName=expander}" />
+                                                                        </i:EventTrigger>
+                                                                        <i:EventTrigger EventName="Collapsed">
+                                                                            <i:InvokeCommandAction Command="{Binding DataContext.ExpanderCollapsedCommand, 
                                                                                                      RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
-                                                                                               CommandParameter="{Binding ElementName=expander}" />
-                                                                    </i:EventTrigger>
-                                                                    <i:EventTrigger EventName="Expanded">
-                                                                        <i:InvokeCommandAction Command="{Binding DataContext.ExpanderCollapsedCommand, 
+                                                                                                   CommandParameter="{Binding ElementName=expander}" />
+                                                                        </i:EventTrigger>
+                                                                        <i:EventTrigger EventName="Expanded">
+                                                                            <i:InvokeCommandAction Command="{Binding DataContext.ExpanderCollapsedCommand, 
                                                                                                      RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
-                                                                                               CommandParameter="{Binding ElementName=expander}" />
-                                                                    </i:EventTrigger>
-                                                                </i:Interaction.Triggers>
-                                                                <Expander.Header>
-                                                                    <Grid>
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="auto" />
-                                                                            <ColumnDefinition Width="auto" />
-                                                                            <ColumnDefinition Width="auto" />
-                                                                            <ColumnDefinition />
-                                                                        </Grid.ColumnDefinitions>
+                                                                                                   CommandParameter="{Binding ElementName=expander}" />
+                                                                        </i:EventTrigger>
+                                                                    </i:Interaction.Triggers>
+                                                                    <Expander.Header>
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="auto" />
+                                                                                <ColumnDefinition Width="auto" />
+                                                                                <ColumnDefinition Width="auto" />
+                                                                                <ColumnDefinition />
+                                                                            </Grid.ColumnDefinitions>
 
 
-                                                                        <TextBlock Grid.Column="0"
-                                                                                   Text="{Binding Name, Converter={StaticResource RemoveIDTagFromFrontConverter}}"
-                                                                                   FontWeight="Bold"
-                                                                                   Foreground="Gray"
-                                                                                   FontSize="13"
-                                                                                   VerticalAlignment="Center" />
-                                                                        <TextBlock Grid.Column="1"
-                                                                                   Text="{Binding ItemCount}"
-                                                                                   FontSize="13"
-                                                                                   Foreground="Green"
-                                                                                   FontWeight="Bold"
-                                                                                   FontStyle="Italic"
-                                                                                   Margin="6,0,0,0"
-                                                                                   VerticalAlignment="Center" />
-                                                                        <TextBlock Grid.Column="2"
-                                                                                   Text=" case(s)"
-                                                                                   FontSize="13"
-                                                                                   Foreground="Silver"
-                                                                                   FontStyle="Italic"
-                                                                                   VerticalAlignment="Center" />
-                                                                        <Line Grid.Column="3"
-                                                                              X1='0'
-                                                                              X2="{Binding ActualWidth, Mode=OneWay, 
+                                                                            <TextBlock Grid.Column="0"
+                                                                                       Text="{Binding Name, Converter={StaticResource RemoveIDTagFromFrontConverter}}"
+                                                                                       FontWeight="Bold"
+                                                                                       Foreground="Gray"
+                                                                                       FontSize="13"
+                                                                                       VerticalAlignment="Center" />
+                                                                            <TextBlock Grid.Column="1"
+                                                                                       Text="{Binding ItemCount}"
+                                                                                       FontSize="13"
+                                                                                       Foreground="Green"
+                                                                                       FontWeight="Bold"
+                                                                                       FontStyle="Italic"
+                                                                                       Margin="6,0,0,0"
+                                                                                       VerticalAlignment="Center" />
+                                                                            <TextBlock Grid.Column="2"
+                                                                                       Text=" case(s)"
+                                                                                       FontSize="13"
+                                                                                       Foreground="Silver"
+                                                                                       FontStyle="Italic"
+                                                                                       VerticalAlignment="Center" />
+                                                                            <Line Grid.Column="3"
+                                                                                  X1='0'
+                                                                                  X2="{Binding ActualWidth, Mode=OneWay, 
                                                            RelativeSource={RelativeSource FindAncestor,
                                                            AncestorType={x:Type localView:MainWindow}}}"
-                                                                              Y1='10'
-                                                                              Y2='10'
-                                                                              Stroke="LightGray"
-                                                                              StrokeThickness='1'
-                                                                              Margin="5,0,-1800,0" />
-                                                                    </Grid>
-                                                                </Expander.Header>
-                                                                <ItemsPresenter />
+                                                                                  Y1='10'
+                                                                                  Y2='10'
+                                                                                  Stroke="LightGray"
+                                                                                  StrokeThickness='1'
+                                                                                  Margin="5,0,-1800,0" />
+                                                                        </Grid>
+                                                                    </Expander.Header>
+                                                                    <ItemsPresenter />
 
-                                                            </Expander>
+                                                                </Expander>
 
-                                                        </ControlTemplate>
+                                                            </ControlTemplate>
 
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </GroupStyle.ContainerStyle>
-                                    </GroupStyle>
-                                </ListView.GroupStyle>
-
-
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </GroupStyle.ContainerStyle>
+                                        </GroupStyle>
+                                    </ListView.GroupStyle>
 
 
-                            </ListView>
+
+
+                                </ListView>
                             </Grid>
                         </Border>
                     </Grid>
@@ -2142,6 +2142,7 @@
                 <!--#region INFO TAB -->
                 <TabItem HorizontalAlignment="Right"
                          DockPanel.Dock="Right"
+                         IsSelected="{Binding InfoTabActive}"
                          x:Name="infoTab"
                          IsTabStop="False">
                     <TabItem.Header>
@@ -2168,6 +2169,10 @@
                                  d:Visibility="Visible"
                                  Visibility="Hidden">
                             <Grid Margin="20,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
                                 <StackPanel Panel.ZIndex="10">
                                     <TextBlock Text="Stats Client 2025"
                                                FontSize="26"
@@ -2178,7 +2183,7 @@
                                           HorizontalAlignment="Left">
 
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
 
@@ -2195,7 +2200,7 @@
                                         <TextBlock Text="Current app version:"
                                                    FontSize="12"
                                                    Margin="2,0,10,0"
-                                                   HorizontalAlignment="Right"/>
+                                                   HorizontalAlignment="Right" />
                                         <TextBlock Text="{Binding SoftwareVersion, StringFormat='v\{0}'}"
                                                    d:Text="v1"
                                                    FontSize="12"
@@ -2211,7 +2216,7 @@
                                                    d:Visibility="Visible"
                                                    Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
                                                    Margin="2,0,10,0"
-                                                   HorizontalAlignment="Right"/>
+                                                   HorizontalAlignment="Right" />
                                         <TextBlock Text="{Binding LatestAppVersion, StringFormat='v\{0}'}"
                                                    d:Text="v2"
                                                    FontSize="12"
@@ -2226,7 +2231,7 @@
                                                    FontSize="12"
                                                    Grid.Row="2"
                                                    Margin="2,10,10,0"
-                                                   HorizontalAlignment="Right"/>
+                                                   HorizontalAlignment="Right" />
                                         <TextBlock Text="{Binding TotalMemoryInGiB, StringFormat='\{0} GiB'}"
                                                    d:Text="350 MB"
                                                    FontSize="12"
@@ -2239,7 +2244,7 @@
                                                    FontSize="12"
                                                    Grid.Row="3"
                                                    Margin="2,0,10,0"
-                                                   HorizontalAlignment="Right"/>
+                                                   HorizontalAlignment="Right" />
                                         <TextBlock Text="{Binding CurrentMemoryUsage, StringFormat='\{0} MiB'}"
                                                    d:Text="350 MB"
                                                    FontSize="12"
@@ -2252,7 +2257,7 @@
                                                    FontSize="12"
                                                    Grid.Row="4"
                                                    Margin="2,10,10,0"
-                                                   HorizontalAlignment="Right"/>
+                                                   HorizontalAlignment="Right" />
                                         <TextBlock Text="{Binding SearchLimit}"
                                                    d:Text="200"
                                                    FontSize="12"
@@ -2285,10 +2290,49 @@
                                                 Margin="0,30,0,0"
                                                 Click="SettingsButton_Click" />
 
-                                        
+
                                     </Grid>
                                 </StackPanel>
 
+                                <Grid Grid.Column="1"
+                                      Margin="0,0,0,0"
+                                      HorizontalAlignment="Right">
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Services Health Report"
+                                               FontSize="16"
+                                               FontWeight="Thin"
+                                               HorizontalAlignment="Right" />
+
+                                    <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                                                  Grid.Row="1"
+                                                  HorizontalAlignment="Right">
+                                        <StackPanel Margin="0,0,0,0"
+                                                    HorizontalAlignment="Right">
+
+                                            <ListView Background="Transparent"
+                                                      Grid.Row="1"
+                                                      Margin="0,8,0,0"
+                                                      IsEnabled="False"
+                                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                      BorderThickness="0"
+                                                      ItemsSource="{Binding HealthReports}"
+                                                      ItemContainerStyle="{StaticResource LvSentHealthReports}"
+                                                      Style="{StaticResource HealthReportListView}">
+                                                <ListView.View>
+                                                    <GridView ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
+                                                        <GridViewColumn x:Name="serviceHealthListTaskName"
+                                                                        Width="auto" />
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Grid>
                             </Grid>
 
                         </TabItem>
@@ -2517,7 +2561,7 @@
                                                            FontSize="26"
                                                            FontWeight="Thin" />
 
-                                                
+
 
                                                 <CheckBox Content="Show newly arrived digital cases count"
                                                           Foreground="MintCream"
@@ -3348,7 +3392,7 @@
                                    Margin="5,0,15,0" />
                     </StackPanel>
 
-                    
+
                 </DockPanel>
 
 
@@ -3386,7 +3430,7 @@
                                        Margin="5,0,15,0" />
                         </StackPanel>
 
-                        
+
                     </Grid>
                 </StackPanel>
             </Grid>

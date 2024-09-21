@@ -36,6 +36,7 @@ using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
 using StatsClient.UserControls;
 using System.Windows.Media.Effects;
+using System.Net;
 
 
 
@@ -183,6 +184,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private bool infoTabActive = false;
+    public bool InfoTabActive
+    {
+        get => infoTabActive;
+        set
+        {
+            infoTabActive = value;
+            RaisePropertyChanged(nameof(InfoTabActive));
+        }
+    }
+    
     private bool serverIsWritingDatabase = false;
     public bool ServerIsWritingDatabase
     {
@@ -193,7 +205,18 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ServerIsWritingDatabase));
         }
     }
-    
+
+    private ObservableCollection<HealthReportModel> healthReports = [];
+    public ObservableCollection<HealthReportModel> HealthReports
+    {
+        get => healthReports;
+        set
+        {
+            healthReports = value;
+            RaisePropertyChanged(nameof(HealthReports));
+        }
+    }
+
     private bool updateAvailable = false;
     public bool UpdateAvailable
     {
@@ -6835,6 +6858,23 @@ public class MainViewModel : ObservableObject
             
             await Task.Run(LookForPendingTask);
         }));
+
+        if (InfoTabActive)
+        {
+            if (DateTime.Now.Second % 2 == 0)
+            {
+                Debug.WriteLine("Getting health reports.. (2)");
+                HealthReports = await Task.Run(GetHealthReportsAsync);
+            }
+        }
+        else
+        {
+            if (DateTime.Now.Second % 30 == 0)
+            {
+                Debug.WriteLine("Getting health reports.. (30)");
+                HealthReports = await Task.Run(GetHealthReportsAsync);
+            }
+        }
 
 
         if (second % 15 == 0 || FirstRun)

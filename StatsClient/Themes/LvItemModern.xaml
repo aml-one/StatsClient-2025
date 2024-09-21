@@ -29,6 +29,8 @@
     <converters:EmptyAppNameToCollapsedConverter x:Key="EmptyAppNameToCollapsedConverter" />
     <converters:EmptyAppNameToVisibleConverter x:Key="EmptyAppNameToVisibleConverter" />
     <converters:EmailToWebsiteConverter x:Key="EmailToWebsiteConverter" />
+    <converters:ServiceStatusToIconConverter x:Key="ServiceStatusToIconConverter" />
+    <converters:DateToMinutesConverter x:Key="DateToMinutesConverter" />
 
 
     <!-- LvItemSimple -->
@@ -250,7 +252,7 @@
     </Style>
 
     -->
-    
+
     <!-- LvItemFolderSubscription -->
     <Style TargetType="ListViewItem"
            x:Key="LvItemFolderSubscription">
@@ -520,40 +522,40 @@
                                         <DataTemplate>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="32"/>
-                                                    <ColumnDefinition Width="38"/>
-                                                    <ColumnDefinition Width="36"/>
-                                                    <ColumnDefinition Width="52"/>
+                                                    <ColumnDefinition Width="32" />
+                                                    <ColumnDefinition Width="38" />
+                                                    <ColumnDefinition Width="36" />
+                                                    <ColumnDefinition Width="52" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="{Binding Year}"
                                                            FontFamily="pack://application:,,,/Fonts/#RobotoMono"
-                                                           FontWeight="Normal" 
-                                                           Grid.Column="0"/>
-                                                
+                                                           FontWeight="Normal"
+                                                           Grid.Column="0" />
+
                                                 <TextBlock Text="{Binding Date}"
                                                            FontFamily="pack://application:,,,/Fonts/#RobotoMono"
                                                            FontWeight="Normal"
                                                            Margin="4,0,0,0"
-                                                           Grid.Column="1"/>
-                                                
+                                                           Grid.Column="1" />
+
                                                 <TextBlock Text="{Binding Day}"
                                                            FontFamily="pack://application:,,,/Fonts/#RobotoMono"
-                                                           FontWeight="Normal" 
+                                                           FontWeight="Normal"
                                                            HorizontalAlignment="Center"
-                                                           Grid.Column="2"/>
-                                                
+                                                           Grid.Column="2" />
+
                                                 <TextBlock Text="{Binding Time}"
                                                            FontFamily="pack://application:,,,/Fonts/#RobotoMono"
-                                                           FontWeight="Normal" 
+                                                           FontWeight="Normal"
                                                            HorizontalAlignment="Right"
-                                                           Grid.Column="3"/>
-                                                
+                                                           Grid.Column="3" />
+
                                                 <TextBlock Text="{Binding DesignerName}"
                                                            FontFamily="pack://application:,,,/Fonts/#RobotoMono"
-                                                           FontWeight="SemiBold" 
+                                                           FontWeight="SemiBold"
                                                            Margin="16,0,0,0"
-                                                           Grid.Column="4"/>
+                                                           Grid.Column="4" />
                                             </Grid>
                                         </DataTemplate>
                                     </MenuItem.ItemTemplate>
@@ -868,7 +870,7 @@
                                     Property="BorderBrush"
                                     Value="Transparent" />
                         </DataTrigger>
-                        
+
                         <DataTrigger Binding="{Binding PanColor}"
                                      Value="Transparent">
                             <Setter TargetName="Item"
@@ -2230,5 +2232,90 @@
         </Setter>
     </Style>
 
+
+    <!-- LvSentHealthReports -->
+    <Style TargetType="ListViewItem"
+           x:Key="LvSentHealthReports">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="Item"
+                            BorderThickness="1">
+
+                        <Grid Margin="1,0,1,6"
+                              HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition  Width="{Binding ElementName=serviceHealthListTaskName, Path=Width}" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid HorizontalAlignment="Right">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="24" />
+                                </Grid.ColumnDefinitions>
+
+
+
+                                <TextBlock Text="{Binding TaskName}"
+                                           Foreground="{Binding ForeColor}"
+                                           HorizontalAlignment="Right"
+                                           FontWeight="Normal"
+                                           FontSize="11"
+                                           TextTrimming="CharacterEllipsis"
+                                           Margin="0,0,0,0"
+                                           Padding="10,2,0,4"
+                                           Grid.Column="0" />
+                                
+                                <StackPanel Grid.Row="1"
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Right">
+                                    <TextBlock Text="{Binding ServiceStatus}"
+                                               Foreground="LightYellow"
+                                               FontWeight="Normal"
+                                               FontSize="9"
+                                               HorizontalAlignment="Right"
+                                               TextTrimming="CharacterEllipsis"
+                                               Margin="0,-7,0,0"
+                                               Padding="11,2,0,4" />
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Last report:"
+                                                   Foreground="#DDD"
+                                                   FontWeight="Normal"
+                                                   FontSize="8"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Margin="5,-6,0,0"
+                                                   Padding="2,2,2,0" />
+                                        <TextBlock Text="{Binding LastReport, Converter={StaticResource DateToMinutesConverter}}"
+                                                   Foreground="#e1e3aa"
+                                                   FontWeight="Normal"
+                                                   FontSize="8"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Margin="0,-6,0,0"
+                                                   Padding="2,2,2,0" />
+                                    </StackPanel>
+
+                                </StackPanel>
+                                
+                                <Image Source="{Binding ServiceStatus, Converter={StaticResource ServiceStatusToIconConverter}}"
+                                       Margin="0,2,-6,0"
+                                       Grid.RowSpan="2"
+                                       Width="28"
+                                       Height="28"
+                                       VerticalAlignment="Top"
+                                       Grid.Column="1" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

@@ -18,6 +18,182 @@ namespace StatsClient.MVVM.Core;
 public partial class DatabaseOperations
 {
 
+    public static async Task<ObservableCollection<HealthReportModel>>? GetHealthReportsAsync()
+    {
+        ObservableCollection<HealthReportModel> modelList = [];
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = @"SELECT * FROM dbo.ServiceHealth";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+            /*
+              TaskName
+              ServiceName
+              LastReport
+              OneBeforeLastReport
+              ExpectedDifference
+              ExpectedDifferenceNightTime
+              NightHoursStart
+              NightHoursEnd
+              CurrentTime
+              NoNightTime
+            */
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                string currentTime = reader["CurrentTime"].ToString()!;
+                string serviceStatus = "Healthy";
+                string foreColor = "LightGreen";
+
+                _ = int.TryParse(reader["ExpectedDifference"].ToString(), out int expectedDifference);
+                _ = int.TryParse(reader["ExpectedDifferenceNightTime"].ToString(), out int expectedDifferenceNightTime);
+                _ = int.TryParse(reader["NightHoursStart"].ToString(), out int nightHoursStart);
+                _ = int.TryParse(reader["NightHoursEnd"].ToString(), out int nightHoursEnd);
+                bool notRunningNightTime = false;
+
+                if (reader["NoNightTime"].ToString() == "1")
+                    notRunningNightTime = true;
+
+                string lastReport = reader["LastReport"].ToString()!;
+                string oneBeforeLastReport = reader["OneBeforeLastReport"].ToString()!;
+                double calculatedDifference = -1;
+                double lastReportVsTimeNowDifference = -1;
+                double TwentyPercent = expectedDifference * 0.2;
+                double FourtyPercent = expectedDifference * 0.4;
+
+                int hours = DateTime.Now.Hour;
+                if (!notRunningNightTime && (hours >= nightHoursStart || hours <= nightHoursEnd))
+                    expectedDifference = expectedDifferenceNightTime;
+
+                DateTime TimeNow = DateTime.Now;
+
+                if (DateTime.TryParse(currentTime, out DateTime dtCurrentTime))
+                {
+                    if (DateTime.TryParse(lastReport, out DateTime dtLastReport))
+                    {
+                        if (DateTime.TryParse(oneBeforeLastReport, out DateTime dtOneBeforeLastReport))
+                        {
+                            calculatedDifference = (dtLastReport - dtOneBeforeLastReport).TotalSeconds;
+                            lastReportVsTimeNowDifference = (TimeNow - dtLastReport).TotalSeconds;
+
+                            // supposed to run night time
+                            if (!notRunningNightTime)
+                            {
+                                if (hours >= nightHoursStart || hours <= nightHoursEnd)
+                                {
+                                    if (calculatedDifference < expectedDifference + 300)
+                                    {
+                                        if (Math.Round(lastReportVsTimeNowDifference) < expectedDifference + 60)
+                                        {
+                                            serviceStatus = "Healthy";
+                                            goto CheckColor;
+                                        }
+                                    }
+                                }
+                            }
+                            // supossed to sleep night time
+                            else
+                            {
+                                if (hours >= nightHoursStart || hours <= nightHoursEnd)
+                                {
+                                    if (calculatedDifference < expectedDifference + 300)
+                                    {
+                                        if (Math.Round(lastReportVsTimeNowDifference) < expectedDifference + 12 * 60 * 60)
+                                        {
+                                            serviceStatus = "Sleeping";
+                                            goto CheckColor;
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            if ((TimeNow - dtCurrentTime).TotalSeconds > 75 || lastReportVsTimeNowDifference > expectedDifference + 90)
+                            {
+                                serviceStatus = "Dead / Stopped";
+                                goto CheckColor;
+                            }
+
+                            if (calculatedDifference > expectedDifference + 50 || lastReportVsTimeNowDifference > expectedDifference + 70)
+                            {
+                                serviceStatus = "Struggling";
+                                goto CheckColor;
+                            }
+
+                            if (calculatedDifference > expectedDifference + 25 || lastReportVsTimeNowDifference > expectedDifference + 40)
+                            {
+                                serviceStatus = "Late to report";
+                                goto CheckColor;
+                            }
+                        }
+                        else
+                        {
+                            serviceStatus = "Dead / Stopped";
+                        }
+                    }
+                    else
+                    {
+                        serviceStatus = "Dead / Stopped";
+                    }
+                }
+                else
+                {
+                    serviceStatus = "Dead / Stopped";
+                }
+
+            CheckColor:
+
+                switch (serviceStatus)
+                {
+                    case "Healthy":
+                        foreColor = "LightGreen";
+                        break;
+
+                    case "Sleeping":
+                        foreColor = "LightBlue";
+                        break;
+
+                    case "Late to report":
+                        foreColor = "Yellow";
+                        break;
+
+                    case "Struggling":
+                        foreColor = "#f5bd5d";
+                        break;
+
+                    case "Dead / Stopped":
+                        foreColor = "#ff7a95";
+                        break;
+                }
+
+                modelList.Add(new HealthReportModel
+                {
+                    TaskName = reader["TaskName"].ToString(),
+                    ServiceName = reader["ServiceName"].ToString(),
+                    LastReport = lastReport,
+                    OneBeforeLastReport = oneBeforeLastReport,
+                    ExpectedDifference = expectedDifference,
+                    ExpectedDifferenceNightTime = expectedDifferenceNightTime,
+                    NightHoursStart = nightHoursStart,
+                    NightHoursEnd = nightHoursEnd,
+                    CurrentTime = currentTime,
+                    NoNightTime = notRunningNightTime,
+                    ServiceStatus = serviceStatus,
+                    ForeColor = foreColor,
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[" + ex.LineNumber() + "] (DataBaseOperations)" + ex.Message);
+        }
+
+        return modelList;
+    }
+
     public static async Task<TaskModel> GetPendingTaskFromDatabase()
     {
         string lastCommandID = await GetLastCommandId();
