@@ -2697,15 +2697,7 @@ public class MainViewModel : ObservableObject
         }
     }
     
-    public void SwitchToSmartOrderNamesTab()
-    {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            _MainWindow.applicationsTabControl.SelectedItem = _MainWindow.smartOrderNamesTab;
-            _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
-        });
-    }
-    
+        
     private void SwitchToPrescriptionMakerTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -4794,6 +4786,14 @@ public class MainViewModel : ObservableObject
     private void CbSettingModuleSmartOrderNamesMethod()
     {
         WriteLocalSetting("ModuleSmartOrderNames", CbSettingModuleSmartOrderNames.ToString());
+
+        if (MainMenuViewModel.StaticInstance is not null)
+        {
+            if (CbSettingModuleSmartOrderNames)
+                MainMenuViewModel.StaticInstance.ShowSmartRenameMenuItem();
+            else
+                MainMenuViewModel.StaticInstance.HideSmartRenameMenuItem();
+        }
     }
     
     private void CbSettingModuleDebugMethod()

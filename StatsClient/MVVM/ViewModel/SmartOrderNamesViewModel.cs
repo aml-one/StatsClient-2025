@@ -2,6 +2,7 @@
 using StatsClient.MVVM.Model;
 using static StatsClient.MVVM.Core.DatabaseOperations;
 using static StatsClient.MVVM.Core.Functions;
+using static StatsClient.MVVM.Core.LocalSettingsDB;
 using System.Collections.ObjectModel;
 using System.Timers;
 using StatsClient.MVVM.View;
@@ -152,6 +153,17 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         {
             autoSelectFirstOrder = value;
             RaisePropertyChanged(nameof(AutoSelectFirstOrder));
+        }
+    }
+    
+    private bool smartOrderNamesModuleIsActive = true;
+    public bool SmartOrderNamesModuleIsActive
+    {
+        get => smartOrderNamesModuleIsActive;
+        set
+        {
+            smartOrderNamesModuleIsActive = value;
+            RaisePropertyChanged(nameof(SmartOrderNamesModuleIsActive));
         }
     }
     
@@ -378,8 +390,8 @@ public partial class SmartOrderNamesViewModel : ObservableObject
 
         ThreeShapeDirectoryHelper = GetServerFileDirectory();
 
-
-        //Timer_Elapsed(null, null);
+        _ = bool.TryParse(ReadLocalSetting("ModuleSmartOrderNames"), out bool moduleSmartOrderNames);
+        SmartOrderNamesModuleIsActive = moduleSmartOrderNames;
     }
 
     private void CloseWindow()
@@ -398,11 +410,6 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             {
                 FirstOrderSelected = true;
                 SelectedOrder = NewOrdersByMe[0];
-                //if (MainViewModel.Instance.CbSettingModuleSmartOrderNames && JumpToSmartOrderNamesTabWhenNewOrder)
-                //{
-                //    MainViewModel.Instance.SwitchToSmartOrderNamesTab();
-
-                //}
             }
         }
     }
@@ -626,19 +633,25 @@ public partial class SmartOrderNamesViewModel : ObservableObject
 
     private async void Timer_Elapsed(object? sender, ElapsedEventArgs e)
     {
+        _ = bool.TryParse(ReadLocalSetting("ModuleSmartOrderNames"), out bool moduleSmartOrderNames);
 
-        NewOrdersByMe = await GetNewOrdersCreatedByMe(ShowCasesWithoutNumber);
+        SmartOrderNamesModuleIsActive = moduleSmartOrderNames;
 
-        if (AutoSelectFirstOrder && NewOrdersByMe.Count > 0 && !FirstOrderSelected)
+        if (SmartOrderNamesModuleIsActive)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            NewOrdersByMe = await GetNewOrdersCreatedByMe(ShowCasesWithoutNumber);
+
+            if (AutoSelectFirstOrder && NewOrdersByMe.Count > 0 && !FirstOrderSelected)
             {
-                MainMenuViewModel.StaticInstance.HideSmartRenameMenuItem();
-                SelectFirstOrder();
-                _timer.Stop();
-                MainViewModel.Instance.SmartOrderNamesWindow.ShowDialog();
-                _timer.Start();
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MainMenuViewModel.StaticInstance.HideSmartRenameMenuItem();
+                    SelectFirstOrder();
+                    _timer.Stop();
+                    MainViewModel.Instance.SmartOrderNamesWindow.ShowDialog();
+                    _timer.Start();
+                });
+            }
         }
     }
 

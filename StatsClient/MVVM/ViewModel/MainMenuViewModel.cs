@@ -1,8 +1,8 @@
 ﻿using StatsClient.MVVM.Core;
 using StatsClient.MVVM.Model;
 using StatsClient.MVVM.View;
-using System.Diagnostics;
 using System.Windows;
+using static StatsClient.MVVM.Core.LocalSettingsDB;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -67,39 +67,52 @@ public class MainMenuViewModel : ObservableObject
         CloseMainMenuCommand = new RelayCommand(o => CloseMainMenu());
         RunCommandCommand = new RelayCommand(o => RunCommand());
 
+        _ = bool.TryParse(ReadLocalSetting("ModuleSmartOrderNames"), out bool moduleSmartOrderNames);
+        
+        if (moduleSmartOrderNames)
+            ShowSmartRenameMenuItem();
+        else
+            HideSmartRenameMenuItem();
+    }
+
+    private void BuildMenu(string hideMenuItems = "", bool hideItems = true)
+    {
+        MenuItems.Clear();
         MenuItems =
         [
-            new MainMenuItemModel { Icon = "/Images/ToolBar/update.png", Header = "Look for update", Command = "lookForUpdate" },
-            new MainMenuItemModel { Icon = "/Images/ToolBar/folder.png", Header = "Open Manufacturing folder", Command = "openManufFolder"},
-            new MainMenuItemModel { Icon = "/Images/ToolBar/folder.png", Header = "Open Trios Inbox folder", Command = "openTriosInbox"},
-            new MainMenuItemModel { Icon = "/Images/ToolBar/rename.png", Header = "Open Smart Rename Window", Command = "openSmartRenameWindw"},
+            new MainMenuItemModel { Icon = "/Images/ToolBar/update.png", Header = "Look for update", Command = "lookForUpdate", Visible = GetVisibility(hideMenuItems, hideItems, "lookForUpdate") },
+            new MainMenuItemModel { Icon = "/Images/ToolBar/folder.png", Header = "Open Manufacturing folder", Command = "openManufFolder", Visible = GetVisibility(hideMenuItems, hideItems, "openManufFolder")},
+            new MainMenuItemModel { Icon = "/Images/ToolBar/folder.png", Header = "Open Trios Inbox folder", Command = "openTriosInbox", Visible = GetVisibility(hideMenuItems, hideItems, "openTriosInbox")},
+            new MainMenuItemModel { Icon = "/Images/ToolBar/rename.png", Header = "Smart Order Names", Command = "openSmartRenameWindw", Visible = GetVisibility(hideMenuItems, hideItems, "openSmartRenameWindw")},
         ];
+    }
+
+    private Visibility GetVisibility(string hideMenuItems, bool hidingItems, string menuCommand)
+    {
+        if (hidingItems)
+        {
+            if (hideMenuItems.Contains(menuCommand))
+                return Visibility.Collapsed;
+            else 
+                return Visibility.Visible;
+        }
+        else
+        {
+            if (hideMenuItems.Contains(menuCommand))
+                return Visibility.Visible;
+            else
+                return Visibility.Collapsed;
+        }
     }
 
     public void ShowSmartRenameMenuItem()
     {
-        Debug.WriteLine("hit 2");
-
-        List<MainMenuItemModel> menu = MenuItems;
-
-        menu.FirstOrDefault(x => x.Command == "openSmartRenameWindw").Visible = Visibility.Visible;
-
-        MenuItems = menu;
+        BuildMenu("lookForUpdate|openManufFolder|openTriosInbox|openSmartRenameWindw", false);
     }
     
     public void HideSmartRenameMenuItem()
     {
-        List<MainMenuItemModel> menu = MenuItems;
-
-        foreach (var item in menu)
-        {
-            if (item.Command == "openSmartRenameWindw")
-            {
-                item.Visible = Visibility.Collapsed;
-            }
-        }
-
-        MenuItems = menu;
+        BuildMenu("openSmartRenameWindw", true);
     }
 
     private void CloseMainMenu()
