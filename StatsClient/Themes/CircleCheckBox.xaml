@@ -7,7 +7,8 @@
                 <ControlTemplate TargetType="{x:Type CheckBox}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="{TemplateBinding Height}"/>
+                            <!--ColumnDefinition Width="{TemplateBinding Height}"/-->
+                            <ColumnDefinition Width="auto"/>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Ellipse x:Name="E_Filling" Margin="1.5" StrokeThickness="1.5" Stroke="#0A0C0D">
@@ -48,7 +49,7 @@
                         
                         <ContentPresenter Grid.Column="1" 
                                           Content="{TemplateBinding Content}"
-                                          HorizontalAlignment="Center" 
+                                          HorizontalAlignment="Left" 
                                           VerticalAlignment="Center"
                                           Margin="2,0,0,1"
                                           />

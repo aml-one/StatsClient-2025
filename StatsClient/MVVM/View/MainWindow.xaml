@@ -18,6 +18,7 @@
         Foreground="Beige"
         Closing="Window_Closing"
         LocationChanged="Window_LocationChanged"
+        Loaded="Window_Loaded"
         SizeChanged="Window_SizeChanged"
         Title="Stats Client 2025"
         Height="550"
@@ -173,6 +174,16 @@
             </Grid.ColumnDefinitions>
 
 
+            <localView:MainMenu Panel.ZIndex="200"
+                                Grid.ColumnSpan="2"
+                                Grid.RowSpan="3"
+                                Visibility="{Binding DataContext.MainMenuOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                d:Visibility="Visible"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Margin="3,0,0,35"/>
+
+
 
             <!--#region TITLEBAR-->
 
@@ -318,10 +329,11 @@
                            x:Name="programIcon"
                            Panel.ZIndex="200"
                            DockPanel.Dock="Bottom"
+                           Cursor="Hand"
                            Margin="1,5,5,9">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDown">
-                                <i:InvokeCommandAction Command="{Binding LookForUpdateCommand}" />
+                                <i:InvokeCommandAction Command="{Binding OpenCloseMenuCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Image>
@@ -2085,8 +2097,8 @@
                                  d:Visibility="Visible"
                                  x:Name="smartOrderNamesTab"
                                  Style="{StaticResource applicationsTabItem}">
-                            <localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}"
-                                                           Margin="-1,1,-1,0" />
+                            <!--localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}"
+                                                           Margin="-1,1,-1,0" /-->
                         </TabItem>
 
                         <TabItem IsTabStop="False"
@@ -2690,12 +2702,12 @@
                                                                        d:Text="C:\ExampleFolder"
                                                                        Cursor="Hand"
                                                                        ToolTip="Click here to browse &amp; setup a new folder">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="MouseDown">
-                                                            <i:InvokeCommandAction Command="{Binding PmSelectTargetFolderCommand}"
-                                                                                   CommandParameter="PmWatchedPdfFolder" />
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
+                                                                <i:Interaction.Triggers>
+                                                                    <i:EventTrigger EventName="MouseDown">
+                                                                        <i:InvokeCommandAction Command="{Binding PmSelectTargetFolderCommand}"
+                                                                                               CommandParameter="PmWatchedPdfFolder" />
+                                                                    </i:EventTrigger>
+                                                                </i:Interaction.Triggers>
                                                             </TextBlock>
 
                                                         </StackPanel>

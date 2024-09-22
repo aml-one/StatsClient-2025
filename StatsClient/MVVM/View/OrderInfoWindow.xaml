@@ -37,6 +37,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Themes/ScrollBar.xaml" />
                 <ResourceDictionary Source="/Themes/LvItemModern.xaml" />
+                <ResourceDictionary Source="/Themes/ControlStyles.xaml" />
                 <ResourceDictionary Source="/Themes/TabControlStyles.xaml" />
                 <ResourceDictionary Source="/Themes/CircleCheckBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -104,16 +105,16 @@
                                  FontWeight="Light"
                                  d:Text="OrderID" />
 
-                        
-                        
-                        
+
+
+
                         <Grid PreviewMouseDown="TitleBar_PreviewMouseDown"
                               Cursor="Hand">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*" />
                             </Grid.ColumnDefinitions>
-                            
-                            <TextBlock Text=" "/>
+
+                            <TextBlock Text=" " />
                         </Grid>
                     </DockPanel>
                 </Border>
@@ -130,12 +131,13 @@
                         <DockPanel LastChildFill="False">
                             <TextBlock Text="FIRST NAME"
                                        DockPanel.Dock="Left" />
-                            <Border CornerRadius="4"
+                            <Border CornerRadius="7"
                                     BorderThickness="1"
                                     BorderBrush="MistyRose"
                                     DockPanel.Dock="Right"
                                     Margin="15,0,0,0"
                                     Width="50"
+                                    ClipToBounds="True"
                                     UseLayoutRounding="True">
                                 <Button HorizontalAlignment="Center"
                                         Width="50"
@@ -145,6 +147,8 @@
                                         Foreground="MistyRose"
                                         Background="Transparent"
                                         Tag="{Binding FirstName}"
+                                        Command="{Binding SearchCommand}"
+                                        CommandParameter="{Binding FirstName}"
                                         Cursor="Hand">
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}">
@@ -155,6 +159,7 @@
                                                     <ControlTemplate TargetType="{x:Type Button}">
                                                         <Border x:Name="Border"
                                                                 Background="{TemplateBinding Background}"
+                                                                ClipToBounds="True"
                                                                 CornerRadius="4">
                                                             <ContentPresenter HorizontalAlignment="Center"
                                                                               VerticalAlignment="Center" />
@@ -185,12 +190,13 @@
                     <StackPanel Grid.Column="1">
                         <DockPanel LastChildFill="False">
                             <TextBlock Text="LAST NAME" />
-                            <Border CornerRadius="4"
+                            <Border CornerRadius="7"
                                     BorderThickness="1"
                                     BorderBrush="MistyRose"
                                     DockPanel.Dock="Right"
                                     Margin="15,0,0,0"
                                     Width="50"
+                                    ClipToBounds="True"
                                     UseLayoutRounding="True">
                                 <Button HorizontalAlignment="Center"
                                         Width="50"
@@ -200,6 +206,8 @@
                                         Foreground="MistyRose"
                                         Background="Transparent"
                                         Tag="{Binding LastName}"
+                                        Command="{Binding SearchCommand}"
+                                        CommandParameter="{Binding LastName}"
                                         Cursor="Hand">
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}">
@@ -210,6 +218,7 @@
                                                     <ControlTemplate TargetType="{x:Type Button}">
                                                         <Border x:Name="Border"
                                                                 Background="{TemplateBinding Background}"
+                                                                ClipToBounds="True"
                                                                 CornerRadius="4">
                                                             <ContentPresenter HorizontalAlignment="Center"
                                                                               VerticalAlignment="Center" />
@@ -251,6 +260,12 @@
                                     Cursor="Hand"
                                     Tag="{Binding ThreeShapeObject.PanNumber}"
                                     ToolTip="Search for this pan number..">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding SearchCommand}"
+                                                               CommandParameter="{Binding ThreeShapeObject.PanNumber}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Border CornerRadius="2"
                                         Background="White"
                                         BorderBrush="#DDD"
@@ -261,7 +276,7 @@
                                                HorizontalAlignment="Center"
                                                Foreground="Black"
                                                Padding="0,0"
-                                               Margin="-2,-4,-2,0"
+                                               Margin="-2,-3,-2,-1"
                                                FontSize="20"
                                                FontWeight="Bold"
                                                x:Name="tbPanNumber" />
@@ -271,12 +286,13 @@
 
                         <StackPanel  HorizontalAlignment="Right">
                             <DockPanel LastChildFill="False">
-                                <Border CornerRadius="4"
+                                <Border CornerRadius="7"
                                         BorderThickness="1"
                                         BorderBrush="MistyRose"
                                         DockPanel.Dock="Left"
                                         Margin="0,0,15,0"
                                         Width="50"
+                                        ClipToBounds="True"
                                         UseLayoutRounding="True">
                                     <Button HorizontalAlignment="Center"
                                             Width="50"
@@ -286,6 +302,8 @@
                                             Foreground="MistyRose"
                                             Background="Transparent"
                                             Tag="{Binding Customer}"
+                                            Command="{Binding SearchCommand}"
+                                            CommandParameter="{Binding Customer}"
                                             Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
@@ -296,6 +314,7 @@
                                                         <ControlTemplate TargetType="{x:Type Button}">
                                                             <Border x:Name="Border"
                                                                     Background="{TemplateBinding Background}"
+                                                                    ClipToBounds="True"
                                                                     CornerRadius="4">
                                                                 <ContentPresenter HorizontalAlignment="Center"
                                                                                   VerticalAlignment="Center" />
@@ -331,7 +350,7 @@
                 </Grid>
 
 
-                <TabControl Grid.Row="2" 
+                <TabControl Grid.Row="2"
                             SelectionChanged="TabControl_SelectionChanged">
                     <TabItem Header="Overview"
                              AllowDrop="True"
@@ -583,45 +602,89 @@
                                 </Grid>
                             </ScrollViewer>
 
-                            <Border Grid.Column="1"
-                                    BorderBrush="#CCC"
-                                    BorderThickness="1"
-                                    x:Name="borderLastTouchedByPanel">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <StackPanel Background="#fffff3">
-                                        <TextBlock Text="Last Touched By"
-                                                   FontSize="12"
-                                                   Foreground="Black"
-                                                   HorizontalAlignment="Center"
-                                                   FontWeight="SemiBold" />
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="2" />
+                                    <RowDefinition MaxHeight="105"
+                                                   MinHeight="10"/>
+                                </Grid.RowDefinitions>
 
-                                        <StackPanel x:Name="panelLastTouchedBy"
-                                                    ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                                    Margin="15">
-                                            <StackPanel Margin="0,0,0,8">
-                                                <TextBlock Text="Stats Server"
-                                                           FontSize="12"
-                                                           Foreground="Black"
-                                                           FontWeight="SemiBold" />
-                                                <TextBlock Text="Saturday - 11/4/2023 4:40:29 AM"
-                                                           FontSize="9"
-                                                           Foreground="#666" />
+                                <Border Grid.Row="0"
+                                        BorderBrush="#CCC"
+                                        BorderThickness="1"
+                                        x:Name="borderLastTouchedByPanel">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <StackPanel Background="#ffffea">
+                                            <TextBlock Text="Last Touched By"
+                                                       FontSize="12"
+                                                       Foreground="Black"
+                                                       HorizontalAlignment="Center"
+                                                       FontWeight="SemiBold" />
+
+                                            <StackPanel x:Name="panelLastTouchedBy"
+                                                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                                        Margin="15">
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <TextBlock Text="Stats Server"
+                                                               FontSize="12"
+                                                               Foreground="Black"
+                                                               FontWeight="SemiBold" />
+                                                    <TextBlock Text="Saturday - 11/4/2023 4:40:29 AM"
+                                                               FontSize="9"
+                                                               Foreground="#666" />
+                                                </StackPanel>
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <TextBlock Text="Stats Server"
+                                                               Foreground="Black"
+                                                               FontWeight="SemiBold" />
+                                                    <TextBlock Text="Saturday - 11/4/2023 4:40:29 AM"
+                                                               FontSize="9"
+                                                               Foreground="#666" />
+                                                </StackPanel>
+
+
                                             </StackPanel>
-                                            <StackPanel Margin="0,0,0,8">
-                                                <TextBlock Text="Stats Server"
-                                                           Foreground="Black"
-                                                           FontWeight="SemiBold" />
-                                                <TextBlock Text="Saturday - 11/4/2023 4:40:29 AM"
-                                                           FontSize="9"
-                                                           Foreground="#666" />
-                                            </StackPanel>
-                                            
 
                                         </StackPanel>
+                                    </ScrollViewer>
+                                </Border>
 
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </Border>
+
+                                <Grid Grid.Row="2" Background="Transparent">
+                                    <Grid.ContextMenu>
+                                        <ContextMenu x:Name="designerContextMenu" />
+                                    </Grid.ContextMenu>
+
+                                    <Border BorderBrush="#CCC"
+                                        BorderThickness="1"
+                                        x:Name="borderLastDesignedByPanel">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <StackPanel Background="#daffff">
+                                            <TextBlock Text="Designed By"
+                                                       FontSize="12"
+                                                       Foreground="Black"
+                                                       HorizontalAlignment="Center"
+                                                       FontWeight="SemiBold" />
+
+                                            <StackPanel x:Name="panelLastDesignedBy"
+                                                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                                        Margin="15">
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <TextBlock Text="Designer Name"
+                                                               Foreground="Black"
+                                                               FontWeight="SemiBold" />
+                                                    <TextBlock Text="Saturday - 11/4/2023 4:40:29 AM"
+                                                               FontSize="9"
+                                                               Foreground="#666" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Border>
+
+                                </Grid>
+                            </Grid>
 
                         </Grid>
 
@@ -635,7 +698,7 @@
                             </Grid.RowDefinitions>
 
 
-                            <StackPanel Grid.Row="0" 
+                            <StackPanel Grid.Row="0"
                                         Orientation="Horizontal">
                                 <StackPanel.Background>
                                     <LinearGradientBrush StartPoint="0 0"
@@ -722,8 +785,8 @@
                                            Margin="3,0,13,0"
                                            Foreground="Silver"
                                            VerticalAlignment="Center"
-                                           Visibility="{Binding OriginalOrderID, Converter={StaticResource EmptyToHiddenConverter}}" 
-                                           d:Visibility="Visible"/>
+                                           Visibility="{Binding OriginalOrderID, Converter={StaticResource EmptyToHiddenConverter}}"
+                                           d:Visibility="Visible" />
 
                                 <TextBlock Text="Original Order ID:"
                                            FontSize="10"
@@ -789,24 +852,38 @@
                     <TabItem Header="Images"
                              x:Name="tabPageImages"
                              Background="#666">
-                        
-                            
-                            <ListView x:Name="Thumbnails"
-                                      AllowDrop="True"
-                                      Drop="Thumbnails_Drop"
-                                      Background="#EEE"
-                                      BorderThickness="0"
-                                      ItemsSource="{Binding ImageList}"
-                                      ItemContainerStyle="{StaticResource LvItemImages}">
-                                <ListView.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <UniformGrid Columns="4" />
-                                    </ItemsPanelTemplate>
-                                </ListView.ItemsPanel>
-                            </ListView>
-                        
+
+
+                        <ListView x:Name="Thumbnails"
+                                  AllowDrop="True"
+                                  Drop="Thumbnails_Drop"
+                                  Background="#EEE"
+                                  BorderThickness="0"
+                                  ItemsSource="{Binding ImageList}"
+                                  ItemContainerStyle="{StaticResource LvItemImages}">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="4" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </ListView>
+
                     </TabItem>
                 </TabControl>
+
+                <Button Grid.Row="3"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ToolTip="Open up order source directory"
+                        Command="{Binding OpenUpOrderSourceFolderCommand}">
+                    <Button.Content>
+                        <Image Source="/Images/ToolBar/folder.png"/>
+                    </Button.Content>
+                </Button>
             </Grid>
         </Border>
     </Border>

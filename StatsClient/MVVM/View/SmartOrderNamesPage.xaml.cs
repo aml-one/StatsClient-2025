@@ -21,7 +21,7 @@ namespace StatsClient.MVVM.View
     /// <summary>
     /// Interaction logic for SmartOrderNamesPage.xaml
     /// </summary>
-    public partial class SmartOrderNamesPage : UserControl, INotifyPropertyChanged
+    public partial class SmartOrderNamesPage : Window, INotifyPropertyChanged
     {
         public static event PropertyChangedEventHandler? PropertyChangedStatic;
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -52,6 +52,13 @@ namespace StatsClient.MVVM.View
         {
             StaticInstance = this;
             InitializeComponent();
+            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+        }
+
+        private void HandleEsc(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Hide();
         }
 
         private void renameButton_GotFocus(object sender, RoutedEventArgs e)
@@ -74,6 +81,16 @@ namespace StatsClient.MVVM.View
         private void CheckBox_LostFocus(object sender, RoutedEventArgs e)
         {
             cbScrewRetained.Foreground = Brushes.Beige;
+        }
+
+        public void TitleBar_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                try
+                {
+                    this.DragMove();
+                }
+                catch { }
         }
     }
 }

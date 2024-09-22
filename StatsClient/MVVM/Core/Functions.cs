@@ -3,17 +3,216 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 using static StatsClient.MVVM.Core.LocalSettingsDB;
+using static StatsClient.MVVM.Core.DatabaseOperations;
+using static StatsClient.MVVM.Core.DatabaseConnection;
 using System.Drawing.Imaging;
 using Bitmap = System.Drawing.Bitmap;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Reflection;
+using StatsClient.MVVM.Model;
+using System.Xml;
+using System.Diagnostics;
 
 
 namespace StatsClient.MVVM.Core;
 
 internal class Functions
 {
+
+    public static async Task<bool> AddLastDesignedByToOrder(string orderID, string designerID)
+    {
+        bool allGood = true;
+        List<DesignerModel> designersList = await GetDesignersListAtStartAsync();
+
+        string designerName = designersList.FirstOrDefault(x => x.DesignerID == designerID)?.FriendlyName!;
+        string ThreeShapeDirectoryHelper = DatabaseOperations.GetServerFileDirectory();
+
+        // DesignedBy file
+        string designedByFile = @$"{ThreeShapeDirectoryHelper}{orderID}\History\DesignedBy";
+
+        List<string> fileContent = [];
+
+        if (File.Exists(designedByFile))
+        {
+            try
+            {
+                File.ReadAllLines(designedByFile).ToList().ForEach(fileContent.Add);
+            }
+            catch (Exception)
+            {                
+            }
+        }
+        else if (File.Exists(designedByFile.Replace(@"\History\", @"\")))
+        {
+            designedByFile = designedByFile.Replace(@"\History\", @"\");
+
+            try
+            {
+                File.ReadAllLines(designedByFile).ToList().ForEach(fileContent.Add);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        fileContent.Add($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {designerName}");
+
+        try
+        {
+            if (!Directory.Exists(@$"{ThreeShapeDirectoryHelper}{orderID}\History"))
+                Directory.CreateDirectory(@$"{ThreeShapeDirectoryHelper}{orderID}\History");
+
+            File.WriteAllLines(designedByFile, fileContent);
+        }
+        catch (Exception)
+        {
+            allGood = false;
+        }
+
+        // lastDesigner file
+        string lastDesignerFile = @$"{ThreeShapeDirectoryHelper}{orderID}\lastDesigner";
+        try
+        {
+            File.WriteAllText(lastDesignerFile, designerID);
+        }
+        catch (Exception)
+        {
+            allGood = false;
+        }
+
+        // XML Injection
+        string xMLFile = @$"{ThreeShapeDirectoryHelper}{orderID}\{orderID}.xml";
+        try
+        {
+            XmlDocument doc = new();
+            doc.Load(xMLFile);
+
+            XmlElement? root = doc.DocumentElement;
+
+            List<XmlNode> nodes = [];
+
+            foreach (XmlNode node in root!.ChildNodes[0]!.ChildNodes)
+            {
+                if (!nodes.Contains(node))
+                    nodes.Add(node);
+            }
+
+            XmlNode TDM_Item_Order_XMLNode = nodes.Single(x => x.Attributes!["name"]!.Value == "OrderList");
+
+            bool NeedToSaveXML = false;
+            foreach (XmlNode node in TDM_Item_Order_XMLNode.ChildNodes[0]!.ChildNodes[0]!)
+            {
+                if (node.Attributes!["name"]!.Value == "Patient_RefNo")
+                {
+                    NeedToSaveXML = true;
+                    node.Attributes["value"]!.Value = $"Designed by: {designerName.Replace("(", "").Replace(")", "").Trim()} - {DateTime.Now:MM/dd h:mm tt}";
+                }
+                if (node.Attributes!["name"]!.Value == "ExtOrderID")
+                {
+                    NeedToSaveXML = true;
+                    node.Attributes["value"]!.Value = $"{designerName.Replace("(", "").Replace(")", "").Trim()}";
+                }
+            }
+
+            if (NeedToSaveXML)
+            {
+                Task.Run(() => doc.Save(xMLFile)).Wait();
+                Task.Run(() => RemoveTrailingSpaceInXML(xMLFile)).Wait();
+            }
+        }
+        catch (Exception)
+        {
+            allGood = false;
+        }
+
+        // database injection
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrFor3Shape);
+            string query = @$"UPDATE Orders SET ExtOrderID = '{designerName.Replace("(", "").Replace(")", "").Trim()}', Patient_RefNo = 'Designed by: {designerName.Replace("(", "").Replace(")", "").Trim()} - {DateTime.Now:MM/dd h:mm tt}' WHERE IntOrderID = '{orderID}'";
+            Debug.WriteLine(query);
+            RunSQLCommandAsynchronously(query, connectionString);
+        }
+        catch (Exception)
+        {
+            allGood = false;
+        }
+
+        return allGood;
+    }
+
+    public static async Task RemoveTrailingSpaceInXML(string xMLFile)
+    {
+        string text = await Task.Run(() => File.ReadAllText(xMLFile));
+        text = text.Replace(" />", "/>");
+        await Task.Run(() => File.WriteAllText(xMLFile, text));
+    }
+
+    public static List<DesignedByModel> GetLastDesignedByListData(string orderID)
+    {
+        List<DesignedByModel> designerHistory = [];
+        
+        string ThreeShapeDirectoryHelper = DatabaseOperations.GetServerFileDirectory();
+        string designedByFile = @$"{ThreeShapeDirectoryHelper}{orderID}\History\DesignedBy";
+
+        if (File.Exists(designedByFile))
+        {
+            try
+            {
+                File.ReadAllLines(designedByFile).ToList().ForEach(x =>
+                {
+                    string[] parts = x.Split(']');
+
+                    _ = DateTime.TryParse(parts[0].Replace("[", ""), out DateTime dtTime);
+                    string designr = parts[1].Trim();
+                    
+                    designerHistory.Add(new DesignedByModel()
+                    {
+                        DateTimeStr = dtTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                        Designer = designr
+                    });
+                });
+
+                if (designerHistory.Count > 0)
+                    designerHistory.Reverse();
+
+            }
+            catch (Exception)
+            {                
+            }
+        }
+        else if (File.Exists(designedByFile.Replace(@"\History\", @"\")))
+        {
+            designedByFile = designedByFile.Replace(@"\History\", @"\");
+
+            try
+            {
+                File.ReadAllLines(designedByFile).ToList().ForEach(x =>
+                {
+                    string[] parts = x.Split(']');
+
+                    _ = DateTime.TryParse(parts[0].Replace("[", ""), out DateTime dtTime);
+                    string designr = parts[1].Trim();
+
+                    designerHistory.Add(new DesignedByModel()
+                    {
+                        DateTimeStr = dtTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                        Designer = designr
+                    });
+                });
+
+                if (designerHistory.Count > 0)
+                    designerHistory.Reverse();
+
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        return designerHistory;
+    }
 
     public static async Task<string> GetAppVersion()
     {

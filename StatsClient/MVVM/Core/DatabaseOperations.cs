@@ -17,6 +17,43 @@ namespace StatsClient.MVVM.Core;
 
 public partial class DatabaseOperations
 {
+    public static async Task<List<DesignerModel>> GetDesignersListAtStartAsync()
+    {
+        List<DesignerModel> designers = [];
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT * FROM dbo.Designers";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (!designers!.Where(x =>
+                    x.DesignerID == reader["DesignerID"].ToString() ||
+                    x.FriendlyName == reader["FriendlyName"].ToString()
+                    ).Any())
+                {
+                    designers.Add(new DesignerModel
+                    {
+                        DesignerID = reader["DesignerID"].ToString(),
+                        FriendlyName = reader["FriendlyName"].ToString(),
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[" + ex.LineNumber() + "] (DataBaseOperations)" + ex.Message);
+            return designers;
+        }
+
+        return designers;
+    }
+
 
     public static async Task<ObservableCollection<HealthReportModel>>? GetHealthReportsAsync()
     {

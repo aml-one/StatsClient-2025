@@ -145,6 +145,7 @@
     <None Remove="Images\ToolBar\search.png" />
     <None Remove="Images\ToolBar\stcopy-regenerate.png" />
     <None Remove="Images\ToolBar\stcopy.png" />
+    <None Remove="Images\ToolBar\update.png" />
     <None Remove="Images\Warning.png" />
     <None Remove="version.txt" />
   </ItemGroup>
@@ -505,6 +506,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\ToolBar\stcopy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\ToolBar\update.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
 	  <EmbeddedResource Include="version.txt">

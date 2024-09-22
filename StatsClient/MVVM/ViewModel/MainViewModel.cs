@@ -81,16 +81,16 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private SmartOrderNamesViewModel? smartOrderNamesViewModel;
-    public SmartOrderNamesViewModel SmartOrderNamesViewModel
-    {
-        get => smartOrderNamesViewModel!;
-        set
-        {
-            smartOrderNamesViewModel = value;
-            RaisePropertyChanged(nameof(SmartOrderNamesViewModel));
-        }
-    }
+    //private SmartOrderNamesViewModel? smartOrderNamesViewModel;
+    //public SmartOrderNamesViewModel SmartOrderNamesViewModel
+    //{
+    //    get => smartOrderNamesViewModel!;
+    //    set
+    //    {
+    //        smartOrderNamesViewModel = value;
+    //        RaisePropertyChanged(nameof(SmartOrderNamesViewModel));
+    //    }
+    //}
 
 
     
@@ -1140,7 +1140,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private bool searchOnlyInFileNames = true;
+    private bool searchOnlyInFileNames = false;
     public bool SearchOnlyInFileNames
     {
         get => searchOnlyInFileNames;
@@ -2130,6 +2130,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private Visibility mainMenuOpen = Visibility.Hidden;
+    public Visibility MainMenuOpen
+    {
+        get => mainMenuOpen;
+        set
+        {
+            mainMenuOpen = value;
+            RaisePropertyChanged(nameof(MainMenuOpen));
+        }
+    }
+    
     private List<string> accountInfoCategories = [];
     public List<string> AccountInfoCategories
     {
@@ -2151,8 +2162,18 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(OrderIssuesList));
         }
     }
-
     
+    private SmartOrderNamesPage smartOrderNamesWindow = new();
+    public SmartOrderNamesPage SmartOrderNamesWindow
+    {
+        get => smartOrderNamesWindow;
+        set
+        {
+            smartOrderNamesWindow = value;
+            RaisePropertyChanged(nameof(SmartOrderNamesWindow));
+        }
+    }
+
 
     #endregion Properties
 
@@ -2190,6 +2211,7 @@ public class MainViewModel : ObservableObject
 
 
     public RelayCommand LookForUpdateCommand { get; set; }
+    public RelayCommand OpenCloseMenuCommand { get; set; }
     public RelayCommand StartProgramUpdateCommand { get; set; }
     public RelayCommand FilterMenuItemCommand { get; set; }
     public RelayCommand ExpanderLoadedCommand { get; set; }
@@ -2312,6 +2334,18 @@ public class MainViewModel : ObservableObject
             if (!LookingForUpdateNow)
                 LookForUpdate();
         });
+
+        OpenCloseMenuCommand = new RelayCommand(o => 
+        {
+            if (MainMenuOpen == Visibility.Hidden)
+            {
+                MainMenuOpen = Visibility.Visible;
+                MainMenu.StaticInstance.FocusOnMainMenu();
+            }
+            else
+                MainMenuOpen = Visibility.Hidden;
+        });
+
         StartProgramUpdateCommand = new RelayCommand(o => StartProgramUpdate());
         FilterMenuItemCommand = new RelayCommand(o => FilterMenuItemClicked(o));
         ExpanderLoadedCommand = new RelayCommand(o => ExpanderLoaded(o));
@@ -2352,6 +2386,7 @@ public class MainViewModel : ObservableObject
             ShowingTakeANumberPanel = Visibility.Visible;
             PmSavedPrescription = null;
         });
+
 
 
         #region Folder Subscription RelayCommands
@@ -2478,6 +2513,8 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#674679", "");
         bgBorderColors.TryAdd("#7a464b", "");
         #endregion accountinfo bordercolors by category
+
+        
 
         BuildCustomerSuggestionsList();
     }
@@ -5517,7 +5554,7 @@ public class MainViewModel : ObservableObject
 
             sFilter += ")";
 
-            Debug.WriteLine(sFilter);
+            
         }
         #endregion
 
@@ -5920,6 +5957,7 @@ public class MainViewModel : ObservableObject
 
         queryString += "ORDER BY " + sOrderBy;
 
+
         //if (!TempSearchLimitIgnore)
         //    queryString += " OFFSET 0 ROWS FETCH FIRST " + SearchLimit.ToString() + @" ROWS ONLY;";
 
@@ -6279,7 +6317,7 @@ public class MainViewModel : ObservableObject
                                 //designerHistory.Add($"{dTime} - {designr}");
                                 designerHistory.Add(new DesignerHistoryModel()
                                 {
-                                    Year = $"[{dtTime.ToString("yyyy")}]",
+                                    Year = $"[{dtTime:yyyy}]",
                                     Day = dtTime.ToString("ddd"),
                                     Date = dtTime.ToString("M/d"),
                                     Time = dtTime.ToString("h:mm tt"),
@@ -6435,6 +6473,8 @@ public class MainViewModel : ObservableObject
                 }
             }));
         }
+
+        SearchOnlyInFileNames = false;
 
         Application.Current.Dispatcher.Invoke(new Action(() => {
             _MainWindow.pb3ShapeProgressBar.Value = 0;
@@ -6863,23 +6903,20 @@ public class MainViewModel : ObservableObject
         {
             if (DateTime.Now.Second % 2 == 0)
             {
-                Debug.WriteLine("Getting health reports.. (2)");
                 HealthReports = await Task.Run(GetHealthReportsAsync);
+                if (IsDCASIsActive)
+                    LastDCASUpdate = GetLastDCASUpdate();
             }
         }
         else
         {
             if (DateTime.Now.Second % 30 == 0)
-            {
-                Debug.WriteLine("Getting health reports.. (30)");
                 HealthReports = await Task.Run(GetHealthReportsAsync);
-            }
         }
 
 
         if (second % 15 == 0 || FirstRun)
         {
-            LastDCASUpdate = GetLastDCASUpdate();
 
             CurrentMemoryUsage = Math.Round(await GetMemoryUsage() / (1024 * 1024));
 
@@ -7522,5 +7559,65 @@ return;
                 }
         }
 
+    }
+
+    public void RunMainMenuCommand(string selectedMenuItem)
+    {
+        switch (selectedMenuItem)
+        {
+            case "lookForUpdate":
+                {
+                    LookForUpdate();
+                    break;
+                }
+            
+            case "openManufFolder":
+                {
+                    OpenUpFolder("manufacturing");
+                    break;
+                }
+            
+            case "openTriosInbox":
+                {
+                    OpenUpFolder("triosinbox");
+                    break;
+                }
+            
+            case "openSmartRenameWindw":
+                {
+                    SmartOrderNamesWindow.ShowDialog();
+                    break;
+                }
+
+            default: break;
+        }
+    }
+
+    private void OpenUpFolder(string folderDescription)
+    {
+        string folder = "";
+
+        switch (folderDescription)
+        {
+            case "manufacturing":
+                folder = ThreeShapeDirectoryHelper.Replace(@"\3Shape Dental System Orders", "") + @"3Shape Dental System Manufacturing";
+                break;
+
+            case "triosinbox":
+                folder = ThreeShapeDirectoryHelper + @"3ShapeCommunicate\Inbox";
+                break;
+        }
+
+        Debug.WriteLine(folder);
+
+        try
+        {
+            if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                Process.Start("explorer.exe", "\"" + folder + "\"");
+        }
+        catch (Exception ex)
+        {
+            AddDebugLine(ex);
+        }
     }
 }

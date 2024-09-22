@@ -347,19 +347,20 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         }
     }
 
-
+    public RelayCommand CloseWindowCommand { get; set; }
     public RelayCommand RefreshCommand { get; set; }
     public RelayCommand BuildNameCommand { get; set; }
     public RelayCommand ShadeButtonClickedCommand { get; set; }
     public RelayCommand RenameOrderCommand { get; set; }
     public RelayCommand AddCustomerSuggestionCommand { get; set; }
+    public RelayCommand FocusOnPanNumberCommand { get; set; }
 
     public System.Timers.Timer _timer;
 
     public SmartOrderNamesViewModel()
     {
         StaticInstance = this;
-        MainViewModel.Instance.SmartOrderNamesViewModel = this;
+        //MainViewModel.Instance.SmartOrderNamesViewModel = this;
 
         CustomerSuggestionsList = [];
 
@@ -372,11 +373,20 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         ShadeButtonClickedCommand = new RelayCommand(o => ShadeButtonClicked(o));
         RenameOrderCommand = new RelayCommand(o => RenameOrder());
         AddCustomerSuggestionCommand = new RelayCommand(o => AddCustomerSuggestion());
+        CloseWindowCommand = new RelayCommand(o => CloseWindow());
+        FocusOnPanNumberCommand = new RelayCommand(o => FocusOnPanNumberBox());
 
         ThreeShapeDirectoryHelper = GetServerFileDirectory();
 
 
-        Timer_Elapsed(null, null);
+        //Timer_Elapsed(null, null);
+    }
+
+    private void CloseWindow()
+    {
+        Debug.WriteLine("hit");
+        MainMenuViewModel.StaticInstance.ShowSmartRenameMenuItem();
+        MainViewModel.Instance.SmartOrderNamesWindow.Hide();
     }
 
     private async void SelectFirstOrder()
@@ -388,11 +398,11 @@ public partial class SmartOrderNamesViewModel : ObservableObject
             {
                 FirstOrderSelected = true;
                 SelectedOrder = NewOrdersByMe[0];
-                if (MainViewModel.Instance.CbSettingModuleSmartOrderNames && JumpToSmartOrderNamesTabWhenNewOrder)
-                {
-                    MainViewModel.Instance.SwitchToSmartOrderNamesTab();
+                //if (MainViewModel.Instance.CbSettingModuleSmartOrderNames && JumpToSmartOrderNamesTabWhenNewOrder)
+                //{
+                //    MainViewModel.Instance.SwitchToSmartOrderNamesTab();
 
-                }
+                //}
             }
         }
     }
@@ -603,17 +613,32 @@ public partial class SmartOrderNamesViewModel : ObservableObject
 
         if (AutoSelectFirstOrder && NewOrdersByMe.Count > 0 && !FirstOrderSelected)
         {
-            SelectFirstOrder();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MainMenuViewModel.StaticInstance.HideSmartRenameMenuItem();
+                SelectFirstOrder();
+                _timer.Stop();
+                MainViewModel.Instance.SmartOrderNamesWindow.ShowDialog();
+                _timer.Start();
+            });
         }
     }
 
     private async void Timer_Elapsed(object? sender, ElapsedEventArgs e)
     {
+
         NewOrdersByMe = await GetNewOrdersCreatedByMe(ShowCasesWithoutNumber);
 
         if (AutoSelectFirstOrder && NewOrdersByMe.Count > 0 && !FirstOrderSelected)
         {
-            SelectFirstOrder();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MainMenuViewModel.StaticInstance.HideSmartRenameMenuItem();
+                SelectFirstOrder();
+                _timer.Stop();
+                MainViewModel.Instance.SmartOrderNamesWindow.ShowDialog();
+                _timer.Start();
+            });
         }
     }
 
@@ -639,6 +664,9 @@ public partial class SmartOrderNamesViewModel : ObservableObject
         {
             SelectFirstOrder();
         }
+        
+        if (NewOrdersByMe.Count < 1)
+            MainViewModel.Instance.SmartOrderNamesWindow.Hide();
     }
 
 

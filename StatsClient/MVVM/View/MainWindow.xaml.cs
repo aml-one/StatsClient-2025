@@ -303,4 +303,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         settingsTab.IsSelected = true;
     }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        MainViewModel.Instance.SmartOrderNamesWindow.Owner = this;
+    }
 }

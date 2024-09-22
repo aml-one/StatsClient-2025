@@ -7,9 +7,12 @@ using System.Windows;
 using System.Windows.Media;
 using static StatsClient.MVVM.Core.DatabaseOperations;
 using static StatsClient.MVVM.Core.MessageBoxes;
+using static StatsClient.MVVM.Core.Functions;
 using TaskDialog = Ookii.Dialogs.Wpf.TaskDialog;
 using TaskDialogIcon = Ookii.Dialogs.Wpf.TaskDialogIcon;
 using TaskDialogButton = Ookii.Dialogs.Wpf.TaskDialogButton;
+using System.Diagnostics;
+
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -57,6 +60,28 @@ public class OrderInfoViewModel : ObservableObject
         {
             lastTouchedByList = value;
             RaisePropertyChanged(nameof(LastTouchedByList));
+        }
+    }
+    
+    private List<DesignerModel> designers = [];
+    public List<DesignerModel> Designers
+    {
+        get => designers;
+        set
+        {
+            designers = value;
+            RaisePropertyChanged(nameof(Designers));
+        }
+    }
+    
+    private List<DesignedByModel> lastDesignedByList = [];
+    public List<DesignedByModel> LastDesignedByList
+    {
+        get => lastDesignedByList;
+        set
+        {
+            lastDesignedByList = value;
+            RaisePropertyChanged(nameof(LastDesignedByList));
         }
     }
     
@@ -286,6 +311,9 @@ public class OrderInfoViewModel : ObservableObject
 
     public RelayCommand CloseWindowCommand { get; set; }
     public RelayCommand ImageClickedCommand { get; set; }
+    public RelayCommand DesignedByDesignerClickCommand { get; set; }
+    public RelayCommand OpenUpOrderSourceFolderCommand { get; set; }
+    public RelayCommand SearchCommand { get; set; }
     
 
     public OrderInfoViewModel()
@@ -294,7 +322,82 @@ public class OrderInfoViewModel : ObservableObject
 
         CloseWindowCommand = new RelayCommand(o => CloseWindow());
         ImageClickedCommand = new RelayCommand(o => ImageClicked(o));
+        DesignedByDesignerClickCommand = new RelayCommand(o => DesignedByDesignerMenuItemClicked(o));
+        OpenUpOrderSourceFolderCommand = new RelayCommand(o => OpenUpOrderSourceFolder());
+        SearchCommand = new RelayCommand(o => Search(o));
         
+    }
+
+    private void Search(object obj)
+    {
+        if (obj is not string || ((string)obj).Length < 2)
+            return;
+
+        string searchStr = ((string)obj).Trim();
+
+        MainViewModel.Instance.SearchOnlyInFileNames = false;
+
+        bool isNumeric = int.TryParse(searchStr, out _);
+        if (isNumeric)
+        {
+            MainViewModel.Instance.SearchOnlyInFileNames = true;
+            searchStr += "-";
+        }
+
+        MainViewModel.Instance.SearchString = searchStr;
+        MainViewModel.Instance.SearchFieldKeyDownCommand.Execute(null);
+        CloseWindow();
+    }
+
+    private void OpenUpOrderSourceFolder()
+    {
+        string ThreeShapeDirectoryHelper = DatabaseOperations.GetServerFileDirectory();
+        string folder = $"{ThreeShapeDirectoryHelper}{ThreeShapeObject!.IntOrderID}";
+        
+        try
+        {
+            if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                Process.Start("explorer.exe", "\"" + folder + "\"");
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private async void DesignedByDesignerMenuItemClicked(object obj)
+    {
+        string designerID = (string)obj;
+        string orderID = ThreeShapeObject!.IntOrderID!;
+
+        if (await AddLastDesignedByToOrder(orderID, designerID))
+        {
+            if (Designers is not null)
+            {
+                string designerName = Designers.FirstOrDefault(x => x.DesignerID == designerID)!.FriendlyName!;
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    SMessageBox sMessageBox = new("Success", $"Designer set to {designerName}", Enums.SMessageBoxButtons.Ok, MainViewModel.NotificationIcon.Success, 4)
+                    {
+                        Owner = MainWindow.Instance
+                    };
+
+                    sMessageBox.ShowDialog();
+                }));
+            }
+            UpdateDesignedByList();
+        }
+        else
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                SMessageBox sMessageBox = new("Error", "Some of the tasks could not be finished..", Enums.SMessageBoxButtons.Ok, MainViewModel.NotificationIcon.Warning, 7)
+                {
+                    Owner = MainWindow.Instance
+                };
+
+                sMessageBox.ShowDialog();                
+            }));
+        }
     }
 
     private void ImageClicked(object obj)
@@ -309,7 +412,7 @@ public class OrderInfoViewModel : ObservableObject
         OrderInfoWindow.StaticInstance.Close();
     }
 
-    public void UpdateForm()
+    public async void UpdateForm()
     {
         OrderID = ThreeShapeObject!.IntOrderID!;
         FirstName = ThreeShapeObject.Patient_FirstName!;
@@ -397,6 +500,9 @@ public class OrderInfoViewModel : ObservableObject
         else
             _InfoWindow.borderLastTouchedByPanel.Visibility = Visibility.Collapsed;
 
+
+        UpdateDesignedByList();
+
         if (ThreeShapeObject.PanNumber != "" && ThreeShapeObject.PanColor != "#FFFFFF" && ThreeShapeObject.PanColor != "Transparent")
         {
             try
@@ -415,6 +521,47 @@ public class OrderInfoViewModel : ObservableObject
         }
 
 
+        List<DesignerModel> designersList = await GetDesignersListAtStartAsync();
+        ContextMenu menu = OrderInfoWindow.StaticInstance.designerContextMenu;
+
+        if (ThreeShapeObject.MaxProcessStatusID == "psModelled" && ThreeShapeObject.IsCaseWereDesigned)
+        {
+            MenuItem mitem = new()
+            {
+                Header = $"Set last designer",
+                IsEnabled = false
+            };
+
+            menu.Items.Add(mitem);
+
+            Separator separator = new();
+            menu.Items.Add(separator);
+
+            foreach (var designer in designersList)
+            {
+                Designers.Add(designer);
+                MenuItem item = new () 
+                {
+                    Header = $"To {designer.FriendlyName}",
+                    Tag = designer.DesignerID,
+                    Command = OrderInfoViewModel.Instance.DesignedByDesignerClickCommand,
+                    CommandParameter = designer.DesignerID
+                };
+
+                menu.Items.Add(item);
+            }
+        }
+        else
+        {
+            MenuItem mitem = new()
+            {
+                Header = $"Order is not designed!",
+                IsEnabled = false
+            };
+
+            menu.Items.Add(mitem);
+        }
+
         ReloadImages(false);
 
 
@@ -423,7 +570,58 @@ public class OrderInfoViewModel : ObservableObject
         //tbOrderUpdated.Visibility = Visibility.Visible;
     }
 
-    
+    private void UpdateDesignedByList()
+    {
+        var bc = new BrushConverter();
+
+        LastDesignedByList = GetLastDesignedByListData(ThreeShapeObject.IntOrderID!);
+        _InfoWindow!.panelLastDesignedBy.Children.Clear();
+
+        if (LastDesignedByList.Count > 0)
+        {
+            foreach (DesignedByModel item in LastDesignedByList)
+            {
+                string designerName = item.Designer!;
+                string dateTime = item.DateTimeStr!;
+
+                _ = DateTime.TryParse(dateTime, out DateTime dtm);
+                dateTime = dtm.ToString("dddd - M/d/yyyy h:mm tt");
+
+                StackPanel stckPanel = new()
+                {
+                    Margin = new Thickness(0, 0, 0, 8)
+                };
+
+                TextBlock dtbCompName = new()
+                {
+                    FontWeight = FontWeights.SemiBold,
+                    FontSize = 12,
+                    Foreground = Brushes.Black,
+                    Text = designerName
+                };
+                stckPanel.Children.Add(dtbCompName);
+
+                TextBlock dtbDateTime = new()
+                {
+                    FontSize = 9
+                };
+
+                if (dtm.ToString("yyyy-MM-dd") == DateTime.Now.ToString("yyyy-MM-dd"))
+                    dtbDateTime.Foreground = Brushes.Green;
+                else if (dtm.ToString("yyyy-MM-dd") == DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"))
+                    dtbDateTime.Foreground = Brushes.SteelBlue;
+                else
+                    dtbDateTime.Foreground = (Brush)bc.ConvertFrom("#FF666666")!;
+
+                dtbDateTime.Text = dateTime;
+                stckPanel.Children.Add(dtbDateTime);
+
+                _InfoWindow.panelLastDesignedBy.Children.Add(stckPanel);
+            }
+        }
+        else
+            _InfoWindow.borderLastDesignedByPanel.Visibility = Visibility.Collapsed;
+    }
 
     public void WindowClosing()
     {
@@ -623,7 +821,7 @@ public class OrderInfoViewModel : ObservableObject
             #region Parse stCopy                
             if (stCopyExists)
             {
-                List<string> TDM_Item_ModelElementST = new List<string>();
+                List<string> TDM_Item_ModelElementST = [];
                 bool NeedToCopyModelElementST = false;
 
                 foreach (string line in File.ReadLines(stCopyFile))
