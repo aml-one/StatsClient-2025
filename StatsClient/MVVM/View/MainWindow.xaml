@@ -2625,6 +2625,8 @@
                                                           VerticalAlignment="Top"
                                                           HorizontalAlignment="Left"
                                                           Cursor="Hand"
+                                                          Visibility="{Binding CbSettingModulePrescriptionMaker, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                          d:Visibility="Visible"
                                                           IsChecked="{Binding CbSettingShowEmptyPanCount, Mode=TwoWay}"
                                                           Style="{StaticResource CircleCheckBox}"
                                                           Command="{Binding CbSettingShowEmptyPanCountCommand}"
@@ -3423,7 +3425,7 @@
                                        d:Text="17"
                                        Foreground="#7dfaC2"
                                        HorizontalAlignment="Center"
-                                       Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                       Visibility="{Binding CbSettingShowDigiCases, Converter={StaticResource BoolToVisibilityConverter}}"
                                        d:Visibility="Visible"
                                        Margin="5,0,15,-6"
                                        Cursor="Hand"
@@ -3437,7 +3439,7 @@
                             <TextBlock Text="Digital Case Arrived"
                                        Foreground="White"
                                        FontSize="8"
-                                       Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                       Visibility="{Binding CbSettingShowDigiCases, Converter={StaticResource BoolToVisibilityConverter}}"
                                        d:Visibility="Visible"
                                        Margin="5,0,15,0" />
                         </StackPanel>

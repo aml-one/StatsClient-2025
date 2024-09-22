@@ -4809,8 +4809,10 @@ public class MainViewModel : ObservableObject
         {
             CbSettingWatchFolderPrescriptionMaker = false;
             CbSettingExtractIteroZipFiles = false;
+            CbSettingShowEmptyPanCount = false;
             CbSettingWatchFolderPrescriptionMakerMethod();
             CbSettingExtractIteroZipFilesMethod();
+            CbSettingShowEmptyPanCountMethod();
         }
     }
     
