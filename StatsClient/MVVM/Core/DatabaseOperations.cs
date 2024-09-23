@@ -449,7 +449,10 @@ public partial class DatabaseOperations
         }
         catch (Exception ex)
         {
-            MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
+            if (ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
+                MainViewModel.Instance.ThreeShapeServerIsDown = true;
+            else
+                MainViewModel.Instance.AddDebugLine(ex, null, "DBO");
         }
         return "";
     }

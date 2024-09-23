@@ -2433,137 +2433,99 @@
                                         </Grid>
                                     </TabItem>
 
-                                    <TabItem Header="Modules"
+
+                                    <TabItem Header="Customer Suggestions"
                                              Style="{StaticResource applicationsTabItem}">
-                                        <Grid Margin="10,0">
-                                            <StackPanel Grid.Row="0">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="40" />
+                                                <RowDefinition />
+                                                <RowDefinition Height="40" />
+                                            </Grid.RowDefinitions>
 
-                                                <TextBlock Text="Modules"
-                                                           FontSize="26"
-                                                           FontWeight="Thin" />
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
 
-                                                <CheckBox Content="Account Infos"
+                                            <TextBlock Text="Customer name"
+                                                       VerticalAlignment="Bottom"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="6,0"
+                                                       FontSize="14" />
+
+                                            <TextBlock Text="Replacements"
+                                                       VerticalAlignment="Bottom"
+                                                       HorizontalAlignment="Left"
+                                                       Grid.Column="1"
+                                                       Margin="8,0"
+                                                       FontSize="14" />
+
+                                            <ListBox Grid.Row="1"
+                                                     Margin="0,0,2,0"
+                                                     ItemsSource="{Binding CustomerSuggestionsCusNamesList}"
+                                                     SelectedItem="{Binding SelectedCustomerName}"
+                                                     Foreground="Beige"
+                                                     MinWidth="150"
+                                                     Background="#444" />
+
+                                            <ListBox Grid.Row="1"
+                                                     Grid.Column="1"
+                                                     Margin="2,0,4,0"
+                                                     ItemsSource="{Binding CustomerSuggestionsReplacementsList}"
+                                                     SelectedItem="{Binding SelectedCustomerSuggestion}"
+                                                     Foreground="Beige"
+                                                     MinWidth="150"
+                                                     Background="#444" />
+
+                                            <Button Content="Delete customer"
+                                                    Grid.Row="2"
+                                                    Margin="0,5,3,5"
+                                                    Command="{Binding DeleteCSCustomerCommand}" />
+
+                                            <Button Content="Delete suggestion"
+                                                    Grid.Row="2"
+                                                    Grid.Column="1"
+                                                    Margin="3,5,4,5"
+                                                    Command="{Binding DeleteCSSuggestionCommand}" />
+
+
+                                            <TextBlock Text="Create new suggestion"
+                                                       VerticalAlignment="Bottom"
+                                                       HorizontalAlignment="Left"
+                                                       Grid.Column="2"
+                                                       Margin="19,0"
+                                                       FontSize="14" />
+
+                                            <StackPanel Grid.Row="1"
+                                                        Grid.Column="2"
+                                                        Margin="20,10">
+                                                <TextBlock Text="Customer" />
+                                                <TextBox  Width="200"
+                                                          Text="{Binding CSNewCustomer}"
+                                                          Background="#555"
                                                           Foreground="Beige"
-                                                          VerticalAlignment="Top"
-                                                          HorizontalAlignment="Left"
-                                                          Cursor="Hand"
-                                                          IsChecked="{Binding CbSettingModuleAccountInfos, Mode=TwoWay}"
-                                                          Style="{StaticResource CircleCheckBox}"
-                                                          Command="{Binding CbSettingModuleAccountInfosCommand}"
-                                                          Margin="0,6,5,0" />
+                                                          HorizontalAlignment="Left" />
 
-                                                <CheckBox Content="Folder Subscription"
+                                                <TextBlock Text="Replacement"
+                                                           Margin="0,10,0,0" />
+                                                <TextBox  Width="200"
+                                                          Text="{Binding CSNewReplacement}"
+                                                          Background="#555"
                                                           Foreground="Beige"
-                                                          VerticalAlignment="Top"
-                                                          HorizontalAlignment="Left"
-                                                          Cursor="Hand"
-                                                          IsChecked="{Binding CbSettingModuleFolderSubscription, Mode=TwoWay}"
-                                                          Style="{StaticResource CircleCheckBox}"
-                                                          Command="{Binding CbSettingModuleFolderSubscriptionCommand}"
-                                                          Margin="0,6,5,0" />
+                                                          HorizontalAlignment="Left" />
 
-                                                <CheckBox Content="Prescription Maker"
-                                                          Foreground="Beige"
-                                                          VerticalAlignment="Top"
-                                                          HorizontalAlignment="Left"
-                                                          Cursor="Hand"
-                                                          IsChecked="{Binding CbSettingModulePrescriptionMaker, Mode=TwoWay}"
-                                                          Style="{StaticResource CircleCheckBox}"
-                                                          Command="{Binding CbSettingModulePrescriptionMakerCommand}"
-                                                          Margin="0,6,5,0" />
-
-                                                <CheckBox Content="Pending Digitals"
-                                                          Foreground="Beige"
-                                                          VerticalAlignment="Top"
-                                                          HorizontalAlignment="Left"
-                                                          Cursor="Hand"
-                                                          IsChecked="{Binding CbSettingModulePendingDigitals, Mode=TwoWay}"
-                                                          Style="{StaticResource CircleCheckBox}"
-                                                          Command="{Binding CbSettingModulePendingDigitalsCommand}"
-                                                          Margin="0,6,5,0" />
-
-                                                <CheckBox Content="Smart Order Names"
-                                                          Foreground="Beige"
-                                                          VerticalAlignment="Top"
-                                                          HorizontalAlignment="Left"
-                                                          Cursor="Hand"
-                                                          IsChecked="{Binding CbSettingModuleSmartOrderNames, Mode=TwoWay}"
-                                                          Style="{StaticResource CircleCheckBox}"
-                                                          Command="{Binding CbSettingModuleSmartOrderNamesCommand}"
-                                                          Margin="0,6,5,0" />
-
-                                                <CheckBox Content="Debug"
-                                                          Foreground="MistyRose"
-                                                          VerticalAlignment="Top"
-                                                          HorizontalAlignment="Left"
-                                                          Cursor="Hand"
-                                                          IsChecked="{Binding CbSettingModuleDebug, Mode=TwoWay}"
-                                                          Style="{StaticResource CircleCheckBox}"
-                                                          Command="{Binding CbSettingModuleDebugCommand}"
-                                                          Margin="0,6,5,0" />
-
+                                                <Button Content="Add"
+                                                        Width="200"
+                                                        Margin="0,10"
+                                                        HorizontalAlignment="Left"
+                                                        Command="{Binding AddNewCustomerSuggestionCommand}" />
                                             </StackPanel>
                                         </Grid>
                                     </TabItem>
-
-                                    <TabItem Header="Debug"
-                                             Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
-                                             d:Visibility="Visible"
-                                             x:Name="debugTab"
-                                             Style="{StaticResource applicationsTabItem}">
-                                        <Grid>
-                                            <TextBlock Text="Messages"
-                                                       FontSize="26"
-                                                       Margin="10,0,0,0"
-                                                       FontWeight="Thin" />
-                                            <ListView ItemsSource="{Binding DebugMessages}"
-                                                      Background="Transparent"
-                                                      Padding="6"
-                                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                                      Margin="0,38,0,0"
-                                                      IsTabStop="True"
-                                                      BorderThickness="0"
-                                                      x:Name="debugMessageListView"
-                                                      Foreground="Beige">
-                                                <ListView.View>
-                                                    <GridView AllowsColumnReorder="False"
-                                                              ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
-                                                        <GridViewColumn Width="80"
-                                                                        DisplayMemberBinding="{Binding DTime}" />
-                                                        <GridViewColumn Width="60"
-                                                                        DisplayMemberBinding="{Binding DLineNumber}" />
-                                                        <GridViewColumn Width="60"
-                                                                        DisplayMemberBinding="{Binding DLocation}" />
-                                                        <GridViewColumn Width="4000"
-                                                                        DisplayMemberBinding="{Binding DMessage}" />
-                                                    </GridView>
-                                                </ListView.View>
-
-                                                <ListView.ItemContainerStyle>
-                                                    <Style TargetType="{x:Type ListViewItem}">
-                                                        <Setter Property="Background"
-                                                                Value="Transparent" />
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                                    <Border BorderBrush="Transparent"
-                                                                            BorderThickness="0"
-                                                                            Background="{TemplateBinding Background}">
-                                                                        <GridViewRowPresenter HorizontalAlignment="Stretch"
-                                                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                                                              Width="Auto"
-                                                                                              Margin="0"
-                                                                                              Content="{TemplateBinding Content}" />
-                                                                    </Border>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                </ListView.ItemContainerStyle>
-                                            </ListView>
-                                        </Grid>
-                                    </TabItem>
-
+                                    
                                     <TabItem Header="Infos / Views"
                                              Style="{StaticResource applicationsTabItem}">
                                         <Grid Margin="10,0">
@@ -2656,6 +2618,139 @@
 
                                         </Grid>
                                     </TabItem>
+                                    
+                                    <TabItem Header="Debug"
+                                             Visibility="{Binding CbSettingModuleDebug, Converter={StaticResource BoolToVisibilityConverter}}"
+                                             d:Visibility="Visible"
+                                             x:Name="debugTab"
+                                             Style="{StaticResource applicationsTabItem}">
+                                        <Grid>
+                                            <TextBlock Text="Messages"
+                                                       FontSize="26"
+                                                       Margin="10,0,0,0"
+                                                       FontWeight="Thin" />
+                                            <ListView ItemsSource="{Binding DebugMessages}"
+                                                      Background="Transparent"
+                                                      Padding="6"
+                                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                      Margin="0,38,0,0"
+                                                      IsTabStop="True"
+                                                      BorderThickness="0"
+                                                      x:Name="debugMessageListView"
+                                                      Foreground="Beige">
+                                                <ListView.View>
+                                                    <GridView AllowsColumnReorder="False"
+                                                              ColumnHeaderContainerStyle="{StaticResource HiddenHeaderStyle}">
+                                                        <GridViewColumn Width="80"
+                                                                        DisplayMemberBinding="{Binding DTime}" />
+                                                        <GridViewColumn Width="60"
+                                                                        DisplayMemberBinding="{Binding DLineNumber}" />
+                                                        <GridViewColumn Width="60"
+                                                                        DisplayMemberBinding="{Binding DLocation}" />
+                                                        <GridViewColumn Width="4000"
+                                                                        DisplayMemberBinding="{Binding DMessage}" />
+                                                    </GridView>
+                                                </ListView.View>
+
+                                                <ListView.ItemContainerStyle>
+                                                    <Style TargetType="{x:Type ListViewItem}">
+                                                        <Setter Property="Background"
+                                                                Value="Transparent" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                                    <Border BorderBrush="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Background="{TemplateBinding Background}">
+                                                                        <GridViewRowPresenter HorizontalAlignment="Stretch"
+                                                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                                              Width="Auto"
+                                                                                              Margin="0"
+                                                                                              Content="{TemplateBinding Content}" />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ListView.ItemContainerStyle>
+                                            </ListView>
+                                        </Grid>
+                                    </TabItem>
+                                    
+                                    <TabItem Header="Modules"
+                                             Style="{StaticResource applicationsTabItem}">
+                                        <Grid Margin="10,0">
+                                            <StackPanel Grid.Row="0">
+
+                                                <TextBlock Text="Modules"
+                                                           FontSize="26"
+                                                           FontWeight="Thin" />
+
+                                                <CheckBox Content="Account Infos"
+                                                          Foreground="Beige"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingModuleAccountInfos, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingModuleAccountInfosCommand}"
+                                                          Margin="0,6,5,0" />
+
+                                                <CheckBox Content="Folder Subscription"
+                                                          Foreground="Beige"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingModuleFolderSubscription, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingModuleFolderSubscriptionCommand}"
+                                                          Margin="0,6,5,0" />
+
+                                                <CheckBox Content="Prescription Maker"
+                                                          Foreground="Beige"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingModulePrescriptionMaker, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingModulePrescriptionMakerCommand}"
+                                                          Margin="0,6,5,0" />
+
+                                                <CheckBox Content="Pending Digitals"
+                                                          Foreground="Beige"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingModulePendingDigitals, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingModulePendingDigitalsCommand}"
+                                                          Margin="0,6,5,0" />
+
+                                                <CheckBox Content="Smart Order Names"
+                                                          Foreground="Beige"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingModuleSmartOrderNames, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingModuleSmartOrderNamesCommand}"
+                                                          Margin="0,6,5,0" />
+
+                                                <CheckBox Content="Debug"
+                                                          Foreground="MistyRose"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingModuleDebug, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingModuleDebugCommand}"
+                                                          Margin="0,6,5,0" />
+
+                                            </StackPanel>
+                                        </Grid>
+                                    </TabItem>
+
+
 
                                     <TabItem Header="Prescription Maker"
                                              Visibility="{Binding CbSettingModulePrescriptionMaker, Converter={StaticResource BoolToVisibilityConverter}}"
@@ -2848,98 +2943,6 @@
                                         </Grid>
                                     </TabItem>
 
-
-                                    <TabItem Header="Customer Suggestions"
-                                             Style="{StaticResource applicationsTabItem}">
-                                        <Grid Margin="5">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="40" />
-                                                <RowDefinition />
-                                                <RowDefinition Height="40" />
-                                            </Grid.RowDefinitions>
-
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto" />
-                                                <ColumnDefinition Width="auto" />
-                                                <ColumnDefinition />
-                                                <ColumnDefinition />
-                                            </Grid.ColumnDefinitions>
-
-                                            <TextBlock Text="Customer name"
-                                                       VerticalAlignment="Bottom"
-                                                       HorizontalAlignment="Left"
-                                                       Margin="6,0"
-                                                       FontSize="14" />
-
-                                            <TextBlock Text="Replacements"
-                                                       VerticalAlignment="Bottom"
-                                                       HorizontalAlignment="Left"
-                                                       Grid.Column="1"
-                                                       Margin="8,0"
-                                                       FontSize="14" />
-
-                                            <ListBox Grid.Row="1"
-                                                     Margin="0,0,2,0"
-                                                     ItemsSource="{Binding CustomerSuggestionsCusNamesList}"
-                                                     SelectedItem="{Binding SelectedCustomerName}"
-                                                     Foreground="Beige"
-                                                     MinWidth="150"
-                                                     Background="#444" />
-
-                                            <ListBox Grid.Row="1"
-                                                     Grid.Column="1"
-                                                     Margin="2,0,4,0"
-                                                     ItemsSource="{Binding CustomerSuggestionsReplacementsList}"
-                                                     SelectedItem="{Binding SelectedCustomerSuggestion}"
-                                                     Foreground="Beige"
-                                                     MinWidth="150"
-                                                     Background="#444" />
-
-                                            <Button Content="Delete customer"
-                                                    Grid.Row="2"
-                                                    Margin="0,5,3,5"
-                                                    Command="{Binding DeleteCSCustomerCommand}" />
-
-                                            <Button Content="Delete suggestion"
-                                                    Grid.Row="2"
-                                                    Grid.Column="1"
-                                                    Margin="3,5,4,5"
-                                                    Command="{Binding DeleteCSSuggestionCommand}" />
-
-
-                                            <TextBlock Text="Create new suggestion"
-                                                       VerticalAlignment="Bottom"
-                                                       HorizontalAlignment="Left"
-                                                       Grid.Column="2"
-                                                       Margin="19,0"
-                                                       FontSize="14" />
-
-                                            <StackPanel Grid.Row="1"
-                                                        Grid.Column="2"
-                                                        Margin="20,10">
-                                                <TextBlock Text="Customer" />
-                                                <TextBox  Width="200"
-                                                          Text="{Binding CSNewCustomer}"
-                                                          Background="#555"
-                                                          Foreground="Beige"
-                                                          HorizontalAlignment="Left" />
-
-                                                <TextBlock Text="Replacement"
-                                                           Margin="0,10,0,0" />
-                                                <TextBox  Width="200"
-                                                          Text="{Binding CSNewReplacement}"
-                                                          Background="#555"
-                                                          Foreground="Beige"
-                                                          HorizontalAlignment="Left" />
-
-                                                <Button Content="Add"
-                                                        Width="200"
-                                                        Margin="0,10"
-                                                        HorizontalAlignment="Left"
-                                                        Command="{Binding AddNewCustomerSuggestionCommand}" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </TabItem>
 
                                 </TabControl>
                             </Grid>

@@ -6314,9 +6314,7 @@ public class MainViewModel : ObservableObject
 
                                 _ = DateTime.TryParse(parts[0].Replace("[", ""), out DateTime dtTime);
 
-                                //string dTime = dtTime.ToString("[yyyy] ddd M/d h:mm tt");
                                 string designr = parts[1].Trim();
-                                //designerHistory.Add($"{dTime} - {designr}");
                                 designerHistory.Add(new DesignerHistoryModel()
                                 {
                                     Year = $"[{dtTime:yyyy}]",
@@ -6334,7 +6332,8 @@ public class MainViewModel : ObservableObject
                         }
                         catch (Exception ex)
                         {
-                            AddDebugLine(ex);
+                            if (!ex.Message.Contains("The media is write protected", StringComparison.CurrentCultureIgnoreCase))
+                                AddDebugLine(ex);
                         }
                     }
                     else if (File.Exists(designedByFile.Replace(@"\History\", @"\")))
@@ -6467,6 +6466,8 @@ public class MainViewModel : ObservableObject
             AddDebugLine(ex);
             Application.Current.Dispatcher.Invoke(new Action(() => {
                 if (ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
+                    ThreeShapeServerIsDown = true;
+                else if (ex.Message.Contains("The value's length for key 'data source'", StringComparison.CurrentCultureIgnoreCase))
                     ThreeShapeServerIsDown = true;
                 else
                 {
@@ -6644,7 +6645,9 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            if (!ex.Message.Contains("The network path was not found", StringComparison.CurrentCultureIgnoreCase))
+                AddDebugLine(ex);
+
             return false;
         }
     }
@@ -7058,7 +7061,10 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            AddDebugLine(ex);
+            if (ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
+                ThreeShapeServerIsDown = true;
+            else
+                AddDebugLine(ex);
         }
     }
 
