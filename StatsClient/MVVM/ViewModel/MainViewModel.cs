@@ -1512,7 +1512,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private List<string> pmMissingList = ["NEED SCAN BODY INFO", "NEED IMPLANT INFO", "NEED SCAN BODY / IMPLANT INFO", "WRONG SCAN", "WRONG SCAN BODY", "NOT ENOUGH INFO", "INCORRECT INFO", "NO SCAN, ONLY PRESCRIPTION CAME", "NO PREP, NO INFO"];
+    private List<string> pmMissingList = ["NEED SCAN BODY INFO", "NEED IMPLANT INFO", "NEED SCAN BODY / IMPLANT INFO", "WRONG SCAN", "WRONG SCAN BODY", "NOT ENOUGH INFO", "INCORRECT INFO", "NO SCAN, ONLY PRESCRIPTION CAME", "NO PREP, NO INFO", "NO PREOP SCAN", "NO STUDY MODEL", "NO OPPOSING"];
     public List<string> PmMissingList
     {
         get => pmMissingList;
@@ -6645,7 +6645,7 @@ public class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            if (!ex.Message.Contains("The network path was not found", StringComparison.CurrentCultureIgnoreCase))
+            if (!ex.Message.Contains("The network path was not found", StringComparison.CurrentCultureIgnoreCase) || !ex.Message.Contains("Could not find the part of the path", StringComparison.CurrentCultureIgnoreCase))
                 AddDebugLine(ex);
 
             return false;
