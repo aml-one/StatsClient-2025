@@ -34,9 +34,8 @@ using Clipboard = System.Windows.Clipboard;
 using System.Net.Http;
 using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
-using StatsClient.UserControls;
 using System.Windows.Media.Effects;
-using System.Net;
+
 
 
 
@@ -4944,6 +4943,26 @@ public class MainViewModel : ObservableObject
     }
 
 
+    public void SetShadeClick(string shade)
+    {
+        string SelectedOrderID = ThreeShapeObject!.IntOrderID!;
+        if (string.IsNullOrEmpty(SelectedOrderID))
+            return;
+
+        if (!Directory.Exists($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\History"))
+            Directory.CreateDirectory($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\History");
+
+        SMessageBoxResult res = ShowMessageBox("Set shade", $"Sure you want to set the shade to: {shade}?", SMessageBoxButtons.YesNo, NotificationIcon.Question, 15, MainWindow.Instance);
+
+        if (res == SMessageBoxResult.No)
+            return;
+
+        File.WriteAllText($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\shade", shade);
+        File.WriteAllText($@"{ThreeShapeDirectoryHelper}{SelectedOrderID}\History\LastShadeSetBy", $"{Environment.MachineName} - {DateTime.Now:M/d/yyyy h:mm:ss tt}");
+
+        ListUpdateTimer_Tick(null, null);
+    }
+
     public void GenerateStCopy()
     {
         string SelectedOrderID = ThreeShapeObject!.IntOrderID!;
@@ -6236,6 +6255,11 @@ public class MainViewModel : ObservableObject
                         isAbutmentCase = true;
 
 
+                    string shade = "";
+
+                    shade = DetermininingShade(reader["IntOrderID"].ToString()!);
+                    if (string.IsNullOrEmpty(shade))
+                        AlternateColoring = "noshade";
 
                     // alternate coloring
                     if (PanColor == "#FFFFFF")
@@ -6246,6 +6270,8 @@ public class MainViewModel : ObservableObject
                         AlternateColoring = "encode";
                         isAbutmentCase = false;
                     }
+
+
 
 
 
@@ -6426,6 +6452,7 @@ public class MainViewModel : ObservableObject
                         PanColorName = PanColorName,
                         CaseStatus = CaseStatus,
                         PanNumber = panNumber,
+                        Shade = shade,
                         LastModificationForSorting = LastModificationForSorting,
                         LastModifiedComputerName = LastModifiedComputerName,
                         CreateDateForSorting = CreateDateForSorting,

@@ -1120,6 +1120,14 @@
                                                                           SizeChanged="GridViewForRxColumnHeader_SizeChanged" />
                                                 </GridViewColumn.Header>
                                             </GridViewColumn>
+                                            <GridViewColumn x:Name="headerShade"
+                                                            Width="44">
+                                                <GridViewColumn.Header>
+                                                    <GridViewColumnHeader Template="{StaticResource CustomHeader}"
+                                                                          Tag="  Shade"
+                                                                          SizeChanged="GridViewForShadeColumnHeader_SizeChanged" />
+                                                </GridViewColumn.Header>
+                                            </GridViewColumn>
                                             <GridViewColumn x:Name="headerScanInfo"
                                                             Width="140"
                                                             DisplayMemberBinding="{Binding ScanSource}">

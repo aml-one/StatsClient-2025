@@ -11,6 +11,7 @@
 
     <converters:EmptyToHiddenConverter x:Key="EmptyToHiddenConverter" />
     <converters:EmptyToCollapsedConverter x:Key="EmptyToCollapsedConverter" />
+    <converters:EmptyTextToVisibleConverter x:Key="EmptyTextToVisibleConverter" />
     <converters:EqualToHiddenConverter x:Key="EqualToHiddenConverter" />
     <converters:StringToImageConverter x:Key="StringToImageConverter" />
     <converters:AgeToColorConverter x:Key="AgeToColorConverter" />
@@ -503,6 +504,139 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
 
+                                <MenuItem Header="Set shade to"
+                                          Visibility="{Binding Shade, Converter={StaticResource EmptyTextToVisibleConverter}}">
+                                    <MenuItem.Icon>
+                                        <Image  Source="/Images/ToolBar/update.png" />
+                                    </MenuItem.Icon>
+                                    <MenuItem Header="VITA">
+                                        <MenuItem Header="A1" 
+                                                  Click="Shade_A1_Click"/>
+                                        <MenuItem Header="A2"
+                                                  Click="Shade_A2_Click" />
+                                        <MenuItem Header="A3"
+                                                  Click="Shade_A3_Click" />
+                                        <MenuItem Header="A3.5"
+                                                  Click="Shade_A35_Click" />
+                                        <MenuItem Header="A4"
+                                                  Click="Shade_A4_Click" />
+                                        <Separator />
+                                        <MenuItem Header="B1"
+                                                  Click="Shade_B1_Click" />
+                                        <MenuItem Header="B2"
+                                                  Click="Shade_B2_Click" />
+                                        <MenuItem Header="B3"
+                                                  Click="Shade_B3_Click" />
+                                        <MenuItem Header="B4"
+                                                  Click="Shade_B4_Click" />
+                                        <Separator />
+                                        <MenuItem Header="C1"
+                                                  Click="Shade_C1_Click" />
+                                        <MenuItem Header="C2"
+                                                  Click="Shade_C2_Click" />
+                                        <MenuItem Header="C3"
+                                                  Click="Shade_C3_Click" />
+                                        <MenuItem Header="C4"
+                                                  Click="Shade_C4_Click" />
+                                        <Separator />
+                                        <MenuItem Header="D2"
+                                                  Click="Shade_D2_Click" />
+                                        <MenuItem Header="D3"
+                                                  Click="Shade_D3_Click" />
+                                        <MenuItem Header="D4"
+                                                  Click="Shade_D4_Click" />
+                                    </MenuItem>
+                                    <MenuItem Header="VITA 3D">
+                                        <MenuItem Header="1M1"
+                                                  Click="Shade_1M1_Click" />
+                                        <MenuItem Header="1M2"
+                                                  Click="Shade_1M2_Click" />
+                                        <Separator />
+                                        <MenuItem Header="2M1"
+                                                  Click="Shade_2M1_Click" />
+                                        <MenuItem Header="2M2"
+                                                  Click="Shade_2M2_Click" />
+                                        <MenuItem Header="2M3"
+                                                  Click="Shade_2M3_Click" />
+                                        <Separator />
+                                        <MenuItem Header="3M1"
+                                                  Click="Shade_3M1_Click" />
+                                        <MenuItem Header="3M2"
+                                                  Click="Shade_3M2_Click" />
+                                        <MenuItem Header="3M3"
+                                                  Click="Shade_3M3_Click" />
+                                        <Separator />
+                                        <MenuItem Header="4M1"
+                                                  Click="Shade_4M1_Click" />
+                                        <MenuItem Header="4M2"
+                                                  Click="Shade_4M2_Click" />
+                                        <MenuItem Header="4M3"
+                                                  Click="Shade_4M3_Click" />
+                                        <Separator />
+                                        <MenuItem Header="5M1"
+                                                  Click="Shade_5M1_Click" />
+                                        <MenuItem Header="5M2"
+                                                  Click="Shade_5M2_Click" />
+                                        <MenuItem Header="5M3"
+                                                  Click="Shade_5M3_Click" />
+                                        <Separator />
+                                        <MenuItem Header="2L1.5"
+                                                  Click="Shade_2L15_Click" />
+                                        <MenuItem Header="2L2.5"
+                                                  Click="Shade_2L25_Click" />
+                                        <MenuItem Header="3L1.5"
+                                                  Click="Shade_3L15_Click" />
+                                        <MenuItem Header="3L2.5"
+                                                  Click="Shade_3L25_Click" />
+                                        <MenuItem Header="4L1.5"
+                                                  Click="Shade_4L15_Click" />
+                                        <MenuItem Header="4L2.5"
+                                                  Click="Shade_4L25_Click" />
+                                        <Separator />
+                                        <MenuItem Header="2R1.5"
+                                                  Click="Shade_2R15_Click" />
+                                        <MenuItem Header="2R2.5"
+                                                  Click="Shade_2R25_Click" />
+                                        <MenuItem Header="3R1.5"
+                                                  Click="Shade_3R15_Click" />
+                                        <MenuItem Header="3R2.5"
+                                                  Click="Shade_3R25_Click" />
+                                        <MenuItem Header="4R1.5"
+                                                  Click="Shade_4R15_Click" />
+                                        <MenuItem Header="4R2.5"
+                                                  Click="Shade_4R25_Click" />
+                                    </MenuItem>
+                                    <MenuItem Header="Bleach / White">
+                                        <MenuItem Header="0M1"
+                                                  Click="Shade_0M1_Click" />
+                                        <MenuItem Header="0M2"
+                                                  Click="Shade_0M2_Click" />
+                                        <MenuItem Header="0M3"
+                                                  Click="Shade_0M3_Click" />
+                                        <MenuItem Header="0M4"
+                                                  Click="Shade_0M4_Click" />
+                                        <Separator />
+                                        <MenuItem Header="BL1"
+                                                  Click="Shade_BL1_Click" />
+                                        <MenuItem Header="BL2"
+                                                  Click="Shade_BL2_Click" />
+                                        <MenuItem Header="BL3"
+                                                  Click="Shade_BL3_Click" />
+                                        <MenuItem Header="BL4"
+                                                  Click="Shade_BL4_Click" />
+                                        <Separator />
+                                        <MenuItem Header="010"
+                                                  Click="Shade_010_Click" />
+                                        <MenuItem Header="020"
+                                                  Click="Shade_020_Click" />
+                                        <MenuItem Header="030"
+                                                  Click="Shade_030_Click" />
+                                        <MenuItem Header="040"
+                                                  Click="Shade_040_Click" />
+                                    </MenuItem>
+
+                                </MenuItem>
+
                                 <MenuItem Header="Explore order folder"
                                           Click="MenuItemExploreFolder_Click">
                                     <MenuItem.Icon>
@@ -587,6 +721,7 @@
                                 <ColumnDefinition Width="{Binding ElementName=headerIcon, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerCaseID, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerPrescription, Path=Width}" />
+                                <ColumnDefinition Width="{Binding ElementName=headerShade, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerScanInfo, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerCustomer, Path=Width}" />
                                 <ColumnDefinition Width="{Binding ElementName=headerItems, Path=Width}" />
@@ -707,8 +842,21 @@
                                        Visibility="{Binding HasAnyImage, Converter={StaticResource BoolToVisibilityConverter}}" />
                             </StackPanel>
 
+                            <!-- Shade -->
+                            <Grid Grid.Column="3"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding Shade}"
+                                           Foreground="Black"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           FontSize="10"
+                                           Margin="5,0,0,0"
+                                           TextTrimming="CharacterEllipsis" />
+                            </Grid>
+
                             <!-- Scanner Info & Other -->
-                            <StackPanel Grid.Column="3"
+                            <StackPanel Grid.Column="4"
                                         VerticalAlignment="Top">
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
@@ -766,7 +914,7 @@
 
                             <!-- Customer & Patient info -->
                             <StackPanel Orientation="Vertical"
-                                        Grid.Column="4"
+                                        Grid.Column="5"
                                         Margin="5,0,10,0"
                                         VerticalAlignment="Top">
                                 <TextBlock Text="{Binding Customer}"
@@ -814,7 +962,7 @@
 
 
                             <!-- Items & Manufacturers -->
-                            <StackPanel Grid.Column="5"
+                            <StackPanel Grid.Column="6"
                                         VerticalAlignment="Top"
                                         Margin="5,0,0,0">
                                 <TextBlock Text="{Binding Items}"
@@ -920,6 +1068,19 @@
                             <Setter TargetName="tbCacheMaterialName"
                                     Property="Foreground"
                                     Value="Maroon" />
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding AlternateColoring}"
+                                     Value="noshade">
+                            <Setter TargetName="Item"
+                                    Property="Background"
+                                    Value="#fffccc" />
+                            <Setter TargetName="ToolTipText"
+                                    Property="Text"
+                                    Value="Could not determine the shade" />
+                            <Setter TargetName="ToolTipText"
+                                    Property="Foreground"
+                                    Value="Red" />
                         </DataTrigger>
 
                         <Trigger Property="IsMouseOver"

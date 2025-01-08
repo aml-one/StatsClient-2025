@@ -30,6 +30,7 @@ public class ThreeShapeOrdersModel{
     public string? PanColorName { get; set; } 
     public string? CaseStatus { get; set; } 
     public string? PanNumber { get; set; } 
+    public string? Shade { get; set; } 
     public string? LastModificationForSorting { get; set; } 
     public string? LastModifiedComputerName { get; set; } 
     public string? CreateDateForSorting { get; set; } 

@@ -683,4 +683,144 @@ internal class Functions
         }
         return false;
     }
+
+
+    public static string DetermininingShade(string OrderID)
+    {
+        string ThreeShapeDirectory = DatabaseConnection.GetServerFileDirectory();
+
+        // check in filename
+        string[] parts = OrderID.Split('-');
+
+        foreach (string part in parts)
+        {
+            if (Shades.Any(x => x.Equals(part, StringComparison.CurrentCultureIgnoreCase)))
+                return part.ToUpper().Replace(",", "").Replace(".", "");
+        }
+
+        //check in shade file
+        if (File.Exists($@"{ThreeShapeDirectory}\{OrderID}\shade"))
+        {
+            string shade = File.ReadAllText($@"{ThreeShapeDirectory}\{OrderID}\shade");
+            if (Shades.Any(x => x.Equals(shade, StringComparison.CurrentCultureIgnoreCase)))
+                return shade.ToUpper().Replace(",", "").Replace(".", "");
+        }
+
+        //check in XML file
+        string XMLFile = $@"{ThreeShapeDirectory}\{OrderID}\{OrderID}.xml";
+        if (File.Exists(XMLFile))
+        {
+            string shade = "";
+            bool checkInLines = false;
+            var lines = File.ReadAllLines(XMLFile);
+            for (var i = 0; i < lines.Length; i += 1)
+            {
+                var line = lines[i];
+                if (line.Contains("value=\"DS_ShadeField\""))
+                    checkInLines = true;
+
+                if (checkInLines)
+                {
+                    if (line.Contains("Property name=\"Value\""))
+                    {
+                        shade = line.Replace("<Property name=\"Value\" value=\"", "").Replace("\"/>", "").Replace("\" />", "").Trim();
+                        return shade.ToUpper().Replace(",", "").Replace(".", "").Replace("-", "");
+                    }
+                }
+
+                if (line.Contains("</List>"))
+                    checkInLines = false;
+            }
+        }
+
+        return "";
+    }
+
+    public static List<string> Shades =
+        [
+            "A1",
+            "A2",
+            "A3",
+            "A35",
+            "A3.5",
+            "A3,5",
+            "A4",
+            "B1",
+            "B2",
+            "B3",
+            "B4",
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "D2",
+            "D3",
+            "D4",
+            "010",
+            "020",
+            "030",
+            "040",
+            "BL1",
+            "BL2",
+            "BL3",
+            "BL4",
+            "0M1",
+            "0M2",
+            "0M3",
+            "0M4",
+            "OM1",
+            "OM2",
+            "OM3",
+            "OM4",
+            "1M1",
+            "1M2",
+            "2M1",
+            "2M2",
+            "2M3",
+            "3M1",
+            "3M2",
+            "3M3",
+            "4M1",
+            "4M2",
+            "4M3",
+            "5M1",
+            "5M2",
+            "5M3",
+            "2L15",
+            "2L1.5",
+            "2L1,5",
+            "2L25",
+            "2L2.5",
+            "2L2,5",
+            "2R15",
+            "2R1.5",
+            "2R1,5",
+            "2R25",
+            "2R2.5",
+            "2R2,5",
+            "3L15",
+            "3L1.5",
+            "3L1,5",
+            "3L25",
+            "3L2.5",
+            "3L2,5",
+            "3R15",
+            "3R1.5",
+            "3R1,5",
+            "3R25",
+            "3R2.5",
+            "3R2,5",
+            "4L15",
+            "4L1.5",
+            "4L1,5",
+            "4L25",
+            "4L2.5",
+            "4L2,5",
+            "4R15",
+            "4R1.5",
+            "4R1,5",
+            "4R25",
+            "4R2.5",
+            "4R2,5",
+        ];
 }

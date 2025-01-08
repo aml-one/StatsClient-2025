@@ -215,9 +215,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     
     private void GridViewForRxColumnHeader_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        // preventing icon column from resize
+        // preventing rx column from resize
         e.Handled = true;
         ((GridViewColumnHeader)sender).Column.Width = 30;
+    }
+    
+    private void GridViewForShadeColumnHeader_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        // preventing shade column from resize
+        e.Handled = true;
+        ((GridViewColumnHeader)sender).Column.Width = 44;
     }
 
     private void Window_LocationChanged(object sender, EventArgs e)
