@@ -119,7 +119,7 @@ namespace StatsClient.MVVM.View
                 if (index == 2)
                 {
                     listBoxDigiSystem.Focus();
-                    listBoxDigiSystem.SelectedIndex = 7;
+                    listBoxDigiSystem.SelectedIndex = 8;
 
                     var listBoxItem = (ListBoxItem)listBoxDigiSystem.ItemContainerGenerator.ContainerFromItem(listBoxDigiSystem.SelectedItem);
                     listBoxItem.Focus();
