@@ -1455,7 +1455,30 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmLastTakenPanNumber));
         }
     }
+
+
+    private string lastUsedPanNumber = "";
+    public string LastUsedPanNumber
+    {
+        get => lastUsedPanNumber;
+        set
+        {
+            lastUsedPanNumber = value;
+            RaisePropertyChanged(nameof(LastUsedPanNumber));
+        }
+    }
     
+    private string nextPanNumberGlobal = "";
+    public string NextPanNumberGlobal
+    {
+        get => nextPanNumberGlobal;
+        set
+        {
+            nextPanNumberGlobal = value;
+            RaisePropertyChanged(nameof(NextPanNumberGlobal));
+        }
+    }
+
     private Visibility processingDigiPrescriptionNow = Visibility.Collapsed;
     public Visibility ProcessingDigiPrescriptionNow
     {
@@ -1511,7 +1534,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    private List<string> pmMissingList = ["NEED SCAN BODY INFO", "NEED IMPLANT INFO", "NEED SCAN BODY / IMPLANT INFO", "WRONG SCAN", "WRONG SCAN BODY", "NOT ENOUGH INFO", "INCORRECT INFO", "NO SCAN, ONLY PRESCRIPTION CAME", "NO PREP, NO INFO", "NO PREOP SCAN", "NO STUDY MODEL", "NO OPPOSING"];
+    private List<string> pmMissingList = ["-", "NEED SCAN BODY INFO", "NEED IMPLANT INFO", "NEED SCAN BODY / IMPLANT INFO", "WRONG SCAN", "WRONG SCAN BODY", "NOT ENOUGH INFO", "INCORRECT INFO", "NO SCAN, ONLY PRESCRIPTION CAME", "NO PREP, NO INFO", "NO PREOP SCAN", "NO STUDY MODEL", "NO OPPOSING"];
     public List<string> PmMissingList
     {
         get => pmMissingList;
@@ -1618,16 +1641,6 @@ public class MainViewModel : ObservableObject
         }
     }
     
-    private string nextPanNumberGlobal = "";
-    public string NextPanNumberGlobal
-    {
-        get => nextPanNumberGlobal;
-        set
-        {
-            nextPanNumberGlobal = value;
-            RaisePropertyChanged(nameof(NextPanNumberGlobal));
-        }
-    }
     
     private string fullPathGlobal = "";
     public string FullPathGlobal
@@ -1648,6 +1661,17 @@ public class MainViewModel : ObservableObject
         {
             sironaOrderNumber = value;
             RaisePropertyChanged(nameof(SironaOrderNumber));
+        }
+    }
+    
+    private int globalFileLockCount = 0;
+    public int GlobalFileLockCount
+    {
+        get => globalFileLockCount;
+        set
+        {
+            globalFileLockCount = value;
+            RaisePropertyChanged(nameof(GlobalFileLockCount));
         }
     }
     
@@ -1714,6 +1738,28 @@ public class MainViewModel : ObservableObject
         {
             isItSironaPrescription = value;
             RaisePropertyChanged(nameof(IsItSironaPrescription));
+        }
+    }
+    
+    private bool isItASConnectPrescription = false;
+    public bool IsItASConnectPrescription
+    {
+        get => isItASConnectPrescription;
+        set
+        {
+            isItASConnectPrescription = value;
+            RaisePropertyChanged(nameof(IsItASConnectPrescription));
+        }
+    }
+    
+    private string aSConnectOrderID = "";
+    public string ASConnectOrderID
+    {
+        get => aSConnectOrderID;
+        set
+        {
+            aSConnectOrderID = value;
+            RaisePropertyChanged(nameof(ASConnectOrderID));
         }
     }
     
@@ -2162,8 +2208,8 @@ public class MainViewModel : ObservableObject
         }
     }
     
-    private SmartOrderNamesPage smartOrderNamesWindow = new();
-    public SmartOrderNamesPage SmartOrderNamesWindow
+    private SmartOrderNames2Page smartOrderNamesWindow = new();
+    public SmartOrderNames2Page SmartOrderNamesWindow
     {
         get => smartOrderNamesWindow;
         set
@@ -3085,6 +3131,7 @@ public class MainViewModel : ObservableObject
                     _MainWindow.pmPanelPanek.Children.Remove(item);
             }
 
+            LastUsedPanNumber = PmNextPanNumberInList;
             PmLastTakenPanNumber = PmNextPanNumberInList;
             PmPanNumberList.Remove(PmNextPanNumberInList);
             RaisePropertyChanged(nameof(PmPanNumberList));
@@ -3106,6 +3153,10 @@ public class MainViewModel : ObservableObject
 
             if (PmPanNumberList.Count == 0)
                 PmNextPanNumberInList = "";
+
+            //might need to delete 04-09-2025
+            if (NextPanNumberGlobal != "")
+                NextPanNumberGlobal = "";
         }
     }
 
@@ -3418,6 +3469,13 @@ public class MainViewModel : ObservableObject
                             ProcessingDigiPrescriptionNow = Visibility.Visible;
                             PmSavedPrescription = null;
                             NextPanNumberGlobal = PmPanNumberList[0].ToString();
+
+                            //LastUsedPanNumber = NextPanNumberGlobal;
+
+                            //might need to delete 04-09-2025
+                            if (PmLastTakenPanNumber != "")
+                                PmLastTakenPanNumber = "";
+
                             FullPathGlobal = e.FullPath;
                             DocumentStreamPixelCheck = new FileStream(e.FullPath, FileMode.OpenOrCreate);
 
@@ -3489,6 +3547,7 @@ public class MainViewModel : ObservableObject
         }
         catch (IOException io)
         {
+            GlobalFileLockCount++;
             if (!io.Message.Contains("The process cannot access the file", StringComparison.CurrentCultureIgnoreCase))
                 AddDebugLine(io);
             //the file is unavailable because it is:
@@ -3540,6 +3599,17 @@ public class MainViewModel : ObservableObject
 
         Debug.WriteLine("PixelIS3DColor:" + PixelIS3DColor);
         
+        string PixelASConnectColor = img.GetPixel(400, 50).ToString()
+                                                    .Replace("Color [", "")
+                                                    .Replace("]", "")
+                                                    .Replace("A=", "")
+                                                    .Replace(" R=", "")
+                                                    .Replace(" G=", "")
+                                                    .Replace(" B=", "")
+                                                    .Replace(",", "");
+
+        Debug.WriteLine("PixelIS3DColor:" + PixelASConnectColor);
+        
         string PixelDSCoreColor = img.GetPixel(12, 12).ToString()
                                                     .Replace("Color [", "")
                                                     .Replace("]", "")
@@ -3561,7 +3631,7 @@ public class MainViewModel : ObservableObject
                                                     .Replace(",", "");
         Debug.WriteLine("PixelSironaColor:" + PixelSironaColor);
 
-        string PixelMeditColor = img.GetPixel(686, 32).ToString()
+        string PixelMeditColor = img.GetPixel(687, 32).ToString()
                                                     .Replace("Color [", "")
                                                     .Replace("]", "")
                                                     .Replace("A=", "")
@@ -3572,10 +3642,12 @@ public class MainViewModel : ObservableObject
         Debug.WriteLine("PixelMeditColor:" + PixelMeditColor);
 
 
-        
+        //255246249254
+        //25546112234
 
+        LastUsedPanNumber = NextPanNumberGlobal;
 
-        if (PixelMeditColor == "255107154240") // Medit
+        if (PixelMeditColor == "255107154240" || PixelMeditColor == "255246249254" || PixelMeditColor == "25546112234") // Medit
         {
             PageHeaderIsHigh = "5";
             await Task.Run(() => EditPDF(FullPathGlobal, NextPanNumberGlobal));
@@ -3596,6 +3668,12 @@ public class MainViewModel : ObservableObject
         else if (PixelDSCoreColor == "255858789") // DSCore
         {
             PageHeaderIsHigh = "6";
+            await Task.Run(() => EditPDF(FullPathGlobal, NextPanNumberGlobal));
+            return false;
+        }
+        else if (PixelASConnectColor == "255067153") // ASConnect
+        {
+            PageHeaderIsHigh = "7";
             await Task.Run(() => EditPDF(FullPathGlobal, NextPanNumberGlobal));
             return false;
         }
@@ -3664,6 +3742,14 @@ public class MainViewModel : ObservableObject
 
                 SendSironaInfoToServer(PanNumber, PatientName, DSCoreOrderNumber, "DSCORE");
             }
+
+            // for ASConnect case, getting the order id
+            if (text.Contains("Treatment Report", StringComparison.CurrentCultureIgnoreCase))
+            {
+                IsItASConnectPrescription = true;
+                ASConnectOrderID = text.Substring(text.IndexOf("Order ID:"), 54).Replace("Order ID:", "").Replace("Medical License:\n", "").Replace(" ", "").Replace("\n", "").Replace("—", "").Replace("--", "").Trim();
+            }
+            Debug.WriteLine(ASConnectOrderID);
         }
         catch (Exception ex)
         {
@@ -3801,6 +3887,8 @@ public class MainViewModel : ObservableObject
                     graphics.DrawString(NextPanNumber, font, PdfBrushes.Black, new System.Drawing.PointF(310, 25));
                 else if (PageHeaderIsHigh == "6") // DSCore type of prescr
                     graphics.DrawString(NextPanNumber, font, PdfBrushes.Black, new System.Drawing.PointF(250, 30));
+                else if (PageHeaderIsHigh == "7") // ASConnect type of prescr
+                    graphics.DrawString(NextPanNumber, font, PdfBrushes.Black, new System.Drawing.PointF(470, 60));
 
                 //Save the document.
                 SavedPDF = PDFTemp + "\\" + NextPanNumber + ".pdf";
@@ -3812,6 +3900,13 @@ public class MainViewModel : ObservableObject
                 {
                     await Task.Delay(1000);
                     i++;
+
+                    if (GlobalFileLockCount > 10)
+                    {
+                        GlobalFileLockCount = 0;
+                        break;
+                    }
+                    //last change here -- need to delete this comment later
                 }
 
                 doc.Save(SavedPDF);
@@ -3857,6 +3952,8 @@ public class MainViewModel : ObservableObject
                     graphics.DrawString("RUSH", font, PdfBrushes.DarkRed, new System.Drawing.PointF(310, 92));
                 else if (PageHeaderIsHigh == "6")
                     graphics.DrawString("RUSH", font, PdfBrushes.DarkRed, new System.Drawing.PointF(375, 30));
+                else if (PageHeaderIsHigh == "7")
+                    graphics.DrawString("RUSH", font, PdfBrushes.DarkRed, new System.Drawing.PointF(420, 120));
 
                 //Save the document.
                 SavedPDF = PDFTemp + "\\" + lastPanNr + ".pdf";
@@ -3899,6 +3996,8 @@ public class MainViewModel : ObservableObject
                     graphics.DrawString("Sent to " + SentTo + " " + DateTime.Now.ToString("MM/dd"), font, PdfBrushes.Black, new System.Drawing.PointF(190, 235));
                 else if (PageHeaderIsHigh == "6")
                     graphics.DrawString("Sent to " + SentTo + " " + DateTime.Now.ToString("MM/dd"), font, PdfBrushes.Black, new System.Drawing.PointF(190, 205));
+                else if (PageHeaderIsHigh == "7")
+                    graphics.DrawString("Sent to " + SentTo + " " + DateTime.Now.ToString("MM/dd"), font, PdfBrushes.Black, new System.Drawing.PointF(35, 625));
 
 
                 //Save the document.
@@ -3910,7 +4009,7 @@ public class MainViewModel : ObservableObject
 
                 doc.Close(true);
 
-                PmSelectedSentTo = "";
+                PmSelectedSentTo = "-";
 
                 SavePrescriptionFromPdfToImage(SavedPDFCopy, true);
             }
@@ -3949,6 +4048,8 @@ public class MainViewModel : ObservableObject
                     graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(190, 235));
                 else if (PageHeaderIsHigh == "6") // DSCore type of prescr
                     graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(190, 205));
+                else if (PageHeaderIsHigh == "7") // ASConnect type of prescr
+                    graphics.DrawString(MissingText, font, PdfBrushes.Black, new System.Drawing.PointF(35, 635));
 
 
                 //Save the document.
@@ -3960,7 +4061,7 @@ public class MainViewModel : ObservableObject
 
                 doc.Close(true);
 
-                PmSelectedMissing = "";
+                PmSelectedMissing = "-";
                 SavePrescriptionFromPdfToImage(SavedPDFCopy, true);
             }
 
@@ -4010,7 +4111,7 @@ public class MainViewModel : ObservableObject
     
     private async void PmMarkCaseWithLabelSendTo()
     {
-        if (PmSelectedSentTo is null || PmSelectedSentTo == "")
+        if (PmSelectedSentTo is null || PmSelectedSentTo == "" || PmSelectedSentTo == "-")
         {
             ShowMessageBox("Error", $"Please choose one option from the dropdow first", SMessageBoxButtons.Ok, NotificationIcon.Warning, 15, MainWindow.Instance);
             return;
@@ -4023,6 +4124,7 @@ public class MainViewModel : ObservableObject
             PmSendToButtonShows = Visibility.Hidden;
             PmMissingButtonShows = Visibility.Hidden;
             await Task.Run(() => EditPDF("", "", false, true, PmSelectedSentTo));
+            PmSelectedSentTo = "-";
         }
         else
             return;
@@ -4030,7 +4132,7 @@ public class MainViewModel : ObservableObject
     
     private async void PmMarkCaseWithLabelMissing()
     {
-        if (PmSelectedMissing is null || PmSelectedMissing == "")
+        if (PmSelectedMissing is null || PmSelectedMissing == "" || PmSelectedMissing == "-")
         {
             ShowMessageBox("Error", $"Please choose one option from the dropdow first", SMessageBoxButtons.Ok, NotificationIcon.Warning, 15, MainWindow.Instance);
             return;
@@ -4043,6 +4145,7 @@ public class MainViewModel : ObservableObject
             PmMissingButtonShows = Visibility.Hidden;
             PmSendToButtonShows = Visibility.Hidden;
             await Task.Run(() => EditPDF("", "", false, false, "", true, PmSelectedMissing));
+            PmSelectedMissing = "-";
         }
         else
             return;

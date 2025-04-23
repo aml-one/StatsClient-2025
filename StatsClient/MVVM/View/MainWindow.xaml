@@ -1705,7 +1705,7 @@
                                             d:Visibility="Visible" />
                                     <ComboBox Grid.Column="3"
                                               ItemsSource="{Binding PmSendToList}"
-                                              SelectedItem="{Binding PmSelectedSentTo}"
+                                              SelectedItem="{Binding PmSelectedSentTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Visibility="{Binding PmSendToButtonShows}"
                                               Margin="0,0,0,1"
                                               d:Visibility="Visible" />
@@ -1722,7 +1722,7 @@
                                     <ComboBox Grid.Column="3"
                                               Grid.Row="1"
                                               ItemsSource="{Binding PmMissingList}"
-                                              SelectedItem="{Binding PmSelectedMissing}"
+                                              SelectedItem="{Binding PmSelectedMissing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               Visibility="{Binding PmMissingButtonShows}"
                                               Margin="0,1,0,0"
                                               d:Visibility="Visible" />
@@ -2108,15 +2108,15 @@
                             </Grid>
                         </TabItem>
 
-                        <TabItem Header="Smart Order Names"
+                        <!--<TabItem Header="Smart Order Names"
                                  IsTabStop="False"
                                  Visibility="{Binding CbSettingModuleSmartOrderNames, Converter={StaticResource BoolToVisibilityConverter}}"
                                  d:Visibility="Visible"
                                  x:Name="smartOrderNamesTab"
                                  Style="{StaticResource applicationsTabItem}">
-                            <!--localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}"
-                                                           Margin="-1,1,-1,0" /-->
-                        </TabItem>
+                            --><!--localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}"
+                                                           Margin="-1,1,-1,0" /--><!--
+                        </TabItem>-->
 
                         <TabItem IsTabStop="False"
                                  x:Name="orderIssuesTab"
@@ -3416,6 +3416,23 @@
                             </i:Interaction.Triggers>
                         </TextBlock>
                         <TextBlock Text="Order Issues"
+                                   Foreground="White"
+                                   FontSize="8"
+                                   Margin="5,0,15,0" />
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding LastUsedPanNumber, Converter={StaticResource EmptyToCollapsedConverter}}"
+                                d:Visibility="Visible"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding LastUsedPanNumber}"
+                                   d:Text="1111"
+                                   Foreground="#cfA362"
+                                   HorizontalAlignment="Center"
+                                   Margin="5,0,15,-6"
+                                   FontSize="26" />
+
+                        <TextBlock Text="Last used number"
                                    Foreground="White"
                                    FontSize="8"
                                    Margin="5,0,15,0" />

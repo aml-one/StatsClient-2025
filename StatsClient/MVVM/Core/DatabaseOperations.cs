@@ -3092,6 +3092,7 @@ public partial class DatabaseOperations
     public static List<string> GetAllSendToEnties()
     {
         List<string> list = [];
+        list.Add("-");
         try
         {
             string computerName = Environment.MachineName;

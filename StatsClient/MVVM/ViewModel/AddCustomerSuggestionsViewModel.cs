@@ -75,7 +75,7 @@ public class AddCustomerSuggestionsViewModel : ObservableObject
         {
             if (await AddNewCustomerSuggestion(CustomerName, CleanUpCustomerName(NewName)))
             {
-                SmartOrderNamesViewModel.StaticInstance.SelectedCustomerName = NewName;
+                SmartOrderNames2ViewModel.StaticInstance.SelectedCustomerName = NewName;
                 CloseWindow();
             }
         }

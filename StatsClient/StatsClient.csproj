@@ -123,6 +123,8 @@
     <None Remove="Images\new_logo.ico" />
     <None Remove="Images\new_logo.png" />
     <None Remove="Images\new_logo_blue.png" />
+    <None Remove="Images\Other\crown.png" />
+    <None Remove="Images\Other\scr.png" />
     <None Remove="Images\SentOutCases\abutment.png" />
     <None Remove="Images\SentOutCases\crown.png" />
     <None Remove="Images\SentOutCases\i10.png" />
@@ -440,6 +442,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\new_logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Other\crown.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Other\scr.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\SentOutCases\abutment.png">

@@ -8,6 +8,7 @@ using static StatsClient.MVVM.Core.LocalSettingsDB;
 using static StatsClient.MVVM.Core.Functions;
 using static StatsClient.MVVM.Core.Enums;
 using static StatsClient.MVVM.ViewModel.MainViewModel;
+using System.Windows.Media.Media3D;
 
 namespace StatsClient.MVVM.ViewModel;
 
@@ -82,6 +83,20 @@ public class SplashViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingGlassyEffect));
         }
     }
+    
+    private Visibility windowPosResetText = Visibility.Hidden;
+    public Visibility WindowPosResetText
+    {
+        get => windowPosResetText;
+        set
+        {
+            windowPosResetText = value;
+            RaisePropertyChanged(nameof(WindowPosResetText));
+        }
+    }
+
+    
+    public RelayCommand ResetWindowPositionCommand { get; set; }
 
 
     public SplashViewModel()
@@ -95,6 +110,19 @@ public class SplashViewModel : ObservableObject
 
         _ = bool.TryParse(ReadLocalSetting("GlassyEffect"), out bool GlassyEffect);
         CbSettingGlassyEffect = GlassyEffect;
+
+        ResetWindowPositionCommand = new RelayCommand(o => ResetWindowPosition());
+    }
+
+    private void ResetWindowPosition()
+    {
+        WriteLocalSetting("WindowTop", "10");
+        WriteLocalSetting("WindowLeft", "10");
+
+        WriteLocalSetting("WindowWidth", "1120");
+        WriteLocalSetting("WindowHeight", "550");
+
+        WindowPosResetText = Visibility.Visible;
     }
 
     private async Task SetAppVersion()
