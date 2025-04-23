@@ -7517,6 +7517,8 @@ public class MainViewModel : ObservableObject
             AddDebugLine(ex);
         }
 
+        AddDebugLine(null, $"Current app version: {AppVersionDouble}, Last available version: {LatestAppVersion}");
+
         if (remoteVersion > AppVersionDouble)
         {
 #if DEBUG
