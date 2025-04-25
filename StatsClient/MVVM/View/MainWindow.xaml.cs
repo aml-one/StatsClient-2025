@@ -320,5 +320,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         webview.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
         webview.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+
+        MainViewModel.Instance.ServerLogWebViewIsInitialized = true;
     }
 }

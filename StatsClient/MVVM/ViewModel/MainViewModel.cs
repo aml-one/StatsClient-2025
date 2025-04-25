@@ -137,6 +137,17 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ScrollServerLogToBottom));
         }
     }
+    
+    private bool serverLogWebViewIsInitialized = false;
+    public bool ServerLogWebViewIsInitialized
+    {
+        get => serverLogWebViewIsInitialized;
+        set
+        {
+            serverLogWebViewIsInitialized = value;
+            RaisePropertyChanged(nameof(ServerLogWebViewIsInitialized));
+        }
+    }
 
     private string serverLogUrl = "";
     public string ServerLogUrl
@@ -7113,7 +7124,7 @@ public class MainViewModel : ObservableObject
 
         if (second % 5 == 0 || ServerLogCanBeRead)
         {
-            if (ScrollServerLogToBottom)
+            if (ScrollServerLogToBottom && ServerLogWebViewIsInitialized)
             {
                 Application.Current.Dispatcher.Invoke(new Action(async () =>
                 {
