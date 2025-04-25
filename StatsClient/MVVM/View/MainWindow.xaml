@@ -2127,6 +2127,7 @@
 
                                     <CheckBox Content="Auto scroll"
                                               Foreground="Black"
+                                              Panel.ZIndex="100"
                                               IsChecked="{Binding ScrollServerLogToBottom}"
                                               d:IsChecked="True"
                                               Margin="5"
@@ -2135,6 +2136,7 @@
                                 </StackPanel>
                                 <wv2:WebView2 Source="{Binding ServerLogUrl}"
                                               Name="webview"
+                                              Panel.ZIndex="99"
                                               CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
                                               DefaultBackgroundColor="Gray" />
                             </Grid>
