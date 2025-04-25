@@ -2138,6 +2138,7 @@
                                 </StackPanel>
                                 <wv2:WebView2 Source="{Binding ServerLogUrl}"
                                               Name="webview"
+                                              Cursor="Arrow"
                                               Panel.ZIndex="99"
                                               MouseWheel="webview_MouseWheel"
                                               CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
