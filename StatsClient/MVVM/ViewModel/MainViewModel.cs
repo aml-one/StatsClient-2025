@@ -3584,6 +3584,12 @@ public class MainViewModel : ObservableObject
         catch (IOException io)
         {
             GlobalFileLockCount++;
+            if (!io.Message.Contains("Could not find file", StringComparison.CurrentCultureIgnoreCase))
+            {
+                stream?.Close();
+                return false;
+            }
+
             if (!io.Message.Contains("The process cannot access the file", StringComparison.CurrentCultureIgnoreCase))
                 AddDebugLine(io);
             //the file is unavailable because it is:
