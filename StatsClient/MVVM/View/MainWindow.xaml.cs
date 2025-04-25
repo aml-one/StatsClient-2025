@@ -315,4 +315,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         MainViewModel.Instance.SmartOrderNamesWindow.Owner = this;
     }
+
+    private void webview_CoreWebView2InitializationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+    {
+        webview.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
+        webview.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+    }
 }

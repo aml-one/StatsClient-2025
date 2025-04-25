@@ -35,6 +35,7 @@ using System.Net.Http;
 using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Effects;
+using System.Security.Policy;
 
 
 
@@ -112,6 +113,39 @@ public class MainViewModel : ObservableObject
         {
             doAForceUpdateNow = value;
             RaisePropertyChanged(nameof(DoAForceUpdateNow));
+        }
+    }
+    
+    private bool serverLogCanBeRead = false;
+    public bool ServerLogCanBeRead
+    {
+        get => serverLogCanBeRead;
+        set
+        {
+            serverLogCanBeRead = value;
+            RaisePropertyChanged(nameof(ServerLogCanBeRead));
+        }
+    }
+    
+    private string serverLogUrl = "";
+    public string ServerLogUrl
+    {
+        get => serverLogUrl;
+        set
+        {
+            serverLogUrl = value;
+            RaisePropertyChanged(nameof(ServerLogUrl));
+        }
+    }
+    
+    private string statsServersComputerName = "";
+    public string StatsServersComputerName
+    {
+        get => statsServersComputerName;
+        set
+        {
+            statsServersComputerName = value;
+            RaisePropertyChanged(nameof(StatsServersComputerName));
         }
     }
     
@@ -2432,6 +2466,8 @@ public class MainViewModel : ObservableObject
             PmSavedPrescription = null;
         });
 
+
+        StatsServersComputerName = ReadStatsSetting("ServerComputerName");
 
 
         #region Folder Subscription RelayCommands
@@ -7126,6 +7162,18 @@ public class MainViewModel : ObservableObject
 
                 _ = bool.TryParse(ReadStatsSetting("dcas_EmailWatcherActive"), out bool isDCASIsActive);
                 IsDCASIsActive = isDCASIsActive;
+
+
+                if (ServerLogCanBeRead)
+                {
+                    //checking if server log is readable
+                    if (File.Exists(@$"\\{StatsServersComputerName}\StatsSystemsLogs$\StatsSystem_log_{DateTime.Now:yyyy-MM-dd}.html"))
+                    {
+                        ServerLogUrl = @$"\\{StatsServersComputerName}\StatsSystemsLogs$\StatsSystem_log_{DateTime.Now:yyyy-MM-dd}.html";
+                        if (_MainWindow.webview.Source != new Uri(ServerLogUrl))
+                            _MainWindow.webview.Source = new Uri(ServerLogUrl);
+                    }
+                }
             }));
         }
 
@@ -7510,7 +7558,8 @@ public class MainViewModel : ObservableObject
             {
                 string remVersion = remoteVersion.ToString();
                 LatestAppVersion = remVersion;
-                AddDebugLine(null, $"Current app version: {AppVersionDouble}, Last available version: {LatestAppVersion}");
+                if (DoAForceUpdateNow)
+                    AddDebugLine(null, $"Current app version: {AppVersionDouble}, Last available version: {LatestAppVersion}");
             }));
         }
         catch (Exception ex)
@@ -7526,7 +7575,7 @@ return;
 #endif
             UpdateAvailable = true;
             
-            if (StartAutoUpdateCuzAppJustStarted && remoteVersion - AppVersionDouble > 20)
+            if (StartAutoUpdateCuzAppJustStarted && remoteVersion - AppVersionDouble > 10)
                     Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
             
             

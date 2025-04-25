@@ -10,6 +10,7 @@
         xmlns:uc="clr-namespace:StatsClient.UserControls"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:sf="clr-namespace:Syncfusion.Windows.PdfViewer;assembly=Syncfusion.PdfViewer.WPF"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         ResizeMode="CanResizeWithGrip"
         WindowStyle="None"
@@ -2108,15 +2109,18 @@
                             </Grid>
                         </TabItem>
 
-                        <!--<TabItem Header="Smart Order Names"
+                        <TabItem Header="Server Log"
                                  IsTabStop="False"
-                                 Visibility="{Binding CbSettingModuleSmartOrderNames, Converter={StaticResource BoolToVisibilityConverter}}"
+                                 x:Name="serverLogTab"
+                                 Visibility="{Binding ServerLogCanBeRead, Converter={StaticResource BoolToVisibilityConverter}}"
                                  d:Visibility="Visible"
-                                 x:Name="smartOrderNamesTab"
                                  Style="{StaticResource applicationsTabItem}">
-                            --><!--localView:SmartOrderNamesPage DataContext="{Binding SmartOrderNamesViewModel}"
-                                                           Margin="-1,1,-1,0" /--><!--
-                        </TabItem>-->
+                            <wv2:WebView2 Source="{Binding ServerLogUrl}"
+                                          Name="webview"
+                                          CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
+                                          DefaultBackgroundColor="Gray"
+                                           />
+                        </TabItem>
 
                         <TabItem IsTabStop="False"
                                  x:Name="orderIssuesTab"
