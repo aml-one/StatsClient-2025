@@ -7164,16 +7164,18 @@ public class MainViewModel : ObservableObject
                 IsDCASIsActive = isDCASIsActive;
 
 
-                if (ServerLogCanBeRead)
+                
+                //checking if server log is readable
+                if (File.Exists(@$"\\{StatsServersComputerName}\StatsSystemsLogs$\StatsSystem_log_{DateTime.Now:yyyy-MM-dd}.html"))
                 {
-                    //checking if server log is readable
-                    if (File.Exists(@$"\\{StatsServersComputerName}\StatsSystemsLogs$\StatsSystem_log_{DateTime.Now:yyyy-MM-dd}.html"))
-                    {
-                        ServerLogUrl = @$"\\{StatsServersComputerName}\StatsSystemsLogs$\StatsSystem_log_{DateTime.Now:yyyy-MM-dd}.html";
-                        if (_MainWindow.webview.Source != new Uri(ServerLogUrl))
-                            _MainWindow.webview.Source = new Uri(ServerLogUrl);
-                    }
+                    ServerLogCanBeRead = true;
+                    ServerLogUrl = @$"\\{StatsServersComputerName}\StatsSystemsLogs$\StatsSystem_log_{DateTime.Now:yyyy-MM-dd}.html";
+                    if (_MainWindow.webview.Source != new Uri(ServerLogUrl))
+                        _MainWindow.webview.Source = new Uri(ServerLogUrl);
                 }
+                else
+                    ServerLogCanBeRead = false;
+                
             }));
         }
 
