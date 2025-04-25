@@ -7115,7 +7115,7 @@ public class MainViewModel : ObservableObject
         {
             if (ScrollServerLogToBottom)
             {
-                _MainWindow.webview.ExecuteScriptAsync("window.scroll(0,1000000)");
+                await _MainWindow.webview.ExecuteScriptAsync("window.scroll(0,10000000)");
             }
         }
 

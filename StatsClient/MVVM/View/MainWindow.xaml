@@ -2116,18 +2116,20 @@
                                  d:Visibility="Visible"
                                  Style="{StaticResource applicationsTabItem}">
                             <Grid>
-                                <StackPanel Background="AliceBlue"
-                                            Panel.ZIndex="100"
-                                            Height="24"
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Height="24"
+                                            Grid.Row="1"
                                             HorizontalAlignment="Right"
-                                            Margin="5"
+                                            
                                             VerticalAlignment="Bottom"
                                             Opacity="0.85"
                                             Width="95">
 
                                     <CheckBox Content="Auto scroll"
-                                              Foreground="Black"
-                                              Panel.ZIndex="100"
+                                              Foreground="Beige"
                                               IsChecked="{Binding ScrollServerLogToBottom}"
                                               d:IsChecked="True"
                                               Margin="5"
