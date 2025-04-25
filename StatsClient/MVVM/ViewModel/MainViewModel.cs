@@ -93,7 +93,7 @@ public class MainViewModel : ObservableObject
     //}
 
 
-    
+
     private bool startAutoUpdateCuzAppJustStarted = true;
     public bool StartAutoUpdateCuzAppJustStarted
     {
@@ -104,7 +104,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(StartAutoUpdateCuzAppJustStarted));
         }
     }
-    
+
     private bool doAForceUpdateNow = false;
     public bool DoAForceUpdateNow
     {
@@ -115,7 +115,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(DoAForceUpdateNow));
         }
     }
-    
+
     private bool serverLogCanBeRead = false;
     public bool ServerLogCanBeRead
     {
@@ -127,6 +127,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private bool scrollServerLogToBottom = true;
+    public bool ScrollServerLogToBottom
+    {
+        get => scrollServerLogToBottom;
+        set
+        {
+            scrollServerLogToBottom = value;
+            RaisePropertyChanged(nameof(ScrollServerLogToBottom));
+        }
+    }
+
     private string serverLogUrl = "";
     public string ServerLogUrl
     {
@@ -137,7 +148,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ServerLogUrl));
         }
     }
-    
+
     private string statsServersComputerName = "";
     public string StatsServersComputerName
     {
@@ -148,7 +159,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(StatsServersComputerName));
         }
     }
-    
+
     private bool lookingForUpdateNow = false;
     public bool LookingForUpdateNow
     {
@@ -159,8 +170,8 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LookingForUpdateNow));
         }
     }
-     
-    
+
+
 
     private double appVersionDouble = 0;
     public double AppVersionDouble
@@ -172,7 +183,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(AppVersionDouble));
         }
     }
-    
+
     private string updateAvailableText = "Update available!";
     public string UpdateAvailableText
     {
@@ -183,7 +194,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(UpdateAvailableText));
         }
     }
-    
+
     private string softwareVersion = "0";
     public string SoftwareVersion
     {
@@ -194,7 +205,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SoftwareVersion));
         }
     }
-    
+
     private string latestAppVersion = "0";
     public string LatestAppVersion
     {
@@ -205,7 +216,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LatestAppVersion));
         }
     }
-    
+
     private bool threeShapeServerIsDown = false;
     public bool ThreeShapeServerIsDown
     {
@@ -216,7 +227,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ThreeShapeServerIsDown));
         }
     }
-    
+
     private bool infoTabActive = false;
     public bool InfoTabActive
     {
@@ -227,7 +238,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(InfoTabActive));
         }
     }
-    
+
     private bool serverIsWritingDatabase = false;
     public bool ServerIsWritingDatabase
     {
@@ -260,7 +271,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(UpdateAvailable));
         }
     }
-    
+
     private bool appIsFullyLoaded = false;
     public bool AppIsFullyLoaded
     {
@@ -271,7 +282,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(AppIsFullyLoaded));
         }
     }
-    
+
     private bool firstRun = true;
     public bool FirstRun
     {
@@ -293,7 +304,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ListUpdateable));
         }
     }
-    
+
     private bool designerOpen = false;
     public bool DesignerOpen
     {
@@ -304,7 +315,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(DesignerOpen));
         }
     }
-    
+
     private string designerOpenToolTip = "";
     public string DesignerOpenToolTip
     {
@@ -315,7 +326,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(DesignerOpenToolTip));
         }
     }
-    
+
     private string triosInboxFolder = "";
     public string TriosInboxFolder
     {
@@ -326,8 +337,8 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(TriosInboxFolder));
         }
     }
-    
-    
+
+
     //private bool showBottomInfoBar = false;
     //public bool ShowBottomInfoBar
     //{
@@ -349,7 +360,7 @@ public class MainViewModel : ObservableObject
     //        RaisePropertyChanged(nameof(ServerStatus));
     //    }
     //}
-    
+
     //private int bottomBarSize = 35;
     //public int BottomBarSize
     //{
@@ -360,8 +371,8 @@ public class MainViewModel : ObservableObject
     //        RaisePropertyChanged(nameof(BottomBarSize));
     //    }
     //}
-    
-        
+
+
     private int digiPrescriptionsTodayCount = 0;
     public int DigiPrescriptionsTodayCount
     {
@@ -372,7 +383,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(DigiPrescriptionsTodayCount));
         }
     }
-    
+
     private int digiCasesIn3ShapeTodayCount = 0;
     public int DigiCasesIn3ShapeTodayCount
     {
@@ -383,7 +394,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(DigiCasesIn3ShapeTodayCount));
         }
     }
-    
+
     private int sentOutIssuesCount = 0;
     public int SentOutIssuesCount
     {
@@ -420,7 +431,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(DebugMessages));
         }
     }
-        
+
     private string activeSearchString = "";
     public string ActiveSearchString
     {
@@ -431,7 +442,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ActiveSearchString));
         }
     }
-    
+
     private string activeFilterInUse = "";
     public string ActiveFilterInUse
     {
@@ -486,7 +497,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(EaseUpSearch));
         }
     }
-    
+
     private bool isContextMenuOpen = false;
     public bool IsContextMenuOpen
     {
@@ -508,8 +519,8 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SearchLimit));
         }
     }
-    
-    private List<string> searchLimits = ["100","150","200","300","400","500","800","1000","1500","2000","3000"];
+
+    private List<string> searchLimits = ["100", "150", "200", "300", "400", "500", "800", "1000", "1500", "2000", "3000"];
     public List<string> SearchLimits
     {
         get => searchLimits;
@@ -567,8 +578,8 @@ public class MainViewModel : ObservableObject
     }
 
     #region NOTIFICATION MESSAGE PROPERTIES
-    
-    private Thickness notificationMessagePosition = new (15,0,0,20);
+
+    private Thickness notificationMessagePosition = new(15, 0, 0, 20);
     public Thickness NotificationMessagePosition
     {
         get => notificationMessagePosition;
@@ -578,7 +589,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NotificationMessagePosition));
         }
     }
-    
+
     private Visibility notificationMessageVisibility = Visibility.Collapsed;
     public Visibility NotificationMessageVisibility
     {
@@ -589,7 +600,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NotificationMessageVisibility));
         }
     }
-    
+
     private string notificationMessageTitle = "";
     public string NotificationMessageTitle
     {
@@ -611,7 +622,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NotificationMessageBody));
         }
     }
-    
+
     private string notificationMessageGridPosition = "1";
     public string NotificationMessageGridPosition
     {
@@ -622,7 +633,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NotificationMessageGridPosition));
         }
     }
-    
+
     private VerticalAlignment notificationMessageVertAlignment = VerticalAlignment.Bottom;
     public VerticalAlignment NotificationMessageVertAlignment
     {
@@ -658,7 +669,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SMessageBoxxResult));
         }
     }
-    
+
     private bool messageBoxPresent = false;
     public bool MessageBoxPresent
     {
@@ -684,7 +695,7 @@ public class MainViewModel : ObservableObject
     }
 
     #region FOLDER SUBSCRIPTION & PENDING DIGI CASES PROPERTIES
-    
+
     private List<string> pendingDigiNumbersWaitingToCollect = [];
     public List<string> PendingDigiNumbersWaitingToCollect
     {
@@ -695,7 +706,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PendingDigiNumbersWaitingToCollect));
         }
     }
-    
+
     private List<ProcessedPanNumberModel> pendingDigiNumbersWaitingToProcess = [];
     public List<ProcessedPanNumberModel> PendingDigiNumbersWaitingToProcess
     {
@@ -706,7 +717,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PendingDigiNumbersWaitingToProcess));
         }
     }
-    
+
     private int pendingDigiNumbersWaitingToCollectInt = 0;
     public int PendingDigiNumbersWaitingToCollectInt
     {
@@ -717,7 +728,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PendingDigiNumbersWaitingToCollectInt));
         }
     }
-    
+
     private int pendingDigiNumbersWaitingToProcessInt = 0;
     public int PendingDigiNumbersWaitingToProcessInt
     {
@@ -728,7 +739,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PendingDigiNumbersWaitingToProcessInt));
         }
     }
-    
+
     private string selectedPendingDigiNumber = "";
     public string SelectedPendingDigiNumber
     {
@@ -739,7 +750,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SelectedPendingDigiNumber));
         }
     }
-    
+
     private string pendingDigiCasesReplacementName = "";
     public string PendingDigiCasesReplacementName
     {
@@ -752,7 +763,7 @@ public class MainViewModel : ObservableObject
                 WriteLocalSetting("PendingDigiCasesReplacementName", value);
         }
     }
-    
+
     private string fsubscrTargetFolder = "";
     public string FsubscrTargetFolder
     {
@@ -763,7 +774,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(FsubscrTargetFolder));
         }
     }
-    
+
     private List<string> newlyArrivedDigitalCasesList = [];
     public List<string> NewlyArrivedDigitalCasesList
     {
@@ -774,7 +785,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NewlyArrivedDigitalCasesList));
         }
     }
-    
+
     private string fsSearchString = "";
     public string FsSearchString
     {
@@ -796,7 +807,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(FsLastDatabaseUpdate));
         }
     }
-    
+
     private string fsCountedEntries = "-";
     public string FsCountedEntries
     {
@@ -867,7 +878,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CustomerSuggestionsCusNamesList));
         }
     }
-    
+
     private List<string> customerSuggestionsReplacementsList = [];
     public List<string> CustomerSuggestionsReplacementsList
     {
@@ -878,7 +889,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CustomerSuggestionsReplacementsList));
         }
     }
-    
+
     private string selectedCustomerName = "";
     public string SelectedCustomerName
     {
@@ -891,7 +902,7 @@ public class MainViewModel : ObservableObject
             CSNewCustomer = value;
         }
     }
-    
+
     private string selectedCustomerSuggestion = "";
     public string SelectedCustomerSuggestion
     {
@@ -902,7 +913,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SelectedCustomerSuggestion));
         }
     }
-    
+
     private string cSNewCustomer = "";
     public string CSNewCustomer
     {
@@ -913,7 +924,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CSNewCustomer));
         }
     }
-    
+
     private string cSNewReplacement = "";
     public string CSNewReplacement
     {
@@ -924,9 +935,9 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CSNewReplacement));
         }
     }
-    
-    
-    
+
+
+
     private double currentMemoryUsage = 0;
     public double CurrentMemoryUsage
     {
@@ -937,7 +948,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CurrentMemoryUsage));
         }
     }
-    
+
     private double totalMemory = 0;
     public double TotalMemory
     {
@@ -948,7 +959,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(TotalMemory));
         }
     }
-    
+
     private double totalMemoryInGiB = 0;
     public double TotalMemoryInGiB
     {
@@ -960,7 +971,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    
+
 
 
     #region BuildingUpDates properties
@@ -1205,8 +1216,8 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(OrderBeingWatched));
         }
     }
-    
-    
+
+
     private string lastDCASUpdate = "";
     public string LastDCASUpdate
     {
@@ -1217,7 +1228,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LastDCASUpdate));
         }
     }
-    
+
     private bool isDCASIsActive = false;
     public bool IsDCASIsActive
     {
@@ -1231,7 +1242,7 @@ public class MainViewModel : ObservableObject
 
 
 
- 
+
     private int orderCount = 0;
     public int OrderCount
     {
@@ -1365,7 +1376,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NewTriosCaseInInboxCount));
         }
     }
-    
+
     private int newDigiCaseArrivedCount = 0;
     public int NewDigiCaseArrivedCount
     {
@@ -1376,7 +1387,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NewDigiCaseArrivedCount));
         }
     }
-    
+
     private int totalNewDigiCaseWithoutInHouseCases = 0;
     public int TotalNewDigiCaseWithoutInHouseCases
     {
@@ -1387,7 +1398,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(TotalNewDigiCaseWithoutInHouseCases));
         }
     }
-    
+
     private string openUpColorCheckWindowMenuItemTitle = "Open up ColorCheck window";
     public string OpenUpColorCheckWindowMenuItemTitle
     {
@@ -1410,7 +1421,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(DocumentStreamPixelCheck));
         }
     }
-    
+
     private FileStream documentStreamFinalPrescription;
     public FileStream DocumentStreamFinalPrescription
     {
@@ -1445,7 +1456,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    
+
     private double pmLastPrescriptionSize = 0;
     public double PmLastPrescriptionSize
     {
@@ -1456,7 +1467,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmLastPrescriptionSize));
         }
     }
-        
+
     private string pmNextPanNumberInList = "";
     public string PmNextPanNumberInList
     {
@@ -1467,7 +1478,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmNextPanNumberInList));
         }
     }
-    
+
     private string lastIteroZipFileId = "";
     public string LastIteroZipFileId
     {
@@ -1478,7 +1489,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LastIteroZipFileId));
         }
     }
-    
+
     private string pmLastTakenPanNumber = "";
     public string PmLastTakenPanNumber
     {
@@ -1501,7 +1512,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LastUsedPanNumber));
         }
     }
-    
+
     private string nextPanNumberGlobal = "";
     public string NextPanNumberGlobal
     {
@@ -1523,7 +1534,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ProcessingDigiPrescriptionNow));
         }
     }
-    
+
     private Visibility showingTakeANumberPanel = Visibility.Hidden;
     public Visibility ShowingTakeANumberPanel
     {
@@ -1534,7 +1545,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ShowingTakeANumberPanel));
         }
     }
-    
+
     private Visibility pmRushButtonShows = Visibility.Hidden;
     public Visibility PmRushButtonShows
     {
@@ -1545,7 +1556,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmRushButtonShows));
         }
     }
-    
+
     private Visibility pmSendToButtonShows = Visibility.Hidden;
     public Visibility PmSendToButtonShows
     {
@@ -1556,7 +1567,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSendToButtonShows));
         }
     }
-    
+
     private Visibility pmMissingButtonShows = Visibility.Hidden;
     public Visibility PmMissingButtonShows
     {
@@ -1595,7 +1606,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSendToList));
         }
     }
-        
+
     private string pmNewSentToName = "";
     public string PmNewSentToName
     {
@@ -1606,7 +1617,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmNewSentToName));
         }
     }
-    
+
     private string pmSelectedSentTo = "";
     public string PmSelectedSentTo
     {
@@ -1617,7 +1628,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSelectedSentTo));
         }
     }
-    
+
     private string pmSelectedSendToEntry = "";
     public string PmSelectedSendToEntry
     {
@@ -1628,7 +1639,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSelectedSendToEntry));
         }
     }
-    
+
     private List<string> pmPanNumberList = [];
     public List<string> PmPanNumberList
     {
@@ -1641,7 +1652,7 @@ public class MainViewModel : ObservableObject
                 PmNextPanNumberInList = value[0];
         }
     }
-    
+
     private ImageSource? pmSavedPrescription;
     public ImageSource PmSavedPrescription
     {
@@ -1652,7 +1663,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSavedPrescription));
         }
     }
-    
+
     private string pmWatchedPdfFolder = "Click here to browse..";
     public string PmWatchedPdfFolder
     {
@@ -1663,7 +1674,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmWatchedPdfFolder));
         }
     }
-    
+
     private string pmAddNewNumber = "";
     public string PmAddNewNumber
     {
@@ -1674,8 +1685,8 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmAddNewNumber));
         }
     }
-    
-    
+
+
     private string fullPathGlobal = "";
     public string FullPathGlobal
     {
@@ -1686,7 +1697,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(FullPathGlobal));
         }
     }
-    
+
     private string sironaOrderNumber = "";
     public string SironaOrderNumber
     {
@@ -1697,7 +1708,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SironaOrderNumber));
         }
     }
-    
+
     private int globalFileLockCount = 0;
     public int GlobalFileLockCount
     {
@@ -1708,7 +1719,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(GlobalFileLockCount));
         }
     }
-    
+
     private bool noMorePanNumberBoxShowed = false;
     public bool NoMorePanNumberBoxShowed
     {
@@ -1719,7 +1730,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(NoMorePanNumberBoxShowed));
         }
     }
-    
+
     private string pDFTemp = "";
     public string PDFTemp
     {
@@ -1730,7 +1741,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PDFTemp));
         }
     }
-    
+
     private bool pmOpenUpPrescriptionsBool = false;
     public bool PmOpenUpPrescriptionsBool
     {
@@ -1741,7 +1752,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmOpenUpPrescriptionsBool));
         }
     }
-    
+
     private string pageHeaderIsHigh = "";
     public string PageHeaderIsHigh
     {
@@ -1752,7 +1763,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PageHeaderIsHigh));
         }
     }
-    
+
     private string pdfPageCount = "";
     public string PdfPageCount
     {
@@ -1763,7 +1774,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PdfPageCount));
         }
     }
-    
+
     private bool isItSironaPrescription = false;
     public bool IsItSironaPrescription
     {
@@ -1774,7 +1785,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(IsItSironaPrescription));
         }
     }
-    
+
     private bool isItASConnectPrescription = false;
     public bool IsItASConnectPrescription
     {
@@ -1785,7 +1796,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(IsItASConnectPrescription));
         }
     }
-    
+
     private string aSConnectOrderID = "";
     public string ASConnectOrderID
     {
@@ -1796,7 +1807,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ASConnectOrderID));
         }
     }
-    
+
     private string pmFinalPrescriptionsFolder = "Click here to browse..";
     public string PmFinalPrescriptionsFolder
     {
@@ -1807,7 +1818,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmFinalPrescriptionsFolder));
         }
     }
-    
+
     private string pmSironaScansFolder = "Click here to browse..";
     public string PmSironaScansFolder
     {
@@ -1818,7 +1829,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmSironaScansFolder));
         }
     }
-    
+
     private string pmIteroExportFolder = "Click here to browse..";
     public string PmIteroExportFolder
     {
@@ -1829,7 +1840,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmIteroExportFolder));
         }
     }
-    
+
     private string pmDownloadFolder = "Click here to browse..";
     public string PmDownloadFolder
     {
@@ -1840,7 +1851,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PmDownloadFolder));
         }
     }
-    
+
     private double notificationProgressBarValue = 0;
     public double NotificationProgressBarValue
     {
@@ -1878,7 +1889,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PcPanColor));
         }
     }
-    
+
     private string pcPanColorFriendlyName = "Check pan color";
     public string PcPanColorFriendlyName
     {
@@ -1889,7 +1900,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PcPanColorFriendlyName));
         }
     }
-    
+
     private string pcPanNumber = "";
     public string PcPanNumber
     {
@@ -1951,7 +1962,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingGlassyEffect));
         }
     }
-    
+
     private bool cbSettingPanColorCheckWndwIsSnapped = false;
     public bool CbSettingPanColorCheckWndwIsSnapped
     {
@@ -1962,7 +1973,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingPanColorCheckWndwIsSnapped));
         }
     }
-    
+
     private bool cbSettingStartAppMinimized = false;
     public bool CbSettingStartAppMinimized
     {
@@ -1973,7 +1984,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingStartAppMinimized));
         }
     }
-    
+
     private bool cbSettingShowEmptyPanCount = true;
     public bool CbSettingShowEmptyPanCount
     {
@@ -1984,7 +1995,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowEmptyPanCount));
         }
     }
-    
+
     private bool cbSettingShowDigiCases = true;
     public bool CbSettingShowDigiCases
     {
@@ -1995,7 +2006,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowDigiCases));
         }
     }
-    
+
     private bool cbSettingShowPendingDigiCases = false;
     public bool CbSettingShowPendingDigiCases
     {
@@ -2006,7 +2017,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowPendingDigiCases));
         }
     }
-    
+
     private bool cbSettingIncludePendingDigiCasesInNewlyArrived = true;
     public bool CbSettingIncludePendingDigiCasesInNewlyArrived
     {
@@ -2017,7 +2028,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingIncludePendingDigiCasesInNewlyArrived));
         }
     }
-    
+
     private bool cbSettingShowDigiPrescriptionsCount = true;
     public bool CbSettingShowDigiPrescriptionsCount
     {
@@ -2028,7 +2039,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowDigiPrescriptionsCount));
         }
     }
-    
+
     private bool cbSettingShowDigiCasesIn3ShapeTodayCount = true;
     public bool CbSettingShowDigiCasesIn3ShapeTodayCount
     {
@@ -2039,7 +2050,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowDigiCasesIn3ShapeTodayCount));
         }
     }
-    
+
     private bool cbSettingModuleFolderSubscription = false;
     public bool CbSettingModuleFolderSubscription
     {
@@ -2050,7 +2061,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingModuleFolderSubscription));
         }
     }
-    
+
     private bool cbSettingModuleAccountInfos = false;
     public bool CbSettingModuleAccountInfos
     {
@@ -2061,7 +2072,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingModuleAccountInfos));
         }
     }
-    
+
     private bool cbSettingModuleSmartOrderNames = false;
     public bool CbSettingModuleSmartOrderNames
     {
@@ -2072,7 +2083,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingModuleSmartOrderNames));
         }
     }
-    
+
     private bool cbSettingModuleDebug = false;
     public bool CbSettingModuleDebug
     {
@@ -2083,7 +2094,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingModuleDebug));
         }
     }
-    
+
     private bool cbSettingModulePrescriptionMaker = false;
     public bool CbSettingModulePrescriptionMaker
     {
@@ -2094,7 +2105,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingModulePrescriptionMaker));
         }
     }
-    
+
     private bool cbSettingModulePendingDigitals = false;
     public bool CbSettingModulePendingDigitals
     {
@@ -2105,7 +2116,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingModulePendingDigitals));
         }
     }
-    
+
     //private bool cbSettingShowDigiDetails = true;
     //public bool CbSettingShowDigiDetails
     //{
@@ -2116,7 +2127,7 @@ public class MainViewModel : ObservableObject
     //        RaisePropertyChanged(nameof(CbSettingShowDigiDetails));
     //    }
     //}
-    
+
     private bool cbSettingWatchFolderPrescriptionMaker = true;
     public bool CbSettingWatchFolderPrescriptionMaker
     {
@@ -2127,7 +2138,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingWatchFolderPrescriptionMaker));
         }
     }
-    
+
     private bool cbSettingOpenUpSironaScanFolder = true;
     public bool CbSettingOpenUpSironaScanFolder
     {
@@ -2138,7 +2149,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingOpenUpSironaScanFolder));
         }
     }
-    
+
     private bool cbSettingExtractIteroZipFiles = true;
     public bool CbSettingExtractIteroZipFiles
     {
@@ -2162,7 +2173,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(WindowBackground));
         }
     }
-    
+
     private List<AccountInfoModel> accountInfoList = [];
     public List<AccountInfoModel> AccountInfoList
     {
@@ -2196,7 +2207,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(BgBorderColors));
         }
     }
-    
+
     private string selectedAccountInfoCategory = "All";
     public string SelectedAccountInfoCategory
     {
@@ -2208,7 +2219,7 @@ public class MainViewModel : ObservableObject
             GetAccountInfos();
         }
     }
-    
+
     private Visibility mainMenuOpen = Visibility.Hidden;
     public Visibility MainMenuOpen
     {
@@ -2219,7 +2230,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(MainMenuOpen));
         }
     }
-    
+
     private List<string> accountInfoCategories = [];
     public List<string> AccountInfoCategories
     {
@@ -2230,7 +2241,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(AccountInfoCategories));
         }
     }
-    
+
     private List<OrderIssueModel> orderIssuesList = [];
     public List<OrderIssueModel> OrderIssuesList
     {
@@ -2241,7 +2252,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(OrderIssuesList));
         }
     }
-    
+
     private SmartOrderNames2Page smartOrderNamesWindow = new();
     public SmartOrderNames2Page SmartOrderNamesWindow
     {
@@ -2280,8 +2291,8 @@ public class MainViewModel : ObservableObject
     public RelayCommand CbSettingModuleDebugCommand { get; set; }
     public RelayCommand CbSettingModulePrescriptionMakerCommand { get; set; }
     public RelayCommand CbSettingModulePendingDigitalsCommand { get; set; }
-    
-    
+
+
     public RelayCommand AddNewCustomerSuggestionCommand { get; set; }
     public RelayCommand DeleteCSCustomerCommand { get; set; }
     public RelayCommand DeleteCSSuggestionCommand { get; set; }
@@ -2298,7 +2309,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand ItemClickedCommand { get; set; }
     public RelayCommand ItemRightClickedCommand { get; set; }
     //public RelayCommand GetInfoOn3ShapeOrderCommand { get; set; }
-    
+
     public RelayCommand GroupBySelectionChangedCommand { get; set; }
     public RelayCommand SearchLimitSelectionChangedCommand { get; set; }
     public RelayCommand SearchFieldClickedCommand { get; set; }
@@ -2323,12 +2334,12 @@ public class MainViewModel : ObservableObject
     public RelayCommand PmCancelTakingANumberCommand { get; set; }
     public RelayCommand GrabAPanNumberCommand { get; set; }
     public RelayCommand ClickOnPanNumberCommand { get; set; }
-    
-    
+
+
 
 
     public RelayCommand PcCheckPanColorCommand { get; set; }
-    
+
     #region Folder Subscription RelayCommands
     public RelayCommand FsCreateTodayFolderCommand { get; set; }
     public RelayCommand FsSearchFoldersCommand { get; set; }
@@ -2357,7 +2368,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand CopyPasswordToClipboardCommand { get; set; }
     public RelayCommand ShowPasswordCommand { get; set; }
     public RelayCommand ClearAccInfoSearchCommand { get; set; }
-    
+
     #endregion AccountInfos RelayCommands
 
 
@@ -2400,7 +2411,7 @@ public class MainViewModel : ObservableObject
 
         notificationTimer.Tick += NotificationTimer_Tick;
         notificationTimer.Interval = new TimeSpan(0, 0, 10);
-        
+
         fsNotificationTimer.Tick += FsNotificationTimer_Tick;
         fsNotificationTimer.Interval = new TimeSpan(0, 0, 30);
 
@@ -2408,13 +2419,13 @@ public class MainViewModel : ObservableObject
         UpdateCheckTimer.Interval = new TimeSpan(0, 0, 3);
         UpdateCheckTimer.Start();
 
-        LookForUpdateCommand = new RelayCommand(o => 
+        LookForUpdateCommand = new RelayCommand(o =>
         {
             if (!LookingForUpdateNow)
                 LookForUpdate();
         });
 
-        OpenCloseMenuCommand = new RelayCommand(o => 
+        OpenCloseMenuCommand = new RelayCommand(o =>
         {
             if (MainMenuOpen == Visibility.Hidden)
             {
@@ -2459,9 +2470,10 @@ public class MainViewModel : ObservableObject
         CopyPasswordToClipboardCommand = new RelayCommand(o => CopyPasswordToClipboard(o));
         ShowPasswordCommand = new RelayCommand(o => ShowPassword(o));
         ClearAccInfoSearchCommand = new RelayCommand(o => ClearAccInfoSearch());
-        
+
         PmCancelTakingANumberCommand = new RelayCommand(o => { ShowingTakeANumberPanel = Visibility.Hidden; });
-        GrabAPanNumberCommand = new RelayCommand(o => {
+        GrabAPanNumberCommand = new RelayCommand(o =>
+        {
             ShowingTakeANumberPanel = Visibility.Visible;
             PmSavedPrescription = null;
         });
@@ -2563,7 +2575,7 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#7a4075", "");
         bgBorderColors.TryAdd("#67467c", "");
         bgBorderColors.TryAdd("#7a464d", "");
-        
+
         bgBorderColors.TryAdd("#466f67", "");
         bgBorderColors.TryAdd("#78804d", "");
         bgBorderColors.TryAdd("#7d5f46", "");
@@ -2573,7 +2585,7 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#7a4074", "");
         bgBorderColors.TryAdd("#67467b", "");
         bgBorderColors.TryAdd("#7a464c", "");
-        
+
         bgBorderColors.TryAdd("#466f66", "");
         bgBorderColors.TryAdd("#78804c", "");
         bgBorderColors.TryAdd("#7d5f45", "");
@@ -2583,7 +2595,7 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#7a4073", "");
         bgBorderColors.TryAdd("#67467a", "");
         bgBorderColors.TryAdd("#7a464b", "");
-        
+
         bgBorderColors.TryAdd("#466f65", "");
         bgBorderColors.TryAdd("#78804b", "");
         bgBorderColors.TryAdd("#7d5f44", "");
@@ -2595,7 +2607,7 @@ public class MainViewModel : ObservableObject
         bgBorderColors.TryAdd("#7a464b", "");
         #endregion accountinfo bordercolors by category
 
-        
+
 
         BuildCustomerSuggestionsList();
     }
@@ -2638,7 +2650,7 @@ public class MainViewModel : ObservableObject
         return SMessageBoxxResult;
     }
 
-    
+
 
     #endregion SMessageBox Metods
 
@@ -2654,7 +2666,7 @@ public class MainViewModel : ObservableObject
         CustomerSuggestionsReplacementsList = await GetCustomerSuggestionsReplacementList(SelectedCustomerName);
     }
 
-    
+
 
     #endregion Settings / Customer Suggestions Tab
 
@@ -2670,7 +2682,7 @@ public class MainViewModel : ObservableObject
         else
             GetAccountInfos();
     }
-    
+
     private void ClearAccInfoSearch()
     {
         SearchInAccountInfos = "";
@@ -2689,7 +2701,7 @@ public class MainViewModel : ObservableObject
         else
             AccountInfoList = list.Where(x => x.Category == SelectedAccountInfoCategory).ToList();
     }
-    
+
     private void OpenWebsite(object obj)
     {
         string url = (string)obj;
@@ -2703,7 +2715,7 @@ public class MainViewModel : ObservableObject
             AddDebugLine(ex);
         }
     }
-    
+
     private void StartApplication(object obj)
     {
         string appPath = (string)obj;
@@ -2716,8 +2728,8 @@ public class MainViewModel : ObservableObject
         {
             AddDebugLine(ex);
         }
-    }    
-    
+    }
+
     private void StartApplication(string appPath)
     {
         try
@@ -2733,7 +2745,7 @@ public class MainViewModel : ObservableObject
     private void CopyUserNameToClipboard(object obj)
     {
         string userName = (string)obj;
-        
+
         Clipboard.SetText(userName);
 
         var item = new System.Windows.Forms.NotifyIcon()
@@ -2742,13 +2754,13 @@ public class MainViewModel : ObservableObject
             Icon = System.Drawing.SystemIcons.Information
         };
         item.ShowBalloonTip(40000, "", $"Username was copied to clipboard!", System.Windows.Forms.ToolTipIcon.Info);
-        
+
     }
-    
+
     private void CopyPasswordToClipboard(object obj)
     {
         string password = (string)obj;
-        
+
         Clipboard.SetText(password);
 
         var item = new System.Windows.Forms.NotifyIcon()
@@ -2757,9 +2769,9 @@ public class MainViewModel : ObservableObject
             Icon = System.Drawing.SystemIcons.Information
         };
         item.ShowBalloonTip(40000, "", "Password was copied to clipboard!", System.Windows.Forms.ToolTipIcon.Info);
-        
+
     }
-    
+
     private void ShowPassword(object obj)
     {
         Border border = (Border)obj;
@@ -2777,8 +2789,8 @@ public class MainViewModel : ObservableObject
             ShowNotificationMessage("Success", "Request for DCAS update sent!", NotificationIcon.Success, false);
         }
     }
-    
-        
+
+
     private void SwitchToPrescriptionMakerTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -2787,7 +2799,7 @@ public class MainViewModel : ObservableObject
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
         });
     }
-    
+
     private void SwitchToOrderIssuesTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -2796,7 +2808,7 @@ public class MainViewModel : ObservableObject
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
         });
     }
-    
+
     private void SwitchToFolderSubscriptionTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -2805,7 +2817,7 @@ public class MainViewModel : ObservableObject
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
         });
     }
-    
+
     private void SwitchToDebugMessagesTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -2816,7 +2828,7 @@ public class MainViewModel : ObservableObject
 
         });
     }
-    
+
     private void SwitchToPendingDigiCasesTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -2825,7 +2837,7 @@ public class MainViewModel : ObservableObject
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
         });
     }
-    
+
     private void SwitchTo3ShapeTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -2861,7 +2873,7 @@ public class MainViewModel : ObservableObject
             WindowBackground = "#66695F";
             await Task.Delay(50);
         }
-        
+
         if (color == "green")
         {
             WindowBackground = "#56595F";
@@ -2885,7 +2897,7 @@ public class MainViewModel : ObservableObject
             WindowBackground = "#56695F";
             await Task.Delay(50);
         }
-        
+
         if (color == "red")
         {
             WindowBackground = "#56595F";
@@ -2932,7 +2944,7 @@ public class MainViewModel : ObservableObject
             PcPanColor = "Black";
             PcPanColorFriendlyName = "Number not found!";
             PcPanNumber = "";
-            
+
             await Task.Delay(200);
             PcPanColor = "White";
             await Task.Delay(200);
@@ -2944,24 +2956,24 @@ public class MainViewModel : ObservableObject
             await Task.Delay(200);
             PcPanColor = "White";
             await Task.Delay(200);
-            
+
             PcPanColor = "#06090F";
             await Task.Delay(100);
-            
+
             PcPanColor = "#16191F";
             await Task.Delay(100);
-            
+
             PcPanColor = "#26292F";
             await Task.Delay(100);
-            
+
             PcPanColor = "#36393F";
             await Task.Delay(100);
-            
+
             PcPanColor = "#46494F";
             await Task.Delay(100);
-            
+
             PcPanColor = "#56554F";
-            
+
 
 
 
@@ -3032,7 +3044,7 @@ public class MainViewModel : ObservableObject
             ShowNotificationMessage("Error", "Error occured during the copy process!", NotificationIcon.Error, true, 35);
     }
 
-    
+
     private void FsSearchFolders()
     {
         if (FsSearchString.Length < 1)
@@ -3240,7 +3252,7 @@ public class MainViewModel : ObservableObject
                     _ = int.TryParse(panColorParts[2], out int colorB);
 
                     Brush panColor = new SolidColorBrush(Color.FromArgb(255, (byte)colorR, (byte)colorG, (byte)colorB));
-                    
+
                     Button btn = new()
                     {
                         Tag = number,
@@ -3307,7 +3319,7 @@ public class MainViewModel : ObservableObject
                     panSticker.Children.Add(stickerBorder);
                     panBack.Child = panSticker;
                     btn.Content = panBack;
-                    
+
                     MainWindow.Instance.pmPanelPanek.Children.Add(btn);
                 }
                 catch (Exception ex)
@@ -3407,7 +3419,7 @@ public class MainViewModel : ObservableObject
             PmNextPanNumberInList = PmPanNumberList[0];
     }
 
-    
+
 
     private void PmRemoveFromSentToList()
     {
@@ -3427,7 +3439,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    
+
 
     private async void FswPrescriptionMaker_Created(object sender, FileSystemEventArgs e)
     {
@@ -3479,7 +3491,7 @@ public class MainViewModel : ObservableObject
 
         }
     }
-    
+
     private async void FswPrescriptionMaker_Changed(object sender, FileSystemEventArgs e)
     {
         if (CbSettingWatchFolderPrescriptionMaker)
@@ -3501,7 +3513,8 @@ public class MainViewModel : ObservableObject
                             i++;
                         }
 
-                        Application.Current.Dispatcher.Invoke(new Action(() => {
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
                             ProcessingDigiPrescriptionNow = Visibility.Visible;
                             PmSavedPrescription = null;
                             NextPanNumberGlobal = PmPanNumberList[0].ToString();
@@ -3609,7 +3622,7 @@ public class MainViewModel : ObservableObject
 
     private async void StartProcessingPrescription()
     {
-        await Task.Run(() => IsPixelisWhite(PrescriptionImageForProcess)); 
+        await Task.Run(() => IsPixelisWhite(PrescriptionImageForProcess));
     }
 
     private async Task<bool> IsPixelisWhite(Bitmap img)
@@ -3618,7 +3631,7 @@ public class MainViewModel : ObservableObject
         Debug.WriteLine("W" + img.Width);
         Debug.WriteLine("H" + img.Height);
         Debug.WriteLine("########################");
-        
+
 
         string PixelColor = img.GetPixel(10, 56).ToString()
                                                     .Replace("Color [", "")
@@ -3628,7 +3641,7 @@ public class MainViewModel : ObservableObject
                                                     .Replace(" G=", "")
                                                     .Replace(" B=", "")
                                                     .Replace(",", "");
-        Debug.WriteLine("PixelColor:"+PixelColor);
+        Debug.WriteLine("PixelColor:" + PixelColor);
 
         string PixelIS3DColor = img.GetPixel(2, 30).ToString()
                                                     .Replace("Color [", "")
@@ -3640,7 +3653,7 @@ public class MainViewModel : ObservableObject
                                                     .Replace(",", "");
 
         Debug.WriteLine("PixelIS3DColor:" + PixelIS3DColor);
-        
+
         string PixelASConnectColor = img.GetPixel(400, 50).ToString()
                                                     .Replace("Color [", "")
                                                     .Replace("]", "")
@@ -3651,7 +3664,7 @@ public class MainViewModel : ObservableObject
                                                     .Replace(",", "");
 
         Debug.WriteLine("PixelIS3DColor:" + PixelASConnectColor);
-        
+
         string PixelDSCoreColor = img.GetPixel(12, 12).ToString()
                                                     .Replace("Color [", "")
                                                     .Replace("]", "")
@@ -3756,7 +3769,7 @@ public class MainViewModel : ObservableObject
                 SironaOrderNumber = text.Substring(text.IndexOf("Order Number:"), 23).Replace("Order Number:", "").Trim();
             }
             Debug.WriteLine(SironaOrderNumber);
-                
+
             if (text.Contains("CORE", StringComparison.CurrentCultureIgnoreCase) && text.Contains("Case Sheet", StringComparison.CurrentCultureIgnoreCase))
             {
                 string DSCoreOrderNumber = text.Substring(text.IndexOf("Order Number:"), 48)
@@ -3768,7 +3781,7 @@ public class MainViewModel : ObservableObject
                 if (DSCoreOrderNumber.Contains(' '))
                     DSCoreOrderNumber = DSCoreOrderNumber[..DSCoreOrderNumber.IndexOf(' ')];
 
-                
+
                 string PatientNameRaw = "";
                 string PatientName = "";
 
@@ -3832,7 +3845,7 @@ public class MainViewModel : ObservableObject
                         if (!childNodes.Contains(node))
                             childNodes.Add(node);
                     }
-                    
+
                     foreach (XmlNode node in childNodes)
                     {
                         if (node.Name.Equals("FullName"))
@@ -3852,7 +3865,7 @@ public class MainViewModel : ObservableObject
 
                     finalFolderName = $"{PanNumber}-{PatientName}_{SironaOrderNumber}";
 
-                    
+
 
                     try
                     {
@@ -3900,14 +3913,14 @@ public class MainViewModel : ObservableObject
     {
         string SavedPDF = "";
         string SavedPDFCopy;
-        
+
         try
         {
             // INJECTING PAN NUMBER TO PDF
             if (!MarkAsRush && !MarkAsSentTo && !MarkAsMissing && !string.IsNullOrEmpty(NextPanNumber))
             {
                 //Load a PDF document.
-                PdfLoadedDocument doc = new (FilePath);
+                PdfLoadedDocument doc = new(FilePath);
                 Thread.Sleep(600);
                 //Get first page from document.
                 PdfLoadedPage page = (doc.Pages[0] as PdfLoadedPage)!;
@@ -3953,7 +3966,7 @@ public class MainViewModel : ObservableObject
 
                 doc.Save(SavedPDF);
                 doc.Save(SavedPDFCopy);
-            
+
                 doc.Close(true);
 
 
@@ -4113,11 +4126,11 @@ public class MainViewModel : ObservableObject
             AddDebugLine(ex);
         }
 
-        
+
 
         try
         {
-            
+
             if (PmOpenUpPrescriptionsBool && File.Exists(SavedPDF))
             {
                 var p = new Process();
@@ -4135,7 +4148,7 @@ public class MainViewModel : ObservableObject
             ShowMessageBox("Error", $"{ex.LineNumber()} - {ex.Message}", SMessageBoxButtons.Ok, NotificationIcon.Error, 20, MainWindow.Instance);
         }
 
-        
+
     }
 
     private async void PmMarkCaseAsRush()
@@ -4150,7 +4163,7 @@ public class MainViewModel : ObservableObject
         else
             return;
     }
-    
+
     private async void PmMarkCaseWithLabelSendTo()
     {
         if (PmSelectedSentTo is null || PmSelectedSentTo == "" || PmSelectedSentTo == "-")
@@ -4171,7 +4184,7 @@ public class MainViewModel : ObservableObject
         else
             return;
     }
-    
+
     private async void PmMarkCaseWithLabelMissing()
     {
         if (PmSelectedMissing is null || PmSelectedMissing == "" || PmSelectedMissing == "-")
@@ -4193,7 +4206,7 @@ public class MainViewModel : ObservableObject
             return;
     }
 
-    
+
 
     private void SavePrescriptionFromPdfToImage(string savedPDFCopy, bool IgnoreExistingImage = false)
     {
@@ -4301,7 +4314,7 @@ public class MainViewModel : ObservableObject
                                     }
 
                                     ImageSource imageSource = ImageSourceFromBitmap(img);
-                                    
+
                                     PmSavedPrescription = imageSource;
 
                                     //if (IsItSironaPrescription)
@@ -4341,7 +4354,7 @@ public class MainViewModel : ObservableObject
                                         }
 
                                         ImageSource imageSource = ImageSourceFromBitmap(img);
-                                        
+
                                         PmSavedPrescription = imageSource;
 
                                         //if (IsItSironaPrescription)
@@ -4374,7 +4387,7 @@ public class MainViewModel : ObservableObject
                                             }
 
                                             ImageSource imageSource = ImageSourceFromBitmap(img);
-                                            
+
                                             PmSavedPrescription = imageSource;
 
                                             //if (IsItSironaPrescription)
@@ -4500,7 +4513,7 @@ public class MainViewModel : ObservableObject
                                     else
                                     {
                                         SMessageBoxResult dlg = ShowMessageBox("Number already used", $"This number is already used for a prescription, would you like to overwrite the original file?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
-                                        
+
                                         if (dlg == SMessageBoxResult.Yes)
                                         {
                                             await Task.Run(() => CombineImages(files).Save(FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png", System.Drawing.Imaging.ImageFormat.Png));
@@ -4587,7 +4600,7 @@ public class MainViewModel : ObservableObject
         if (PmLastPrescriptionSize == ActualSize)
         {
             SMessageBoxResult dlg = ShowMessageBox("Number already used", $"This case's prescription might be a duplicate..\nWould you like to open up last saved prescription to see if they are the same?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
-            
+
             if (dlg == SMessageBoxResult.Yes)
             {
                 try
@@ -4606,7 +4619,7 @@ public class MainViewModel : ObservableObject
                     PmSavedPrescription = null;
                     return true;
                 }
-                
+
             }
         }
 
@@ -4651,7 +4664,7 @@ public class MainViewModel : ObservableObject
             if (list.Count != PendingDigiNumbersWaitingToCollect.Count)
             {
                 PendingDigiNumbersWaitingToCollect = [];
-                foreach(ProcessedPanNumberModel item in list)
+                foreach (ProcessedPanNumberModel item in list)
                     PendingDigiNumbersWaitingToCollect.Add(item.PanNumber!);
 
                 MainWindow.Instance.listviewPendingDigiNumbers.ItemsSource = PendingDigiNumbersWaitingToCollect;
@@ -4660,7 +4673,7 @@ public class MainViewModel : ObservableObject
                 if (list.Count > 0)
                 {
                     SelectedPendingDigiNumber = PendingDigiNumbersWaitingToCollect[0];
-                    MainWindow.Instance.listviewPendingDigiNumbers.SelectedIndex = 0;   
+                    MainWindow.Instance.listviewPendingDigiNumbers.SelectedIndex = 0;
                 }
             }
         }
@@ -4678,7 +4691,7 @@ public class MainViewModel : ObservableObject
             {
                 SelectedPendingDigiNumber = PendingDigiNumbersWaitingToCollect[0];
                 MainWindow.Instance.listviewPendingDigiNumbers.SelectedIndex = 0;
-            }           
+            }
         }
 
         List<ProcessedPanNumberModel> allPendingDigi = GetAllPendingDigiNumbersInLast30Days();
@@ -4697,14 +4710,14 @@ public class MainViewModel : ObservableObject
                 model.IsProcessed = "✓";
             else
                 model.IsProcessed = "";
-                        
+
             if (item.IsCollected == "true")
                 model.IsCollected = "✓";
             else
                 model.IsCollected = "";
 
             _ = DateTime.TryParse(item.PostedTime!, out DateTime postedDateTime);
-            
+
             string postedTime = postedDateTime.ToString("M/d - h:mm tt");
 
             if (postedDateTime.ToString("yyyy-MM-dd") == DateTime.Now.ToString("yyyy-MM-dd"))
@@ -4775,12 +4788,12 @@ public class MainViewModel : ObservableObject
         int hours = dtime.Hour;
         int minutes = dtime.Minute;
         int seconds = dtime.Second;
-        
+
 
         //if (hours > 12)
         //    _ = 12;
 
-       
+
 
         // Run background tasks
         if (!bwBackgroundTasks.IsBusy && AppIsFullyLoaded)
@@ -4788,7 +4801,7 @@ public class MainViewModel : ObservableObject
     }
 
     #region SETTINGS TAB METHODS
-    
+
 
     public void OpenUpOrderInfoWindow()
     {
@@ -4798,7 +4811,7 @@ public class MainViewModel : ObservableObject
         };
         orderInfoWindow.ShowDialog();
     }
-    
+
     public void SearchForOrderByOrderIssueClick()
     {
         if (SelectedOrderIssue is null)
@@ -4806,7 +4819,7 @@ public class MainViewModel : ObservableObject
         Search(SelectedOrderIssue.OrderID!);
         SwitchTo3ShapeTab();
     }
-    
+
     public async void OpenUpRenameOrderWindow()
     {
         OrderRenameWindow orderRenameWindow = new(ThreeShapeObject!)
@@ -4818,23 +4831,23 @@ public class MainViewModel : ObservableObject
         ListUpdateTimer_Tick(null, null);
     }
 
-    
+
     private void CbSettingGlassyEffectMethod()
     {
         WriteLocalSetting("GlassyEffect", CbSettingGlassyEffect.ToString());
     }
-    
+
     private void CbSettingPanColorCheckWndwIsSnappedMethod()
     {
         WriteLocalSetting("PanColorCheckWndwIsSnapped", CbSettingPanColorCheckWndwIsSnapped.ToString());
     }
-    
+
     private void CbSettingStartAppMinimizedMethod()
     {
         WriteLocalSetting("StartAppMinimized", CbSettingStartAppMinimized.ToString());
     }
-    
-    
+
+
     //private void CbSettingShowBottomInfoBarMethod()
     //{
     //    WriteLocalSetting("ShowBottomInfoBar", ShowBottomInfoBar.ToString());
@@ -4847,23 +4860,23 @@ public class MainViewModel : ObservableObject
     //        BottomBarSize = 35;
     //    }
     //}
-    
+
     private void CbSettingShowDigiCasesMethod()
     {
         WriteLocalSetting("ShowDigiCases", CbSettingShowDigiCases.ToString());
-        
+
     }
-    
+
     private void CbSettingShowPendingDigiCasesMethod()
     {
         WriteLocalSetting("ShowPendingDigiCases", CbSettingShowPendingDigiCases.ToString());
     }
-    
+
     private void CbSettingIncludePendingDigiCasesInNewlyArrivedMethod()
     {
-        WriteLocalSetting("IncludePendingDigiCases", CbSettingIncludePendingDigiCasesInNewlyArrived.ToString());    
+        WriteLocalSetting("IncludePendingDigiCases", CbSettingIncludePendingDigiCasesInNewlyArrived.ToString());
     }
-    
+
     //private void CbSettingShowDigiDetailsMethod()
     //{
     //    if (!ShowBottomInfoBar)
@@ -4873,7 +4886,7 @@ public class MainViewModel : ObservableObject
     //    }
     //    WriteLocalSetting("ShowDigiDetails", CbSettingShowDigiDetails.ToString());
     //}
-    
+
     private void CbSettingWatchFolderPrescriptionMakerMethod()
     {
         WriteLocalSetting("ActivePrescriptionMaker", CbSettingWatchFolderPrescriptionMaker.ToString());
@@ -4894,22 +4907,22 @@ public class MainViewModel : ObservableObject
         else
             fswPrescriptionMaker.EnableRaisingEvents = CbSettingWatchFolderPrescriptionMaker;
     }
-    
+
     private void CbSettingOpenUpSironaScanFolderMethod()
     {
         WriteLocalSetting("OpenUpSironaScanFolder", CbSettingOpenUpSironaScanFolder.ToString());
     }
-    
+
     private void CbSettingShowEmptyPanCountMethod()
     {
         WriteLocalSetting("ShowEmptyPanCount", CbSettingShowEmptyPanCount.ToString());
     }
-    
+
     private void CbSettingShowDigiPrescriptionsCountMethod()
     {
         WriteLocalSetting("ShowDigiPrescriptionsCount", CbSettingShowDigiPrescriptionsCount.ToString());
     }
-    
+
     private void CbSettingShowDigiCasesIn3ShapeTodayCountMethod()
     {
         WriteLocalSetting("ShowDigiCasesIn3ShapeTodayCount", CbSettingShowDigiCasesIn3ShapeTodayCount.ToString());
@@ -4919,14 +4932,14 @@ public class MainViewModel : ObservableObject
     {
         WriteLocalSetting("ModuleFolderSubscription", CbSettingModuleFolderSubscription.ToString());
     }
-    
+
     private void CbSettingModuleAccountInfosMethod()
     {
         WriteLocalSetting("ModuleAccountInfos", CbSettingModuleAccountInfos.ToString());
         if (CbSettingModuleAccountInfos)
             GetAccountInfos();
     }
-    
+
     private void CbSettingModuleSmartOrderNamesMethod()
     {
         WriteLocalSetting("ModuleSmartOrderNames", CbSettingModuleSmartOrderNames.ToString());
@@ -4939,12 +4952,12 @@ public class MainViewModel : ObservableObject
                 MainMenuViewModel.StaticInstance.HideSmartRenameMenuItem();
         }
     }
-    
+
     private void CbSettingModuleDebugMethod()
     {
         WriteLocalSetting("ModuleDebug", CbSettingModuleDebug.ToString());
     }
-    
+
     private void CbSettingModulePrescriptionMakerMethod()
     {
         WriteLocalSetting("ModulePrescriptionMaker", CbSettingModulePrescriptionMaker.ToString());
@@ -4959,19 +4972,19 @@ public class MainViewModel : ObservableObject
             CbSettingShowEmptyPanCountMethod();
         }
     }
-    
+
     private void CbSettingModulePendingDigitalsMethod()
     {
         WriteLocalSetting("ModulePendingDigitals", CbSettingModulePendingDigitals.ToString());
     }
-    
+
     private async void DeleteCSCustomerMethod()
     {
         if (string.IsNullOrEmpty(SelectedCustomerName))
             return;
 
         SMessageBoxResult result = ShowMessageBox("Question", $"Are you sure you want to delete the selected customer?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 150, MainWindow.Instance);
-        
+
         if (result == SMessageBoxResult.Yes)
         {
             if (await DeleteCustomer(SelectedCustomerName))
@@ -5024,7 +5037,7 @@ public class MainViewModel : ObservableObject
         else
             ShowNotificationMessage("Customer suggestion", "The new suggestion was not added!", NotificationIcon.Error);
     }
-    
+
     private void CbSettingExtractIteroZipFilesMethod()
     {
         WriteLocalSetting("ExtractIteroZipFiles", CbSettingExtractIteroZipFiles.ToString());
@@ -5049,8 +5062,8 @@ public class MainViewModel : ObservableObject
     {
         NotificationTimer_Tick(null, null);
     }
-    
-    
+
+
     private async void NotificationTimer_Tick(object? sender, EventArgs e)
     {
         DoubleAnimation da = new(0.01, TimeSpan.FromMilliseconds(500));
@@ -5067,7 +5080,7 @@ public class MainViewModel : ObservableObject
         notificationTimer.Stop();
     }
 
-    
+
     public void ExploreOrderFolder()
     {
         string SelectedOrderID = ThreeShapeObject!.IntOrderID!;
@@ -5195,7 +5208,7 @@ public class MainViewModel : ObservableObject
         Debug.WriteLine(model.IntOrderID);
         FocusOnSearchField();
 
-        
+
         OrderBeingWatched = model.IntOrderID!;
         ThreeShapeObject = model;
 
@@ -5216,7 +5229,7 @@ public class MainViewModel : ObservableObject
     {
         ThreeShapeOrdersModel model = (ThreeShapeOrdersModel)obj;
         Debug.WriteLine(model.IntOrderID);
-        
+
         OrderBeingWatched = model.IntOrderID!;
         ThreeShapeObject = model;
 
@@ -5289,7 +5302,7 @@ public class MainViewModel : ObservableObject
             TBBRename = Visibility.Visible;
         }
 
-        
+
         if (inspectedOrder.IsCheckedOut)
             TBBGenerateStCopy = Visibility.Collapsed;
         #endregion Rename
@@ -5358,13 +5371,14 @@ public class MainViewModel : ObservableObject
 
     public void GroupList()
     {
-        Application.Current.Dispatcher.Invoke(new Action(() => {
+        Application.Current.Dispatcher.Invoke(new Action(() =>
+        {
             _MainWindow.pb3ShapeProgressBar.Value = 0;
 
             _MainWindow.listView3ShapeOrders.Items.GroupDescriptions.Clear();
             //var property = _MainWindow.GroupBy.SelectedItem as string;
             var property = SelectedGroupByItem;
-           
+
 
             if (FilterString != "MyRecent")
                 WriteLocalSetting("GroupBy", property!);
@@ -5409,7 +5423,7 @@ public class MainViewModel : ObservableObject
                 SortDescription sd;
                 sd = new SortDescription(property, ListSortDirection.Ascending);
                 DataView.SortDescriptions.Add(sd);
-                
+
                 sd = new SortDescription("LastModificationForSorting", ListSortDirection.Descending);
                 DataView.SortDescriptions.Add(sd);
 
@@ -5498,7 +5512,7 @@ public class MainViewModel : ObservableObject
 
             if (keyWord.StartsWith('@') && !keyWord.Contains('+'))
             {
-                sFilter += $@" (o.Patient_RefNo LIKE '%{keyWord.Replace("@","").Trim()}%' OR
+                sFilter += $@" (o.Patient_RefNo LIKE '%{keyWord.Replace("@", "").Trim()}%' OR
                                 o.ExtOrderID LIKE '%{keyWord.Replace("@", "").Trim()}%') ";
             }
             else if (keyWord.Contains('+') && keyWord.Length > 2 && !keyWord.StartsWith('+') && !keyWord.EndsWith('+'))
@@ -5537,7 +5551,7 @@ public class MainViewModel : ObservableObject
                                  o.CacheMaterialName LIKE '%{keyWordPart[1].Trim()}%' OR 
                                  i.MaxCreateDate LIKE '%{keyWordPart[1].Trim()}%') 
                                 ";
-                
+
                 if (keyWordPart.Length == 3)
                     sFilter += $@"
                                 (o.IntOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
@@ -5576,7 +5590,7 @@ public class MainViewModel : ObservableObject
                                  o.CacheMaterialName LIKE '%{keyWordPart[2].Trim()}%' OR 
                                  i.MaxCreateDate LIKE '%{keyWordPart[2].Trim()}%') 
                                 ";
-                
+
                 if (keyWordPart.Length == 4)
                     sFilter += $@"
                                 (o.IntOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
@@ -5627,7 +5641,7 @@ public class MainViewModel : ObservableObject
                                  o.CacheMaterialName LIKE '%{keyWordPart[3].Trim()}%' OR 
                                  i.MaxCreateDate LIKE '%{keyWordPart[3].Trim()}%') 
                                 ";
-                
+
                 if (keyWordPart.Length == 5)
                     sFilter += $@"
                                 (o.IntOrderID LIKE '%{keyWordPart[0].Trim()}%' OR 
@@ -5720,7 +5734,7 @@ public class MainViewModel : ObservableObject
 
             sFilter += ")";
 
-            
+
         }
         #endregion
 
@@ -5792,7 +5806,7 @@ public class MainViewModel : ObservableObject
                     sFilter = $"WHERE(UserID = '{Environment.MachineName}') ";
                     TempSearchLimitIgnore = false;
                     break;
-                
+
                 case "Today":
                     sFilter = "WHERE(i.MaxCreateDate > '" + DtToday + RestDayStart + "' AND i.MaxCreateDate < '" + DtToday + RestDayEnd + "') " +
                               sOpenedForDesignFilter;
@@ -6147,7 +6161,8 @@ public class MainViewModel : ObservableObject
         if (!TempSearchLimitIgnore && countedResults > srchLimit && srchLimit > 0)
             countedResults = srchLimit;
 
-        Application.Current.Dispatcher.Invoke(new Action(() => {
+        Application.Current.Dispatcher.Invoke(new Action(() =>
+        {
             if (countedResults < 1)
             {
                 countedResults = 1;
@@ -6163,7 +6178,8 @@ public class MainViewModel : ObservableObject
         List<string> list = [];
 
 
-        Application.Current.Dispatcher.Invoke(new Action(() => {
+        Application.Current.Dispatcher.Invoke(new Action(() =>
+        {
             FilterString = keyWordOrFilter.Trim();
             //if (FilterInUse)
             //    tbFilterString.Foreground = Brushes.DarkGreen;
@@ -6181,7 +6197,7 @@ public class MainViewModel : ObservableObject
 
         try
         {
-            
+
             using SqlConnection connection = new(connectionString);
             SqlCommand command = new(queryString, connection);
             connection.Open();
@@ -6428,7 +6444,7 @@ public class MainViewModel : ObservableObject
 
                     bool hasAnyImage = false;
 
-                    
+
                     hasAnyImage = CheckForImageInOrderFolder(reader["IntOrderID"].ToString()!);
 
                     #region Context MenuItems Visibility
@@ -6448,7 +6464,7 @@ public class MainViewModel : ObservableObject
                     //if (isAbutmentCase)
                     //    ToolBarButton_removeSecureAbutmentDesign = Visibility.Visible;
 
-                    bool isTheFilesAccessible = true;               
+                    bool isTheFilesAccessible = true;
                     bool generateStCopy = true;
                     bool hasDesignerHistory = false;
                     bool IsLocked = false;
@@ -6464,10 +6480,10 @@ public class MainViewModel : ObservableObject
                         IsCheckedOut = true;
 
                     // checking if the folder for that case are exist and writable (in 3Shape orders folder)
-                    if (ThreeShapeDirectoryHelper.Length < 1 || 
+                    if (ThreeShapeDirectoryHelper.Length < 1 ||
                         !CheckFolderIsWritable(ThreeShapeDirectoryHelper + reader["IntOrderID"].ToString()) ||// if 3Shape dir not set it up or it is setted up but the case folder not writable (maybe doesn't exist)
                         IsCheckedOut
-                        ) 
+                        )
                     {
                         isTheFilesAccessible = false;
                         generateStCopy = false;
@@ -6479,7 +6495,7 @@ public class MainViewModel : ObservableObject
                     {
                         try
                         {
-                            File.ReadAllLines(designedByFile).ToList().ForEach(x => 
+                            File.ReadAllLines(designedByFile).ToList().ForEach(x =>
                             {
                                 string[] parts = x.Split(']');
 
@@ -6547,7 +6563,7 @@ public class MainViewModel : ObservableObject
 
                     if (reader["ModelHeight"].ToString() != "0" && string.IsNullOrEmpty(reader["OriginalOrderID"].ToString()))
                         IsCaseWereDesigned = true;
-                    
+
                     bool canBeRenamed = false;
                     if (((MaxProcessStatusID == "psCreated" && !IsCaseWereDesigned) ||
                          (MaxProcessStatusID == "psScanned" && !IsCaseWereDesigned) ||
@@ -6558,7 +6574,7 @@ public class MainViewModel : ObservableObject
                     }
 
 
-                    if (MaxProcessStatusID != "psModelled" 
+                    if (MaxProcessStatusID != "psModelled"
                      && MaxProcessStatusID != "psClosed"
                      && MaxProcessStatusID != "psSent"
                      && IsCaseWereDesigned)
@@ -6636,7 +6652,8 @@ public class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             AddDebugLine(ex);
-            Application.Current.Dispatcher.Invoke(new Action(() => {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
                 if (ex.Message.Contains("A network-related or instance-specific error", StringComparison.CurrentCultureIgnoreCase))
                     ThreeShapeServerIsDown = true;
                 else if (ex.Message.Contains("The value's length for key 'data source'", StringComparison.CurrentCultureIgnoreCase))
@@ -6651,7 +6668,8 @@ public class MainViewModel : ObservableObject
 
         SearchOnlyInFileNames = false;
 
-        Application.Current.Dispatcher.Invoke(new Action(() => {
+        Application.Current.Dispatcher.Invoke(new Action(() =>
+        {
             _MainWindow.pb3ShapeProgressBar.Value = 0;
         }));
     }
@@ -6659,7 +6677,7 @@ public class MainViewModel : ObservableObject
     private bool CheckForImageInOrderFolder(string orderID)
     {
         string path = @$"{ThreeShapeDirectoryHelper}{orderID}\Images";
-                
+
         if (Directory.Exists(path))
         {
             var fileCount = Directory.EnumerateFiles(path).Count();
@@ -6824,11 +6842,11 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    public void ShowNotificationMessage(string title, string message, NotificationIcon notificationIcon = NotificationIcon.Info, 
-                                        bool notificationWindowPulledIn = false, 
-                                        double pullUpFromBottomEdge = 20 )
+    public void ShowNotificationMessage(string title, string message, NotificationIcon notificationIcon = NotificationIcon.Info,
+                                        bool notificationWindowPulledIn = false,
+                                        double pullUpFromBottomEdge = 20)
     {
-        
+
         if (FsCopyPanelShows && notificationWindowPulledIn)
             pullUpFromBottomEdge = 155;
 
@@ -6841,12 +6859,12 @@ public class MainViewModel : ObservableObject
         //}
         //else
         //{
-            NotificationMessageVertAlignment = VerticalAlignment.Bottom;
-            if (notificationWindowPulledIn)
-                NotificationMessagePosition = new Thickness(151, 0, 0, pullUpFromBottomEdge);
-            else
-                NotificationMessagePosition = new Thickness(15, 0, 0, pullUpFromBottomEdge);
-            NotificationMessageGridPosition = "1";
+        NotificationMessageVertAlignment = VerticalAlignment.Bottom;
+        if (notificationWindowPulledIn)
+            NotificationMessagePosition = new Thickness(151, 0, 0, pullUpFromBottomEdge);
+        else
+            NotificationMessagePosition = new Thickness(15, 0, 0, pullUpFromBottomEdge);
+        NotificationMessageGridPosition = "1";
         //}
 
         NotificationMessageTitle = title;
@@ -6855,7 +6873,7 @@ public class MainViewModel : ObservableObject
         NotificationMessageVisibility = Visibility.Visible;
         DoubleAnimation da = new(1, TimeSpan.FromMilliseconds(250));
         MainWindow.Instance.notificationMessagePanel.BeginAnimation(FrameworkElement.OpacityProperty, da);
-        
+
         notificationTimer.Stop();
         notificationTimer.Start();
     }
@@ -6902,9 +6920,9 @@ public class MainViewModel : ObservableObject
         {
             double fontSize = 10;
             double fontSizeCopy = 14;
-            
+
             PendingDigiNumbersWaitingToProcessInt = GetAllNotProcessedNumbers().Count;
-            
+
 
             Dictionary<string, int> catchedEmails = GetEWCategoriesAndCounts();
             Dictionary<string, int> meditCases = GetMeditCasesWithCounts();
@@ -6933,7 +6951,7 @@ public class MainViewModel : ObservableObject
 
             //    MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
             //}
-            
+
             if (NewTriosCaseInInboxCount > 0)
             {
                 TextBlock textBlock = new()
@@ -6943,7 +6961,7 @@ public class MainViewModel : ObservableObject
                     Foreground = Brushes.LightGreen,
                     FontWeight = FontWeights.SemiBold,
                 };
-                
+
                 TextBlock textBlockCopy = new()
                 {
                     Text = $"Trios ⇢ Got {NewTriosCaseInInboxCount} new case",
@@ -6989,7 +7007,7 @@ public class MainViewModel : ObservableObject
                     Foreground = textColor!,
                     FontWeight = FontWeights.SemiBold,
                 };
-                
+
                 TextBlock textBlockCopy = new()
                 {
                     Text = $"{digiSystem} ⇢ Got {item.Value} new case ({labIdentifierAllScan})",
@@ -7000,7 +7018,7 @@ public class MainViewModel : ObservableObject
 
                 countedCases += item.Value;
                 //MainWindow.Instance.panelDigiCases.Children.Add(textBlock);
-                
+
                 MainWindow.Instance.panelNewlyArrivedDigitalCasesList.Children.Add(textBlockCopy);
             }
 
@@ -7029,7 +7047,7 @@ public class MainViewModel : ObservableObject
                     Foreground = textColor!,
                     FontWeight = FontWeights.SemiBold,
                 };
-                
+
                 TextBlock textBlockCopy = new()
                 {
                     Text = $"Medit ⇢ Got {item.Value} new case ({labIdentifier})",
@@ -7067,12 +7085,13 @@ public class MainViewModel : ObservableObject
         _ = int.TryParse(argParts[0], out int minute);
         _ = int.TryParse(argParts[1], out int second);
 
-        Application.Current.Dispatcher.Invoke(new Action(async () => {
+        Application.Current.Dispatcher.Invoke(new Action(async () =>
+        {
             //ServerStatus = GetStatsServerStatus();
             ServerIsWritingDatabase = CheckIfServerIsWritingDatabase();
             if (CbSettingModuleFolderSubscription)
                 FsLastDatabaseUpdate = GetLastDatabaseUpdate();
-            
+
             await Task.Run(LookForPendingTask);
         }));
 
@@ -7092,6 +7111,16 @@ public class MainViewModel : ObservableObject
         }
 
 
+        if (second % 5 == 0 || ServerLogCanBeRead)
+        {
+            if (ScrollServerLogToBottom)
+            {
+                _MainWindow.webview.ExecuteScriptAsync("window.scroll(0,1000000)");
+            }
+        }
+
+
+
         if (second % 15 == 0 || FirstRun)
         {
 
@@ -7107,12 +7136,13 @@ public class MainViewModel : ObservableObject
             }
 
             FirstRun = false;
-            Application.Current.Dispatcher.Invoke(new Action(() => {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
                 int casesDesigningNow = GetOpenedForDesignCasesCount(ServerID);
                 if (casesDesigningNow > 0)
                 {
                     DesignerOpenToolTip = casesDesigningNow.ToString();
-                    
+
                     if (MainWindow.Instance.panelDesignerOpen.Children.Count > casesDesigningNow ||
                         MainWindow.Instance.panelDesignerOpen.Children.Count < casesDesigningNow)
                     {
@@ -7157,20 +7187,20 @@ public class MainViewModel : ObservableObject
 
                 if (CbSettingShowDigiPrescriptionsCount)
                     DigiPrescriptionsTodayCount = GetCurrentDigiPrescriptionCount();
-                
+
                 if (CbSettingShowDigiCasesIn3ShapeTodayCount)
                     DigiCasesIn3ShapeTodayCount = GetDigiCasesIn3ShapeTodayCount();
 
                 FillUpDigiCasePanel();
 
-                
+
                 FillUpPendingDigiCaseNumberList();
 
                 _ = bool.TryParse(ReadStatsSetting("dcas_EmailWatcherActive"), out bool isDCASIsActive);
                 IsDCASIsActive = isDCASIsActive;
 
 
-                
+
                 //checking if server log is readable
                 if (File.Exists(@$"\\{StatsServersComputerName}\StatsSystemsLogs$\StatsSystem_log_{DateTime.Now:yyyy-MM-dd}.html"))
                 {
@@ -7181,7 +7211,10 @@ public class MainViewModel : ObservableObject
                 }
                 else
                     ServerLogCanBeRead = false;
-                
+
+
+
+
             }));
         }
 
@@ -7189,7 +7222,8 @@ public class MainViewModel : ObservableObject
         {
             UpdateOrderIssuesList();
 
-            Application.Current.Dispatcher.Invoke(new Action(() => {
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
                 if (bwGetSentOutIssues.IsBusy != true)
                 {
                     bwGetSentOutIssues.RunWorkerAsync();
@@ -7198,7 +7232,7 @@ public class MainViewModel : ObservableObject
 
             GC.Collect();
         }
-        
+
         if (second % 30 == 1)
         {
             await ReportClientLoginToDatabase();
@@ -7262,7 +7296,7 @@ public class MainViewModel : ObservableObject
     #region >> Initial Tasks at startup
     private void InitialTasksAtApplicationStartup_DoWork(object? sender, DoWorkEventArgs e)
     {
-        Application.Current.Dispatcher.Invoke(new Action(async () => 
+        Application.Current.Dispatcher.Invoke(new Action(async () =>
         {
             SplashViewModel.Instance.LoadingText = "Gathering info from database..";
             ThisSite = DatabaseOperations.GetServerSiteName();
@@ -7292,7 +7326,7 @@ public class MainViewModel : ObservableObject
             _ = bool.TryParse(ReadLocalSetting("ModulePendingDigitals"), out bool modulePendingDigitals);
 
             _ = bool.TryParse(ReadStatsSetting("dcas_EmailWatcherActive"), out bool isDCASIsActive);
-            
+
             _ = bool.TryParse(ReadLocalSetting("ColorCheckWindowIsOpen"), out bool isColorCheckWindowOpen);
 
 
@@ -7352,7 +7386,7 @@ public class MainViewModel : ObservableObject
             PmWatchedPdfFolder = ReadLocalSetting("PmWatchedPdfFolder");
             if (string.IsNullOrEmpty(PmWatchedPdfFolder))
                 PmWatchedPdfFolder = "Click here to setup..";
-            
+
             PmFinalPrescriptionsFolder = ReadLocalSetting("FinalPrescriptionsFolder");
             if (string.IsNullOrEmpty(PmFinalPrescriptionsFolder))
                 PmFinalPrescriptionsFolder = "Click here to setup..";
@@ -7420,7 +7454,7 @@ public class MainViewModel : ObservableObject
 
             if (isColorCheckWindowOpen)
                 MainWindow.Instance.ShowHidePanColorCheckWindow();
-            
+
             if (StartAppMinimized)
                 MainWindow.Instance.WindowState = WindowState.Minimized;
 
@@ -7579,14 +7613,14 @@ public class MainViewModel : ObservableObject
         if (remoteVersion > AppVersionDouble)
         {
 #if DEBUG
-return;
+            return;
 #endif
             UpdateAvailable = true;
-            
+
             if (StartAutoUpdateCuzAppJustStarted && remoteVersion - AppVersionDouble > 10)
-                    Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
-            
-            
+                Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
+
+
             if (DoAForceUpdateNow)
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
         }
@@ -7611,7 +7645,7 @@ return;
             }
         }));
     }
-    
+
     private void ProgramIconGrowAnimation_Completed(object? sender, EventArgs e)
     {
         Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -7732,7 +7766,7 @@ return;
                     LookForUpdate();
                     break;
                 }
-            
+
             case "report":
                 {
                     await WriteDownLastCommandId(task.Id!);
@@ -7747,7 +7781,7 @@ return;
                     Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
                     break;
                 }
-            
+
             case "restart":
                 {
                     await WriteDownLastCommandId(task.Id!);
@@ -7767,19 +7801,19 @@ return;
                     LookForUpdate();
                     break;
                 }
-            
+
             case "openManufFolder":
                 {
                     OpenUpFolder("manufacturing");
                     break;
                 }
-            
+
             case "openTriosInbox":
                 {
                     OpenUpFolder("triosinbox");
                     break;
                 }
-            
+
             case "openSmartRenameWindw":
                 {
                     SmartOrderNamesWindow.ShowDialog();

@@ -2115,11 +2115,29 @@
                                  Visibility="{Binding ServerLogCanBeRead, Converter={StaticResource BoolToVisibilityConverter}}"
                                  d:Visibility="Visible"
                                  Style="{StaticResource applicationsTabItem}">
-                            <wv2:WebView2 Source="{Binding ServerLogUrl}"
-                                          Name="webview"
-                                          CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
-                                          DefaultBackgroundColor="Gray"
-                                           />
+                            <Grid>
+                                <StackPanel Background="AliceBlue"
+                                            Panel.ZIndex="100"
+                                            Height="24"
+                                            HorizontalAlignment="Right"
+                                            Margin="5"
+                                            VerticalAlignment="Bottom"
+                                            Opacity="0.85"
+                                            Width="95">
+
+                                    <CheckBox Content="Auto scroll"
+                                              Foreground="Black"
+                                              IsChecked="{Binding ScrollServerLogToBottom}"
+                                              d:IsChecked="True"
+                                              Margin="5"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                                </StackPanel>
+                                <wv2:WebView2 Source="{Binding ServerLogUrl}"
+                                              Name="webview"
+                                              CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
+                                              DefaultBackgroundColor="Gray" />
+                            </Grid>
                         </TabItem>
 
                         <TabItem IsTabStop="False"
