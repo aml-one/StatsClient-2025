@@ -323,4 +323,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         MainViewModel.Instance.ServerLogWebViewIsInitialized = true;
     }
+
+    private void webview_MouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        MainViewModel.Instance.ScrollServerLogToBottom = false;
+    }
 }
