@@ -9,10 +9,10 @@ public class Double8ToMultiplyConverter : IValueConverter
     {
         if (value is double val)
         {
-            return val * 12;
+            return val * 10;
         }
 
-        return 12;
+        return 10;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

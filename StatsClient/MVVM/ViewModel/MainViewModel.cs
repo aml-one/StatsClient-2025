@@ -36,6 +36,8 @@ using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Effects;
 using System.Security.Policy;
+using System.Threading;
+using Microsoft.Extensions.Logging;
 
 
 
@@ -80,7 +82,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SentOutCasesViewModel));
         }
     }
-    
+
     private ImortHistoryNotifications? imortHistoryNotificationsWindow = new();
     public ImortHistoryNotifications ImortHistoryNotificationsWindow
     {
@@ -104,7 +106,7 @@ public class MainViewModel : ObservableObject
         }
     }
 
-    
+
     //private SmartOrderNamesViewModel? smartOrderNamesViewModel;
     //public SmartOrderNamesViewModel SmartOrderNamesViewModel
     //{
@@ -127,6 +129,17 @@ public class MainViewModel : ObservableObject
         }
     }
     
+    private List<ImportHistoryModel> testImportHistoryList = [];
+    public List<ImportHistoryModel> TestImportHistoryList
+    {
+        get => testImportHistoryList;
+        set
+        {
+            testImportHistoryList = value;
+            RaisePropertyChanged(nameof(TestImportHistoryList));
+        }
+    }
+
     private List<ExportHistoryModel> exportedCasesList = [];
     public List<ExportHistoryModel> ExportedCasesList
     {
@@ -583,6 +596,28 @@ public class MainViewModel : ObservableObject
         {
             searchLimits = value;
             RaisePropertyChanged(nameof(SearchLimits));
+        }
+    }
+
+    private string timeOut = "20";
+    public string TimeOut
+    {
+        get => timeOut;
+        set
+        {
+            timeOut = value;
+            RaisePropertyChanged(nameof(TimeOut));
+        }
+    }
+
+    private List<string> timeOuts = ["10", "20", "30", "40", "50", "60"];
+    public List<string> TimeOuts
+    {
+        get => timeOuts;
+        set
+        {
+            timeOuts = value;
+            RaisePropertyChanged(nameof(TimeOuts));
         }
     }
 
@@ -2094,7 +2129,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowDigiPrescriptionsCount));
         }
     }
-    
+
     private bool cbSettingAnnounceNewlyDesignedOrdersOnScreen = true;
     public bool CbSettingAnnounceNewlyDesignedOrdersOnScreen
     {
@@ -2364,6 +2399,9 @@ public class MainViewModel : ObservableObject
     public RelayCommand DeleteCSCustomerCommand { get; set; }
     public RelayCommand DeleteCSSuggestionCommand { get; set; }
 
+    public RelayCommand SendTestAnnouncementCommand { get; set; }
+    public RelayCommand ClearTestAnnouncementCommand { get; set; }
+
     #endregion Settings Tab RelayCommands
 
 
@@ -2379,6 +2417,7 @@ public class MainViewModel : ObservableObject
 
     public RelayCommand GroupBySelectionChangedCommand { get; set; }
     public RelayCommand SearchLimitSelectionChangedCommand { get; set; }
+    public RelayCommand TimeOutSelectionChangedCommand { get; set; }
     public RelayCommand SearchFieldClickedCommand { get; set; }
     public RelayCommand SearchFieldKeyDownCommand { get; set; }
     public RelayCommand HideNotificationCommand { get; set; }
@@ -2511,6 +2550,7 @@ public class MainViewModel : ObservableObject
         ItemRightClickedCommand = new RelayCommand(o => ItemRightClicked(o));
         GroupBySelectionChangedCommand = new RelayCommand(o => GroupList());
         SearchLimitSelectionChangedCommand = new RelayCommand(o => SearchLimitSelectionChanged());
+        TimeOutSelectionChangedCommand = new RelayCommand(o => TimeOutSelectionChanged());
         SearchFieldClickedCommand = new RelayCommand(o => _MainWindow.tbSearch.Focus());
         SearchFieldKeyDownCommand = new RelayCommand(o => SearchFieldKeyDown());
         HideNotificationCommand = new RelayCommand(o => HideNotification());
@@ -2587,6 +2627,9 @@ public class MainViewModel : ObservableObject
         AddNewCustomerSuggestionCommand = new RelayCommand(o => AddNewCustomerSuggestionMethod());
         DeleteCSCustomerCommand = new RelayCommand(o => DeleteCSCustomerMethod());
         DeleteCSSuggestionCommand = new RelayCommand(o => DeleteCSSuggestionMethod());
+
+        SendTestAnnouncementCommand = new RelayCommand(o => SendTestAnnouncementMethod());
+        ClearTestAnnouncementCommand = new RelayCommand(o => ClearTestAnnouncementMethod());
 
 
         RunNotificationProgressCommand = new RelayCommand(o => BlinkWindow());
@@ -2680,6 +2723,18 @@ public class MainViewModel : ObservableObject
         BuildCustomerSuggestionsList();
     }
 
+    private async void ClearTestAnnouncementMethod()
+    {
+        await RemoveTestEntrysFromImportHistory();
+        ShowMessageBox("Test Annoncements Cleaning", "Successfully cleared all test announcements!", SMessageBoxButtons.Close, NotificationIcon.Success, 2, _MainWindow);
+    }
+
+    private async void SendTestAnnouncementMethod()
+    {
+        await AddTestEntryToImportHistory();
+        ShowMessageBox("Adding Test Annoncement", "Successfully added a test announcement!", SMessageBoxButtons.Close, NotificationIcon.Success, 2, _MainWindow);
+    }
+
     private void TestCommandMethod(object obj)
     {
         Debug.WriteLine("clicked");
@@ -2689,6 +2744,11 @@ public class MainViewModel : ObservableObject
     private void SearchLimitSelectionChanged()
     {
         WriteLocalSetting("SearchLimit", SearchLimit);
+    }
+
+    private void TimeOutSelectionChanged()
+    {
+        WriteLocalSetting("TimeoutForImportAncmnt", TimeOut);
     }
 
 
@@ -4990,7 +5050,7 @@ public class MainViewModel : ObservableObject
     {
         WriteLocalSetting("ShowDigiPrescriptionsCount", CbSettingShowDigiPrescriptionsCount.ToString());
     }
-    
+
     private void CbSettingAnnounceNewlyDesignedOrdersOnScreenMethod()
     {
         WriteLocalSetting("AnnounceNewlyDesignedOrdersOnScreen", CbSettingAnnounceNewlyDesignedOrdersOnScreen.ToString());
@@ -7155,7 +7215,7 @@ public class MainViewModel : ObservableObject
 
     private void BwBackgroundTasks_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
     {
-        
+
     }
 
     private async void BwBackgroundTasks_DoWork(object? sender, DoWorkEventArgs e)
@@ -7197,6 +7257,15 @@ public class MainViewModel : ObservableObject
             {
                 ImportedCasesList = await GetBackImportHistory(Multiplier);
                 ExportedCasesList = await GetBackExportHistory();
+
+                if (TestImportHistoryList.Count > 0)
+                {
+                    foreach (var item in TestImportHistoryList)
+                    {
+                        ImportedCasesList.Add(item);
+                    }
+                }
+
                 if (CbSettingAnnounceNewlyDesignedOrdersOnScreen)
                     ImportHistoryAnnouncementsViewModel.Instance.ImportHistoryList = ImportedCasesList;
             }));
@@ -7466,6 +7535,10 @@ public class MainViewModel : ObservableObject
             if (!string.IsNullOrEmpty(srchLimit))
                 SearchLimit = srchLimit;
 
+            string tmOut = ReadLocalSetting("TimeoutForImportAncmnt");
+            if (!string.IsNullOrEmpty(tmOut))
+                TimeOut = tmOut;
+
 #if !DEBUG
 
             if (Directory.Exists(TriosInboxFolder))
@@ -7561,7 +7634,7 @@ public class MainViewModel : ObservableObject
                 MainWindow.Instance.WindowState = WindowState.Minimized;
 
 
-            
+
             if (CbSettingAnnounceNewlyDesignedOrdersOnScreen)
             {
                 ImortHistoryNotificationsWindow?.Show();

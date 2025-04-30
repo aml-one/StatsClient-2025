@@ -2555,6 +2555,32 @@
 
                                                 <StackPanel Orientation="Horizontal"
                                                             Margin="6,10,0,0">
+                                                    <TextBlock Text="Announcement TimeOut "
+                                                               VerticalAlignment="Center" />
+                                                    <ComboBox Width="72"
+                                                              Margin="4,0"
+                                                              HorizontalContentAlignment="Center"
+                                                              ItemsSource="{Binding TimeOuts}"
+                                                              SelectedItem="{Binding TimeOut}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding TimeOutSelectionChangedCommand}" />
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </ComboBox>
+                                                    <TextBlock Text=" sec"
+                                                               VerticalAlignment="Center" />
+
+                                                    <Button Content=" Send Test Announcement " 
+                                                            Margin="8,0"
+                                                            Command="{Binding SendTestAnnouncementCommand}"/>
+                                                    
+                                                    <Button Content=" Clear Test Announcement " 
+                                                            Margin="8,0"
+                                                            Command="{Binding ClearTestAnnouncementCommand}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal"
+                                                            Margin="6,10,0,0">
                                                     <TextBlock Text="Search limit in 3Shape"
                                                                VerticalAlignment="Center" />
                                                     <ComboBox Width="72"

@@ -57,6 +57,28 @@ public partial class DatabaseOperations
         return 100;
     }
 
+    public static async Task RemoveTestEntrysFromImportHistory()
+    {
+        string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+        string queryAddLastModify = @$"DELETE FROM dbo.ImportHistory WHERE OrderID LIKE '00000-%'";
+        RunSQLCommandAsynchronously(queryAddLastModify, connectionString);
+    }
+    
+    public static async Task AddTestEntryToImportHistory()
+    {
+        string orderID = "00000-" + DateTime.Now.ToString("ss") + "-B1-JOHNDOE-DOCTOR-SYSTEM-SCR";
+
+        string DateTimeStr = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        string ImportTime = DateTime.Now.ToString("h:mm tt");
+        string OrderBy = DateTime.Now.ToString("yyyyMMddHHmmss");
+
+        
+        string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+        string queryAddLastModify = @$"INSERT INTO dbo.ImportHistory (OrderID, DesignerID, FriendlyName, ImportPath, DateTime, ImportTime, Event, OrderBy) 
+                                                   VALUES ('{orderID}', 'dsg', 'RandomDesigner', '', '{DateTimeStr}', '{ImportTime}', 'got designed by', '{OrderBy}')";
+        RunSQLCommandAsynchronously(queryAddLastModify, connectionString);
+    }
+
     public static async Task<List<ImportHistoryModel>> GetBackImportHistory(double multiplier = 1)
     {
         List<ImportHistoryModel> importHistory = [];
