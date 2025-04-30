@@ -7806,7 +7806,7 @@ public class MainViewModel : ObservableObject
             if (StartAutoUpdateCuzAppJustStarted && (remoteVersion - AppVersionDouble) > 10)
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
             
-            if (remoteVersion.ToString()[0] == '0' || remoteVersion.ToString()[0] == '5')
+            if (remoteVersion.ToString().EndsWith('0') || remoteVersion.ToString().EndsWith('5'))
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
 
 
