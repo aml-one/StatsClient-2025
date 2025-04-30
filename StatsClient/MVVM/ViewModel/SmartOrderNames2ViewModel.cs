@@ -61,20 +61,20 @@ public partial class SmartOrderNames2ViewModel : ObservableObject
     }
 
     private readonly List<string> digitalSystems = [
-        "ABUTMENT-ONLY", 
-        "ATLANTIS", 
-        "DROPBOX", 
-        "DSCORE", 
-        "EMAIL", 
-        "ASCONNECT", 
-        "CARESTREAM", 
-        "DEXIS", 
-        "-- None --", 
-        "MEDIT", 
-        "IS3D", 
-        "SIRONA", 
-        "ITERO", 
-        "TRIOS", 
+        "ABUTMENT-ONLY",
+        "ATLANTIS",
+        "DROPBOX",
+        "DSCORE",
+        "EMAIL",
+        "ASCONNECT",
+        "CARESTREAM",
+        "DEXIS",
+        "-- None --",
+        "MEDIT",
+        "IS3D",
+        "SIRONA",
+        "ITERO",
+        "TRIOS",
         "HENNESSY"
         ];
     public List<string> DigitalSystems
@@ -578,7 +578,7 @@ public partial class SmartOrderNames2ViewModel : ObservableObject
         }
     }
 
-    
+
     private void FocusOnPanNumberBox()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -595,7 +595,7 @@ public partial class SmartOrderNames2ViewModel : ObservableObject
             SmartOrderNames2Page.StaticInstance!.listBoxDigiSystem.Focus();
         });
     }
-    
+
     private void FocusOnCarestreamIDBox()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -854,7 +854,13 @@ public partial class SmartOrderNames2ViewModel : ObservableObject
                     MainMenuViewModel.StaticInstance.HideSmartRenameMenuItem();
                     SelectFirstOrder();
                     _timer.Stop();
-                    MainViewModel.Instance.SmartOrderNamesWindow.ShowDialog();
+                    try
+                    {
+                        MainViewModel.Instance.SmartOrderNamesWindow.ShowDialog();
+                    }
+                    catch (Exception ex)
+                    {
+                    }
                     _timer.Start();
                 });
             }

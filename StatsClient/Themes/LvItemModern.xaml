@@ -37,6 +37,11 @@
     <converters:AgeToGlowConverter x:Key="AgeToGlowConverter" />
     <converters:AgeToGlowForAgeConverter x:Key="AgeToGlowForAgeConverter" />
 
+    <converters:Double8ToMultiplyConverter x:Key="Double8ToMultiplyConverter" />
+    <converters:Double10ToMultiplyConverter x:Key="Double10ToMultiplyConverter" />
+    <converters:Double12ToMultiplyConverter x:Key="Double12ToMultiplyConverter" />
+    <converters:AgeSecondsToCollapsedVisibilityConverter x:Key="AgeSecondsToCollapsedVisibilityConverter" />
+
 
     <!-- LvItemSimple -->
     <!-- 
@@ -393,40 +398,38 @@
                                                         VerticalAlignment="Center"
                                                         Margin="5,0,0,0" />
 
-                            <StackPanel Orientation="Vertical"
-                                        Grid.Row="1"
-                                                        VerticalAlignment="Center"
-                                        Margin="10,-7,0,0"
-                                        HorizontalAlignment="Right">
+                                <StackPanel Orientation="Vertical"
+                                            Grid.Row="1"
+                                            VerticalAlignment="Center"
+                                            Margin="10,-7,0,0"
+                                            HorizontalAlignment="Right">
 
-                                
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        Grid.Column="1"
-                                                        Grid.RowSpan="2"
-                                                        StrokePosition="Outside"
-                                                        FontSize="11"
-                                                        FontWeight="SemiBold"
-                                                        Fill="Navy"
-                                                        VerticalAlignment="Center"
-                                                        StrokeThickness="0.5"
-                                                        Text="{Binding Event}"
-                                                        Margin="5,0,0,-8"
-                                                        />
-                                
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        Grid.Column="1"
-                                                        Grid.RowSpan="2"
-                                                        StrokePosition="Outside"
-                                                        FontSize="20"
-                                                        FontWeight="SemiBold"
-                                                        Fill="LightGreen"
-                                                        VerticalAlignment="Center"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding FriendlyName}"
-                                                        Margin="5,0,0,0"
-                                                        />
 
-                            </StackPanel>
+                                    <core:OutlinedTextBlock Stroke="Black"
+                                                            Grid.Column="1"
+                                                            Grid.RowSpan="2"
+                                                            StrokePosition="Outside"
+                                                            FontSize="11"
+                                                            FontWeight="SemiBold"
+                                                            Fill="Navy"
+                                                            VerticalAlignment="Center"
+                                                            StrokeThickness="0.5"
+                                                            Text="{Binding Event}"
+                                                            Margin="5,0,0,-8" />
+
+                                    <core:OutlinedTextBlock Stroke="Black"
+                                                            Grid.Column="1"
+                                                            Grid.RowSpan="2"
+                                                            StrokePosition="Outside"
+                                                            FontSize="20"
+                                                            FontWeight="SemiBold"
+                                                            Fill="LightGreen"
+                                                            VerticalAlignment="Center"
+                                                            StrokeThickness="0.85"
+                                                            Text="{Binding FriendlyName}"
+                                                            Margin="5,0,0,0" />
+
+                                </StackPanel>
                             </StackPanel>
 
 
@@ -2755,6 +2758,71 @@
                         </Trigger>
 
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- -->
+    <Style TargetType="ListViewItem"
+           x:Key="LvImportHistoryAnnouncement">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="Item"
+                            BorderThickness="1">
+
+                        <Grid Margin="1,0,1,10">
+                            
+                            <StackPanel Orientation="Horizontal"
+                                        Visibility="{Binding AgeInSeconds, Converter={StaticResource AgeSecondsToCollapsedVisibilityConverter}}">
+
+                                <core:OutlinedTextBlock Stroke="Black"
+                                                        StrokePosition="Outside"
+                                                        FontSize="{Binding Multiplier, Converter={StaticResource Double12ToMultiplyConverter}}"
+                                                        FontWeight="SemiBold"
+                                                        Fill="#42ff48"
+                                                        StrokeThickness="1"
+                                                        Text="{Binding OrderID}"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="15,0,15,0"
+                                                        Grid.Row="0" />
+                                <StackPanel>
+                                    <core:OutlinedTextBlock Stroke="Black"
+                                                            StrokePosition="Outside"
+                                                            FontSize="{Binding Multiplier, Converter={StaticResource Double8ToMultiplyConverter}}"
+                                                            FontWeight="SemiBold"
+                                                            Fill="#529f68"
+                                                            StrokeThickness="1"
+                                                            Text="{Binding Event}"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Left"
+                                                            Margin="15,0,15,-10"
+                                                            Grid.Row="1" />
+                                    <core:OutlinedTextBlock Stroke="Black"
+                                                            StrokePosition="Outside"
+                                                            FontSize="{Binding Multiplier, Converter={StaticResource Double10ToMultiplyConverter}}"
+                                                            FontWeight="SemiBold"
+                                                            Fill="#f2ff48"
+                                                            StrokeThickness="1"
+                                                            Text="{Binding FriendlyName}"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Right"
+                                                            Margin="15,0,15,0"
+                                                            Grid.Row="2" />
+                                </StackPanel>
+                            </StackPanel>
+
+
+
+
+
+
+                        </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

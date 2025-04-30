@@ -80,7 +80,31 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(SentOutCasesViewModel));
         }
     }
+    
+    private ImortHistoryNotifications? imortHistoryNotificationsWindow = new();
+    public ImortHistoryNotifications ImortHistoryNotificationsWindow
+    {
+        get => imortHistoryNotificationsWindow!;
+        set
+        {
+            imortHistoryNotificationsWindow = value;
+            RaisePropertyChanged(nameof(ImortHistoryNotificationsWindow));
+        }
+    }
 
+    private double multiplier = 1;
+    public double Multiplier
+    {
+        get => multiplier;
+        set
+        {
+            if (multiplier == value) return;
+            multiplier = value;
+            RaisePropertyChanged(nameof(Multiplier));
+        }
+    }
+
+    
     //private SmartOrderNamesViewModel? smartOrderNamesViewModel;
     //public SmartOrderNamesViewModel SmartOrderNamesViewModel
     //{
@@ -2070,6 +2094,17 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowDigiPrescriptionsCount));
         }
     }
+    
+    private bool cbSettingAnnounceNewlyDesignedOrdersOnScreen = true;
+    public bool CbSettingAnnounceNewlyDesignedOrdersOnScreen
+    {
+        get => cbSettingAnnounceNewlyDesignedOrdersOnScreen;
+        set
+        {
+            cbSettingAnnounceNewlyDesignedOrdersOnScreen = value;
+            RaisePropertyChanged(nameof(CbSettingAnnounceNewlyDesignedOrdersOnScreen));
+        }
+    }
 
     private bool cbSettingShowDigiCasesIn3ShapeTodayCount = true;
     public bool CbSettingShowDigiCasesIn3ShapeTodayCount
@@ -2315,6 +2350,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand CbSettingShowPendingDigiCasesCommand { get; set; }
     public RelayCommand CbSettingIncludePendingDigiCasesInNewlyArrivedCommand { get; set; }
     public RelayCommand CbSettingShowDigiPrescriptionsCountCommand { get; set; }
+    public RelayCommand CbSettingAnnounceNewlyDesignedOrdersOnScreenCommand { get; set; }
     public RelayCommand CbSettingShowDigiCasesIn3ShapeTodayCountCommand { get; set; }
     public RelayCommand CbSettingModuleFolderSubscriptionCommand { get; set; }
     public RelayCommand CbSettingModuleAccountInfosCommand { get; set; }
@@ -2538,6 +2574,7 @@ public class MainViewModel : ObservableObject
         CbSettingIncludePendingDigiCasesInNewlyArrivedCommand = new RelayCommand(o => CbSettingIncludePendingDigiCasesInNewlyArrivedMethod());
         CbSettingShowEmptyPanCountCommand = new RelayCommand(o => CbSettingShowEmptyPanCountMethod());
         CbSettingShowDigiPrescriptionsCountCommand = new RelayCommand(o => CbSettingShowDigiPrescriptionsCountMethod());
+        CbSettingAnnounceNewlyDesignedOrdersOnScreenCommand = new RelayCommand(o => CbSettingAnnounceNewlyDesignedOrdersOnScreenMethod());
         CbSettingShowDigiCasesIn3ShapeTodayCountCommand = new RelayCommand(o => CbSettingShowDigiCasesIn3ShapeTodayCountMethod());
         CbSettingModuleFolderSubscriptionCommand = new RelayCommand(o => CbSettingModuleFolderSubscriptionMethod());
         CbSettingModuleAccountInfosCommand = new RelayCommand(o => CbSettingModuleAccountInfosMethod());
@@ -4953,6 +4990,11 @@ public class MainViewModel : ObservableObject
     {
         WriteLocalSetting("ShowDigiPrescriptionsCount", CbSettingShowDigiPrescriptionsCount.ToString());
     }
+    
+    private void CbSettingAnnounceNewlyDesignedOrdersOnScreenMethod()
+    {
+        WriteLocalSetting("AnnounceNewlyDesignedOrdersOnScreen", CbSettingAnnounceNewlyDesignedOrdersOnScreen.ToString());
+    }
 
     private void CbSettingShowDigiCasesIn3ShapeTodayCountMethod()
     {
@@ -5378,25 +5420,32 @@ public class MainViewModel : ObservableObject
 
     private async void ListCases_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
     {
-        _MainWindow.listView3ShapeOrders.ItemsSource = Current3ShapeOrderList;
-        _MainWindow.listView3ShapeOrders.Items.Refresh();
-        _MainWindow.pb3ShapeProgressBar.Value = 0;
-        await Task.Run(() => GroupList());
-
-        // Order count in list
-        OrderCountText = Current3ShapeOrderList.Count == 1 ? Current3ShapeOrderList.Count + " order" : Current3ShapeOrderList.Count + " orders";
-        OrderCount = Current3ShapeOrderList.Count;
-        AllowToShowProgressBar = true;
-
-
-        if (OrderBeingWatched.Length > 0)
+        try
         {
-            ThreeShapeObject = Current3ShapeOrderList.FirstOrDefault(x => x.IntOrderID == OrderBeingWatched)!;
-            //if (!IsTheSame(orderDetailsWindow.OrderObject, ThreeShapeObject))
-            //{
-            //    orderDetailsWindow.OrderObject = ThreeShapeObject;
-            //    orderDetailsWindow.UpdateForm();
-            //}
+
+            _MainWindow.listView3ShapeOrders.ItemsSource = Current3ShapeOrderList;
+            _MainWindow.listView3ShapeOrders.Items.Refresh();
+            _MainWindow.pb3ShapeProgressBar.Value = 0;
+            await Task.Run(() => GroupList());
+
+            // Order count in list
+            OrderCountText = Current3ShapeOrderList.Count == 1 ? Current3ShapeOrderList.Count + " order" : Current3ShapeOrderList.Count + " orders";
+            OrderCount = Current3ShapeOrderList.Count;
+            AllowToShowProgressBar = true;
+
+
+            if (OrderBeingWatched.Length > 0)
+            {
+                ThreeShapeObject = Current3ShapeOrderList.FirstOrDefault(x => x.IntOrderID == OrderBeingWatched)!;
+                //if (!IsTheSame(orderDetailsWindow.OrderObject, ThreeShapeObject))
+                //{
+                //    orderDetailsWindow.OrderObject = ThreeShapeObject;
+                //    orderDetailsWindow.UpdateForm();
+                //}
+            }
+        }
+        catch (Exception ex)
+        {
         }
     }
 
@@ -7106,7 +7155,7 @@ public class MainViewModel : ObservableObject
 
     private void BwBackgroundTasks_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
     {
-
+        
     }
 
     private async void BwBackgroundTasks_DoWork(object? sender, DoWorkEventArgs e)
@@ -7146,8 +7195,10 @@ public class MainViewModel : ObservableObject
         {
             Application.Current.Dispatcher.Invoke(new Action(async () =>
             {
-                ImportedCasesList = await GetBackImportHistory();
+                ImportedCasesList = await GetBackImportHistory(Multiplier);
                 ExportedCasesList = await GetBackExportHistory();
+                if (CbSettingAnnounceNewlyDesignedOrdersOnScreen)
+                    ImportHistoryAnnouncementsViewModel.Instance.ImportHistoryList = ImportedCasesList;
             }));
         }
 
@@ -7359,6 +7410,7 @@ public class MainViewModel : ObservableObject
             _ = bool.TryParse(ReadLocalSetting("PmOpenUpPrescriptions"), out bool pmOpenUpPrescriptions);
             _ = bool.TryParse(ReadLocalSetting("ShowPendingDigiCases"), out bool showPendingDigiCases);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiPrescriptionsCount"), out bool showDigiPrescriptionsCount);
+            _ = bool.TryParse(ReadLocalSetting("AnnounceNewlyDesignedOrdersOnScreen"), out bool announceNewlyDesignedOrdersOnScreen);
             _ = bool.TryParse(ReadLocalSetting("ShowDigiCasesIn3ShapeTodayCount"), out bool showDigiCasesIn3ShapeTodayCount);
 
             _ = bool.TryParse(ReadLocalSetting("ModuleFolderSubscription"), out bool moduleFolderSubscription);
@@ -7392,6 +7444,7 @@ public class MainViewModel : ObservableObject
             CbSettingShowPendingDigiCases = showPendingDigiCases;
             CbSettingIncludePendingDigiCasesInNewlyArrived = includePendingDigiCases;
             CbSettingShowDigiPrescriptionsCount = showDigiPrescriptionsCount;
+            CbSettingAnnounceNewlyDesignedOrdersOnScreen = announceNewlyDesignedOrdersOnScreen;
             CbSettingShowDigiCasesIn3ShapeTodayCount = showDigiCasesIn3ShapeTodayCount;
 
             CbSettingModuleFolderSubscription = moduleFolderSubscription;
@@ -7504,6 +7557,17 @@ public class MainViewModel : ObservableObject
             if (StartAppMinimized)
                 MainWindow.Instance.WindowState = WindowState.Minimized;
 
+
+            
+            if (CbSettingAnnounceNewlyDesignedOrdersOnScreen)
+            {
+                ImortHistoryNotificationsWindow?.Show();
+
+                double sHeight = SystemParameters.WorkArea.Height;
+                Multiplier = sHeight / 1000;
+
+                ImportHistoryAnnouncementsViewModel.Instance.Multiplier = Multiplier;
+            }
 
             await ReportClientLoginToDatabase(true);
         }));

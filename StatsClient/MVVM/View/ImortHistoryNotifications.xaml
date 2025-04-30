@@ -1,0 +1,51 @@
+﻿<Window x:Class="StatsClient.MVVM.View.ImortHistoryNotifications"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StatsClient.MVVM.View"
+        xmlns:core="clr-namespace:StatsClient.MVVM.Core"
+        xmlns:viewmodel="clr-namespace:StatsClient.MVVM.ViewModel"
+        mc:Ignorable="d"
+        Topmost="True"
+        WindowStyle="None"
+        WindowState="Maximized"
+        ShowInTaskbar="False"
+        AllowsTransparency="True"
+        Title="ImortHistoryNotifications"
+        Height="450"
+        Width="800">
+
+    <Window.DataContext>
+        <viewmodel:ImportHistoryAnnouncementsViewModel />
+    </Window.DataContext>
+
+    <Window.Background>
+        <SolidColorBrush Color="Red"
+                         Opacity="0.00"
+                         d:Opacity="0.25" />
+    </Window.Background>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/LvItemModern.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="15,15,15,25">
+
+        <StackPanel HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+            <ListView MinWidth="400"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      VerticalAlignment="Bottom"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ItemsSource="{Binding ImportHistoryList}"
+                      ItemContainerStyle="{StaticResource LvImportHistoryAnnouncement}" />
+
+        </StackPanel>
+    </Grid>
+</Window>

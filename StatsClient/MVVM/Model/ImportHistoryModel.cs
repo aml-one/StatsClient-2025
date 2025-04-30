@@ -11,4 +11,6 @@ public class ImportHistoryModel
     public string? Event { get; set; }
     public string? OrderBy { get; set; }
     public string? Age { get; set; }
+    public double? AgeInSeconds { get; set; } = 100;
+    public double? Multiplier { get; set; }
 }

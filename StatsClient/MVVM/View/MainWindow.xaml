@@ -2543,6 +2543,15 @@
                                                           Style="{StaticResource CircleCheckBox}"
                                                           Command="{Binding CbSettingPanColorCheckWndwIsSnappedCommand}"
                                                           Margin="0,6,5,0" />
+                                                <CheckBox Content="Announce newly designed orders on screen"
+                                                          Foreground="Beige"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingAnnounceNewlyDesignedOrdersOnScreen, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingAnnounceNewlyDesignedOrdersOnScreenCommand}"
+                                                          Margin="0,6,5,0" />
 
                                                 <StackPanel Orientation="Horizontal"
                                                             Margin="6,10,0,0">

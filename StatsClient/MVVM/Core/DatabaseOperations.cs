@@ -42,8 +42,22 @@ public partial class DatabaseOperations
         }
         return "";
     }
+    
+    public static double GetAgeByDateInSeconds(string date)
+    {
+        if (DateTime.TryParse(date, out DateTime lastUpdate))
+        {
+            var diffInSeconds = (DateTime.Now - lastUpdate).TotalSeconds;
+            TimeSpan time = TimeSpan.FromSeconds(diffInSeconds);
 
-    public static async Task<List<ImportHistoryModel>> GetBackImportHistory()
+            double displayTime = Math.Round(time.TotalSeconds);
+
+            return displayTime;
+        }
+        return 100;
+    }
+
+    public static async Task<List<ImportHistoryModel>> GetBackImportHistory(double multiplier = 1)
     {
         List<ImportHistoryModel> importHistory = [];
         try
@@ -64,6 +78,7 @@ public partial class DatabaseOperations
                     ).Any())
                 {
                     string age = GetAgeByDate(reader["DateTime"].ToString()!);
+                    double ageInSeconds = GetAgeByDateInSeconds(reader["DateTime"].ToString()!);
                     importHistory.Add(new ImportHistoryModel
                     {
                         OrderID = reader["OrderID"].ToString(),
@@ -75,6 +90,8 @@ public partial class DatabaseOperations
                         Event = reader["Event"].ToString(),
                         OrderBy = reader["OrderBy"].ToString(),
                         Age = age,
+                        AgeInSeconds = ageInSeconds,
+                        Multiplier = multiplier,
                     });
                 }
             }
