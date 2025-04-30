@@ -2772,12 +2772,13 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Border x:Name="Item"
-                            BorderThickness="1">
+                            BorderThickness="1"
+                            Visibility="{Binding AgeInSeconds, Converter={StaticResource AgeSecondsToCollapsedVisibilityConverter}}">
 
                         <Grid Margin="1,0,1,10">
                             
                             <StackPanel Orientation="Horizontal"
-                                        Visibility="{Binding AgeInSeconds, Converter={StaticResource AgeSecondsToCollapsedVisibilityConverter}}">
+                                        >
 
                                 <core:OutlinedTextBlock Stroke="Black"
                                                         StrokePosition="Outside"
