@@ -7229,6 +7229,9 @@ public class MainViewModel : ObservableObject
                 TotalMemory = Math.Round(await GetTotalMemoryInMiB());
             }
 
+            double sHeight = SystemParameters.WorkArea.Height;
+            Multiplier = sHeight / 1000;
+
             FirstRun = false;
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
