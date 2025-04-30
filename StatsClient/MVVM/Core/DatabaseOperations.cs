@@ -17,6 +17,121 @@ namespace StatsClient.MVVM.Core;
 
 public partial class DatabaseOperations
 {
+
+    public static string GetAgeByDate(string date)
+    {
+        if (DateTime.TryParse(date, out DateTime lastUpdate))
+        {
+            var diffInSeconds = (DateTime.Now - lastUpdate).TotalSeconds;
+            TimeSpan time = TimeSpan.FromSeconds(diffInSeconds);
+
+            double displayTime = Math.Round(time.TotalMinutes);
+
+            if (displayTime == 0)
+                return "Just now";
+            else if (displayTime == 1)
+                return $"{displayTime} minute ago";
+            else if (displayTime < 60)
+                return $"{displayTime} minutes ago";
+            else if (displayTime > 119)
+                return $"{Math.Round(displayTime / 60)}+ hours ago";
+            else if (displayTime >= 70)
+                return $"{Math.Round(displayTime / 60)}+ hour ago";
+            else if (displayTime >= 60)
+                return $"{Math.Round(displayTime / 60)} hour ago";
+        }
+        return "";
+    }
+
+    public static async Task<List<ImportHistoryModel>> GetBackImportHistory()
+    {
+        List<ImportHistoryModel> importHistory = [];
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT * FROM dbo.ImportHistory WHERE OrderBy > '{DateTime.Now:yyyyMMdd}000001' ORDER BY OrderBy DESC";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (!importHistory!.Where(x =>
+                    x.OrderID == reader["OrderID"].ToString() &&
+                    x.ImportTime == reader["ImportTime"].ToString()
+                    ).Any())
+                {
+                    string age = GetAgeByDate(reader["DateTime"].ToString()!);
+                    importHistory.Add(new ImportHistoryModel
+                    {
+                        OrderID = reader["OrderID"].ToString(),
+                        DesignerID = reader["DesignerID"].ToString(),
+                        FriendlyName = reader["FriendlyName"].ToString(),
+                        ImportPath = reader["ImportPath"].ToString(),
+                        DateTime = reader["DateTime"].ToString(),
+                        ImportTime = reader["ImportTime"].ToString(),
+                        Event = reader["Event"].ToString(),
+                        OrderBy = reader["OrderBy"].ToString(),
+                        Age = age,
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[" + ex.LineNumber() + "] (DataBaseOperations)" + ex.Message);
+            return importHistory;
+        }
+
+        return importHistory;
+    }
+    
+    public static async Task<List<ExportHistoryModel>> GetBackExportHistory()
+    {
+        List<ExportHistoryModel> exportHistory = [];
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT * FROM dbo.ExportHistory WHERE OrderBy > '{DateTime.Now:yyyyMMdd}000001' ORDER BY OrderBy DESC";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (!exportHistory!.Where(x =>
+                    x.OrderID == reader["OrderID"].ToString() &&
+                    x.ExportTime == reader["ExportTime"].ToString()
+                    ).Any())
+                {
+                    exportHistory.Add(new ExportHistoryModel
+                    {
+                        OrderID = reader["OrderID"].ToString(),
+                        DesignerID = reader["DesignerID"].ToString(),
+                        FriendlyName = reader["FriendlyName"].ToString(),
+                        ExportPath = reader["ExportPath"].ToString(),
+                        DateTime = reader["DateTime"].ToString(),
+                        ExportTime = reader["ExportTime"].ToString(),
+                        Event = reader["Event"].ToString(),
+                        OrderBy = reader["OrderBy"].ToString(),
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[" + ex.LineNumber() + "] (DataBaseOperations)" + ex.Message);
+            return exportHistory;
+        }
+
+        return exportHistory;
+    }
+
+
     public static async Task<List<DesignerModel>> GetDesignersListAtStartAsync()
     {
         List<DesignerModel> designers = [];

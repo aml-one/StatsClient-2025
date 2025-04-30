@@ -92,7 +92,27 @@ public class MainViewModel : ObservableObject
     //    }
     //}
 
-
+    private List<ImportHistoryModel> importedCasesList = [];
+    public List<ImportHistoryModel> ImportedCasesList
+    {
+        get => importedCasesList;
+        set
+        {
+            importedCasesList = value;
+            RaisePropertyChanged(nameof(ImportedCasesList));
+        }
+    }
+    
+    private List<ExportHistoryModel> exportedCasesList = [];
+    public List<ExportHistoryModel> ExportedCasesList
+    {
+        get => exportedCasesList;
+        set
+        {
+            exportedCasesList = value;
+            RaisePropertyChanged(nameof(ExportedCasesList));
+        }
+    }
 
     private bool startAutoUpdateCuzAppJustStarted = true;
     public bool StartAutoUpdateCuzAppJustStarted
@@ -126,7 +146,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ServerLogCanBeRead));
         }
     }
-    
+
     private bool scrollServerLogToBottom = true;
     public bool ScrollServerLogToBottom
     {
@@ -137,7 +157,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ScrollServerLogToBottom));
         }
     }
-    
+
     private bool serverLogWebViewIsInitialized = false;
     public bool ServerLogWebViewIsInitialized
     {
@@ -7122,6 +7142,15 @@ public class MainViewModel : ObservableObject
         }
 
 
+        if (second % 5 == 0)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(async () =>
+            {
+                ImportedCasesList = await GetBackImportHistory();
+                ExportedCasesList = await GetBackExportHistory();
+            }));
+        }
+
         if (second % 5 == 0 || ServerLogCanBeRead)
         {
             if (ScrollServerLogToBottom && ServerLogWebViewIsInitialized)
@@ -7381,6 +7410,8 @@ public class MainViewModel : ObservableObject
             if (!string.IsNullOrEmpty(srchLimit))
                 SearchLimit = srchLimit;
 
+#if !DEBUG
+
             if (Directory.Exists(TriosInboxFolder))
             {
                 fswTriosFolderWatcher.Path = TriosInboxFolder;
@@ -7391,6 +7422,7 @@ public class MainViewModel : ObservableObject
                 fswTriosFolderWatcher.EnableRaisingEvents = true;
                 CountTriosCases();
             }
+#endif
 
             PendingDigiCasesReplacementName = ReadLocalSetting("PendingDigiCasesReplacementName");
             if (string.IsNullOrEmpty(PendingDigiCasesReplacementName))

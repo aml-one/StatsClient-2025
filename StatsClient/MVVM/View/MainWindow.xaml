@@ -456,7 +456,7 @@
                        Background="Transparent"
                        Panel.ZIndex="10"
                        Height="27"
-                       Margin="190,0,44,0"
+                       Margin="265,0,44,0"
                        VerticalAlignment="Top"
                        PreviewMouseDown="TitleBar_PreviewMouseDown">
                 <StackPanel Orientation="Horizontal"
@@ -2109,42 +2109,7 @@
                             </Grid>
                         </TabItem>
 
-                        <TabItem Header="Server Log"
-                                 IsTabStop="False"
-                                 x:Name="serverLogTab"
-                                 Visibility="{Binding ServerLogCanBeRead, Converter={StaticResource BoolToVisibilityConverter}}"
-                                 d:Visibility="Visible"
-                                 Style="{StaticResource applicationsTabItem}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <StackPanel Height="24"
-                                            Grid.Row="1"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            Opacity="0.85">
 
-                                    <CheckBox Content="Auto scroll with the flow"
-                                              IsChecked="{Binding ScrollServerLogToBottom}"
-                                              d:IsChecked="True"
-                                              Margin="5"
-                                              Cursor="Hand"
-                                              Style="{StaticResource CircleCheckBox}"
-                                              Foreground="Yellow"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Center" />
-                                </StackPanel>
-                                <wv2:WebView2 Source="{Binding ServerLogUrl}"
-                                              Name="webview"
-                                              Cursor="Arrow"
-                                              Panel.ZIndex="99"
-                                              MouseWheel="webview_MouseWheel"
-                                              CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
-                                              DefaultBackgroundColor="Gray" />
-                            </Grid>
-                        </TabItem>
 
                         <TabItem IsTabStop="False"
                                  x:Name="orderIssuesTab"
@@ -2190,7 +2155,128 @@
 
 
 
+                <!--#region SERVER LOG TAB -->
+                <TabItem Header="Server Log"
+                         IsTabStop="False">
+                    <TabControl TabStripPlacement="Left"
+                                BorderThickness="0">
 
+                        <TabItem Header="Import / Export"
+                                 BorderThickness="0"
+                                 IsTabStop="False"
+                                 Style="{StaticResource applicationsTabItem}">
+                            <Grid Background="#63696F">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="2*" />
+                                    <RowDefinition Height="2" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="1*" />
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.Row="0"
+                                        Background="#839C6F"
+                                        BorderBrush="#222"
+                                        BorderThickness="1">
+                                    <TextBlock Text="Imported Orders History"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Right"
+                                               Padding="10,0,20,2"
+                                               FontSize="18" />
+                                </Border>
+
+                                <ListView Background="#637C7F"
+                                          Grid.Row="1"
+                                          BorderThickness="0"
+                                          ItemsSource="{Binding ImportedCasesList}"
+                                          ItemContainerStyle="{StaticResource LvItemImportHistory}"
+                                          AlternationCount="2" />
+
+                                <TextBlock Text="Nothing so far.."
+                                           Opacity="0.65"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Grid.Row="1"
+                                           d:Visibility="Visible"
+                                           Visibility="{Binding ImportedCasesList.Count, Converter={StaticResource ZeroToVisibleConverter}}" />
+
+
+                                <Border Grid.Row="2"
+                                        Background="BlanchedAlmond" 
+                                        
+                                        />
+
+                                <Border Grid.Row="3"
+                                        Background="#934C9F"
+                                            BorderBrush="#222"
+                                            BorderThickness="1">
+                                    <TextBlock Text="Exported Orders History"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Right"
+                                               Padding="10,0,20,2"
+                                               FontSize="18" />
+                                </Border>
+
+                                <ListView Background="#736C7F"
+                                          Grid.Row="4"
+                                          BorderThickness="0"
+                                          ItemsSource="{Binding ExportedCasesList}"
+                                          ItemContainerStyle="{StaticResource LvItemExportHistory}"
+                                          AlternationCount="2" />
+
+                                <TextBlock Text="Nothing here yet"
+                                           Opacity="0.65"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Grid.Row="4" 
+                                           d:Visibility="Visible"
+                                           Visibility="{Binding ExportedCasesList.Count, Converter={StaticResource ZeroToVisibleConverter}}"/>
+
+                            </Grid>
+                        </TabItem>
+
+                        <TabItem Header="Services Log"
+                                 BorderThickness="0"
+                                 IsTabStop="False"
+                                 x:Name="serverLogTab"
+                                 Style="{StaticResource applicationsTabItem}"
+                                 Visibility="{Binding ServerLogCanBeRead, Converter={StaticResource BoolToVisibilityConverter}}"
+                                 d:Visibility="Visible">
+                            <Grid Background="#36494F">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel Height="24"
+                                            Grid.Row="1"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Opacity="0.85">
+
+                                    <CheckBox Content="Auto scroll to new entry"
+                                              IsChecked="{Binding ScrollServerLogToBottom}"
+                                              d:IsChecked="True"
+                                              Margin="5"
+                                              Cursor="Hand"
+                                              Style="{StaticResource CircleCheckBox}"
+                                              Foreground="Yellow"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                                </StackPanel>
+                                <wv2:WebView2 Source="{Binding ServerLogUrl}"
+                                              Name="webview"
+                                              Cursor="Arrow"
+                                              Panel.ZIndex="99"
+                                              MouseWheel="webview_MouseWheel"
+                                              CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
+                                              DefaultBackgroundColor="Gray" />
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+
+
+                </TabItem>
+                <!--#endregion-->
 
 
 
