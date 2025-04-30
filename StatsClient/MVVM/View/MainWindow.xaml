@@ -2178,11 +2178,23 @@
                                         Background="#839C6F"
                                         BorderBrush="#222"
                                         BorderThickness="1">
-                                    <TextBlock Text="Imported Orders History"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Right"
-                                               Padding="10,0,20,2"
-                                               FontSize="18" />
+                                    <DockPanel>
+                                        <CheckBox Content="Announce newly designed orders on screen"
+                                                  Foreground="Beige"
+                                                  VerticalAlignment="Top"
+                                                  HorizontalAlignment="Left"
+                                                  Cursor="Hand"
+                                                  IsChecked="{Binding CbSettingAnnounceNewlyDesignedOrdersOnScreen, Mode=TwoWay}"
+                                                  Style="{StaticResource CircleCheckBox}"
+                                                  Command="{Binding CbSettingAnnounceNewlyDesignedOrdersOnScreenCommand}"
+                                                  Margin="0,6,5,0" />
+
+                                        <TextBlock Text="Imported Orders History"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Right"
+                                                   Padding="10,0,20,2"
+                                                   FontSize="18" />
+                                    </DockPanel>
                                 </Border>
 
                                 <ListView Background="#637C7F"
@@ -2202,14 +2214,12 @@
 
 
                                 <Border Grid.Row="2"
-                                        Background="BlanchedAlmond" 
-                                        
-                                        />
+                                        Background="BlanchedAlmond" />
 
                                 <Border Grid.Row="3"
                                         Background="#934C9F"
-                                            BorderBrush="#222"
-                                            BorderThickness="1">
+                                        BorderBrush="#222"
+                                        BorderThickness="1">
                                     <TextBlock Text="Exported Orders History"
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Right"
@@ -2228,9 +2238,9 @@
                                            Opacity="0.65"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
-                                           Grid.Row="4" 
+                                           Grid.Row="4"
                                            d:Visibility="Visible"
-                                           Visibility="{Binding ExportedCasesList.Count, Converter={StaticResource ZeroToVisibleConverter}}"/>
+                                           Visibility="{Binding ExportedCasesList.Count, Converter={StaticResource ZeroToVisibleConverter}}" />
 
                             </Grid>
                         </TabItem>
@@ -2266,7 +2276,6 @@
                                 <wv2:WebView2 Source="{Binding ServerLogUrl}"
                                               Name="webview"
                                               Cursor="Arrow"
-                                              Panel.ZIndex="99"
                                               MouseWheel="webview_MouseWheel"
                                               CoreWebView2InitializationCompleted="webview_CoreWebView2InitializationCompleted"
                                               DefaultBackgroundColor="Gray" />
@@ -2571,13 +2580,13 @@
                                                     <TextBlock Text=" sec"
                                                                VerticalAlignment="Center" />
 
-                                                    <Button Content=" Send Test Announcement " 
+                                                    <Button Content=" Send Test Announcement "
                                                             Margin="8,0"
-                                                            Command="{Binding SendTestAnnouncementCommand}"/>
-                                                    
-                                                    <Button Content=" Clear Test Announcement " 
+                                                            Command="{Binding SendTestAnnouncementCommand}" />
+
+                                                    <Button Content=" Clear Test Announcement "
                                                             Margin="8,0"
-                                                            Command="{Binding ClearTestAnnouncementCommand}"/>
+                                                            Command="{Binding ClearTestAnnouncementCommand}" />
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal"
                                                             Margin="6,10,0,0">
