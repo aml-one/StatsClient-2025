@@ -7719,11 +7719,8 @@ public class MainViewModel : ObservableObject
             }));
         }
         catch (Exception ex)
-        {
-            if (!ex.Message.Contains("because it is being used by another process", StringComparison.CurrentCultureIgnoreCase))
-                AddDebugLine(ex);
-            
-            if (!ex.Message.Contains("end of central directory record", StringComparison.CurrentCultureIgnoreCase))
+        {   
+            if (ex.Message.Contains("end of central directory record", StringComparison.CurrentCultureIgnoreCase))
             {
                 Application.Current.Dispatcher.Invoke(new Action(async () =>
                 {
@@ -7731,7 +7728,11 @@ public class MainViewModel : ObservableObject
                     SystemSounds.Beep.Play();
                     await BlinkWindow("red");
                 }));
+                return;
             }
+
+            if (!ex.Message.Contains("because it is being used by another process", StringComparison.CurrentCultureIgnoreCase))
+                AddDebugLine(ex);
         }
     }
 
