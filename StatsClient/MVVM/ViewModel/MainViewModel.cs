@@ -7722,6 +7722,13 @@ public class MainViewModel : ObservableObject
         {
             if (!ex.Message.Contains("because it is being used by another process", StringComparison.CurrentCultureIgnoreCase))
                 AddDebugLine(ex);
+            
+            if (!ex.Message.Contains("end of central directory record", StringComparison.CurrentCultureIgnoreCase))
+            {
+                ShowNotificationMessage("iTero Case Download Issue", $"There is a new Itero case downloaded but the file is CORRUPT! Please download it again! Id: {LastIteroZipFileId}", NotificationIcon.Error, false);
+                SystemSounds.Beep.Play();
+                await BlinkWindow("red");
+            }
         }
     }
 
