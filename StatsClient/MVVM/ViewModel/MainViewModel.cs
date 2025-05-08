@@ -4788,6 +4788,12 @@ public class MainViewModel : ObservableObject
                 SystemSounds.Beep.Play();
                 await BlinkWindow("red");
             }
+            else
+            {
+                ShowNotificationMessage("Image was saved!", $"Prescription image successfully saved!", NotificationIcon.Success);
+                
+                await BlinkWindow("yellow");
+            }
         }));
     }
 
