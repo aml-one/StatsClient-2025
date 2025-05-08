@@ -1617,6 +1617,17 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LastUsedPanNumber));
         }
     }
+    
+    private string lastUsedPanNumber_oneBefore = "";
+    public string LastUsedPanNumber_oneBefore
+    {
+        get => lastUsedPanNumber_oneBefore;
+        set
+        {
+            lastUsedPanNumber_oneBefore = value;
+            RaisePropertyChanged(nameof(LastUsedPanNumber_oneBefore));
+        }
+    }
 
     private string nextPanNumberGlobal = "";
     public string NextPanNumberGlobal
@@ -4737,6 +4748,11 @@ public class MainViewModel : ObservableObject
                                 RemovePanNumberFromAvailablePans(NextPanNumber);
 
                                 FillUpEmptyPanNumberPanel();
+
+                                if (PmPanNumberList.Contains(LastUsedPanNumber))
+                                {
+                                    ShowMessageBox("Error", $"Removing number {LastUsedPanNumber}, was unsuccesful!", SMessageBoxButtons.Ok, NotificationIcon.Error, 15, MainWindow.Instance);
+                                }
                             }
                         }
                     }
@@ -4766,9 +4782,11 @@ public class MainViewModel : ObservableObject
             await BlinkWindow("yellow");
 
             // checking if there was a PNG image saved or not
-            if (!File.Exists(FinalFileNameWithPath))
+            if (!File.Exists(FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png"))
             {
                 ShowNotificationMessage("Image was not saved!", $"There was no image saved of this prescription! Please check..", NotificationIcon.Error);
+                SystemSounds.Beep.Play();
+                await BlinkWindow("red");
             }
         }));
     }
