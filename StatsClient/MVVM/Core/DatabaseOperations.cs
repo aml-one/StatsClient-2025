@@ -1840,6 +1840,44 @@ public partial class DatabaseOperations
         }
         return list;
     }
+    
+    public static async Task<List<DuplicatePanNumberOrdersModel>> GetAllPanNrDuplicates()
+    {
+        List<DuplicatePanNumberOrdersModel> list = [];
+        try
+        {
+            string connectionstring = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = @"SELECT * FROM dbo.DuplicatePanNrOrders";
+
+            using SqlConnection connection = new(connectionstring);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new DuplicatePanNumberOrdersModel()
+                {
+                    OrderID_1 = reader["OrderID1"].ToString(),
+                    Created_1 = reader["Created1"].ToString(),
+                    Customer_1 = reader["Customer1"].ToString(),
+                    Patient_FirstName_1 = reader["Patient_FirstName1"].ToString(),
+                    Patient_LastName_1 = reader["Patient_LastName1"].ToString(),
+                    OrderID_2 = reader["OrderID2"].ToString(),
+                    Created_2 = reader["Created2"].ToString(),
+                    Customer_2 = reader["Customer2"].ToString(),
+                    Patient_FirstName_2 = reader["Patient_FirstName2"].ToString(),
+                    Patient_LastName_2 = reader["Patient_LastName2"].ToString(),
+                    PanNr = reader["PanNumber"].ToString()
+                });
+            }
+        }
+        catch
+        {
+
+        }
+        return list;
+    }
 
     public static int GetBackTodayCasesCount()
     {

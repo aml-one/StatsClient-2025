@@ -2124,12 +2124,6 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <Grid>
-                                <TextBlock Text="Nothing here yet.."
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Center"
-                                           Foreground="#999"
-                                           d:Visibility="Visible"
-                                           Visibility="{Binding SentOutIssuesCount, Converter={StaticResource ZeroToCollapsedVisibilityConverter}}" />
                                 <ListView ItemsSource="{Binding OrderIssuesList}"
                                           ItemContainerStyle="{StaticResource LvItemIssues}"
                                           SelectedItem="{Binding SelectedOrderIssue}"
@@ -2144,6 +2138,56 @@
                                         </GridView>
                                     </ListView.View>
                                 </ListView>
+                                <TextBlock Text="Nothing here yet.."
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#999"
+                                           d:Visibility="Visible"
+                                           Visibility="{Binding SentOutIssuesCount, Converter={StaticResource ZeroToCollapsedVisibilityConverter}}" />
+                            </Grid>
+                        </TabItem>
+                        <TabItem IsTabStop="False"
+                                 x:Name="duplicatedPanNrTab"
+                                 Visibility="{Binding PanNrDuplicatesList.Count, Converter={StaticResource ZeroToCollapsedConverter}}"
+                                 d:Visibility="Visible"
+                                 Style="{StaticResource applicationsTabItem}">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Pan Nr Duplicates" />
+                                    <TextBlock Text="{Binding PanNrDuplicatesList.Count, StringFormat='- \{0}'}"
+                                               Margin="4,0,0,0" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
+                                    <Border BorderBrush="#CCC"
+                                            BorderThickness="0,0,0,1"
+                                            Background="#222">
+                                        <TextBlock Text="Possible Duplicate Use of Pan numbers"
+                                                   Padding="5"
+                                                   FontSize="15" />
+                                    </Border>
+
+                                    <ListView ItemsSource="{Binding PanNrDuplicatesList}"
+                                              ItemContainerStyle="{StaticResource LvItemDuplicates}"
+                                              Background="#4C494F"
+                                              BorderThickness="0"
+                                              Grid.Row="1"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden" />
+                                </Grid>
+
+
+                                <TextBlock Text="Nothing here yet.."
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#999"
+                                           d:Visibility="Visible"
+                                           Visibility="{Binding PanNrDuplicatesList.Count, Converter={StaticResource ZeroToCollapsedVisibilityConverter}}" />
                             </Grid>
                         </TabItem>
 
@@ -3432,6 +3476,47 @@
                                    FontSize="8" />
                     </StackPanel>
 
+
+                    <StackPanel VerticalAlignment="Bottom"
+                                HorizontalAlignment="Left"
+                                Margin="5,0,15,0"
+                                Visibility="{Binding PanNrDuplicatesList.Count, Converter={StaticResource ZeroToCollapsedConverter}}"
+                                d:Visibility="Visible">
+                        <TextBlock Text="{Binding PanNrDuplicatesList.Count}"
+                                   d:Text="8008"
+                                   Foreground="IndianRed"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,-6"
+                                   Cursor="Hand"
+                                   FontSize="26">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding SwitchToPanNrDuplicatesTabCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                        </TextBlock>
+
+                        <core:OutlinedTextBlock Stroke="Black"
+                                                StrokePosition="Outside"
+                                                FontSize="26"
+                                                FontWeight="SemiBold"
+                                                Fill="Red"
+                                                StrokeThickness="0.85"
+                                                Text="{Binding PanNrDuplicatesList.Count}"
+                                                HorizontalAlignment="Center"
+                                                Margin="0,0,0,-6"
+                                                Cursor="Hand">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction Command="{Binding SwitchToPanNrDuplicatesTabCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </core:OutlinedTextBlock>
+
+                        <TextBlock Text="Pan Nr Duplicates"
+                                   Foreground="White"
+                                   FontSize="8" />
+                    </StackPanel>
 
                     <StackPanel VerticalAlignment="Bottom"
                                 HorizontalAlignment="Left"

@@ -38,6 +38,7 @@ using System.Windows.Media.Effects;
 using System.Security.Policy;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 
@@ -474,6 +475,20 @@ public class MainViewModel : ObservableObject
                 sentOutIssuesCount = value;
                 RaisePropertyChanged(nameof(SentOutIssuesCount));
                 _ = GetAllSentOutIssues();
+            }
+        }
+    }
+    
+    private int panNrDuplicatesCount = 0;
+    public int PanNrDuplicatesCount
+    {
+        get => panNrDuplicatesCount;
+        set
+        {
+            if (value != PanNrDuplicatesCount)
+            {
+                panNrDuplicatesCount = value;
+                RaisePropertyChanged(nameof(PanNrDuplicatesCount));
             }
         }
     }
@@ -2353,6 +2368,17 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(OrderIssuesList));
         }
     }
+    
+    private List<DuplicatePanNumberOrdersModel> panNrDuplicatesList = [];
+    public List<DuplicatePanNumberOrdersModel> PanNrDuplicatesList
+    {
+        get => panNrDuplicatesList;
+        set
+        {
+            panNrDuplicatesList = value;
+            RaisePropertyChanged(nameof(PanNrDuplicatesList));
+        }
+    }
 
     private SmartOrderNames2Page smartOrderNamesWindow = new();
     public SmartOrderNames2Page SmartOrderNamesWindow
@@ -2461,6 +2487,7 @@ public class MainViewModel : ObservableObject
     public RelayCommand RunNotificationProgressCommand { get; set; }
 
     public RelayCommand SwitchToPrescriptionMakerTabCommand { get; set; }
+    public RelayCommand SwitchToPanNrDuplicatesTabCommand { get; set; }
     public RelayCommand SwitchToOrderIssuesTabCommand { get; set; }
     public RelayCommand SwitchToFolderSubscriptionTabCommand { get; set; }
     public RelayCommand SwitchToPendingDigiCasesTabCommand { get; set; }
@@ -2634,6 +2661,7 @@ public class MainViewModel : ObservableObject
 
         RunNotificationProgressCommand = new RelayCommand(o => BlinkWindow());
         SwitchToPrescriptionMakerTabCommand = new RelayCommand(o => SwitchToPrescriptionMakerTab());
+        SwitchToPanNrDuplicatesTabCommand = new RelayCommand(o => SwitchToPanNrDuplicatesTab());
         SwitchToOrderIssuesTabCommand = new RelayCommand(o => SwitchToOrderIssuesTab());
         SwitchToFolderSubscriptionTabCommand = new RelayCommand(o => SwitchToFolderSubscriptionTab());
         SwitchToDebugMessagesTabCommand = new RelayCommand(o => SwitchToDebugMessagesTab());
@@ -2924,6 +2952,15 @@ public class MainViewModel : ObservableObject
         Application.Current.Dispatcher.Invoke(() =>
         {
             _MainWindow.applicationsTabControl.SelectedItem = _MainWindow.prescriptionMakerTab;
+            _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
+        });
+    }
+    
+    private void SwitchToPanNrDuplicatesTab()
+    {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            _MainWindow.applicationsTabControl.SelectedItem = _MainWindow.duplicatedPanNrTab;
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
         });
     }
@@ -4342,6 +4379,8 @@ public class MainViewModel : ObservableObject
         string NextPanNumber = ReadLocalSetting("LastPanNumber");
         string BaseFile = ReadLocalSetting("BaseFile");
 
+        string FinalFileNameWithPath = "";
+
         Application.Current.Dispatcher.Invoke(new Action(async () =>
         {
             DocumentStreamFinalPrescription = new FileStream(savedPDFCopy, FileMode.OpenOrCreate);
@@ -4426,6 +4465,8 @@ public class MainViewModel : ObservableObject
                                     string photolocation = FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png";
                                     image.Save(photolocation, System.Drawing.Imaging.ImageFormat.Png);
                                     image.Dispose();
+                                    
+                                    FinalFileNameWithPath = photolocation;
 
                                     // if after questionary we choose that the current prescription is the same as the last one, deleting the newly made paper and returning the used pan number as new
                                     if (await Task.Run(() => CheckIfCurrentPrescriptionIsSameAsLastOne(photolocation)))
@@ -4467,6 +4508,8 @@ public class MainViewModel : ObservableObject
                                         image.Save(photolocation, System.Drawing.Imaging.ImageFormat.Png);
                                         image.Dispose();
 
+                                        FinalFileNameWithPath = photolocation;
+
                                         // if after questionary we choose that the current prescription is the same as the last one, deleting the newly made paper and returning the used pan number as new
                                         if (await Task.Run(() => CheckIfCurrentPrescriptionIsSameAsLastOne(photolocation)))
                                         {
@@ -4499,6 +4542,9 @@ public class MainViewModel : ObservableObject
                                             string photolocation = FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png";
                                             image.Save(photolocation, System.Drawing.Imaging.ImageFormat.Png);
                                             image.Dispose();
+
+
+                                            FinalFileNameWithPath = photolocation;
 
                                             // if after questionary we choose that the current prescription is the same as the last one, deleting the newly made paper and returning the used pan number as new
                                             if (await Task.Run(() => CheckIfCurrentPrescriptionIsSameAsLastOne(photolocation)))
@@ -4718,6 +4764,12 @@ public class MainViewModel : ObservableObject
 
             SystemSounds.Beep.Play();
             await BlinkWindow("yellow");
+
+            // checking if there was a PNG image saved or not
+            if (!File.Exists(FinalFileNameWithPath))
+            {
+                ShowNotificationMessage("Image was not saved!", $"There was no image saved of this prescription! Please check..", NotificationIcon.Error);
+            }
         }));
     }
 
@@ -5332,6 +5384,12 @@ public class MainViewModel : ObservableObject
     private async void UpdateOrderIssuesList()
     {
         OrderIssuesList = await GetAllSentOutIssues();
+    }
+    
+    
+    private async void UpdatePanNrDuplicatesList()
+    {
+        PanNrDuplicatesList = await GetAllPanNrDuplicates();
     }
 
 
@@ -7293,6 +7351,7 @@ public class MainViewModel : ObservableObject
             {
                 BuildingUpDates();
                 UpdateOrderIssuesList();
+                UpdatePanNrDuplicatesList();
 
                 TotalMemoryInGiB = await GetTotalMemoryInGiB();
                 TotalMemory = Math.Round(await GetTotalMemoryInMiB());
@@ -7387,6 +7446,7 @@ public class MainViewModel : ObservableObject
         if (second % 59 == 1)
         {
             UpdateOrderIssuesList();
+            UpdatePanNrDuplicatesList();
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
