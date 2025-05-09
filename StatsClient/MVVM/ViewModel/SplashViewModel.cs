@@ -124,6 +124,38 @@ public class SplashViewModel : ObservableObject
 
         WindowPosResetText = Visibility.Visible;
     }
+    
+    private async Task CheckSavedWindowPosition()
+    {
+        _ = double.TryParse(ReadLocalSetting("WindowTop"), out double WindowTop);
+        _ = double.TryParse(ReadLocalSetting("WindowLeft"), out double WindowLeft);
+
+        _ = double.TryParse(ReadLocalSetting("WindowWidth"), out double WindowWidth);
+        _ = double.TryParse(ReadLocalSetting("WindowHeight"), out double WindowHeight);
+
+        double screenWidth = SystemParameters.WorkArea.Width;
+        double screenHeight = SystemParameters.WorkArea.Height;
+
+        if (WindowTop < 0 ||
+            WindowTop > screenHeight ||
+            WindowLeft < 0 ||
+            WindowLeft > screenWidth)
+        {
+            WriteLocalSetting("WindowTop", "5");
+            WriteLocalSetting("WindowLeft", "5");
+            WindowPosResetText = Visibility.Visible;
+        }
+         
+        if (WindowWidth < 1120 || WindowWidth > screenWidth)
+            WriteLocalSetting("WindowWidth", "1120");
+        
+        if (WindowHeight < 550 ||WindowHeight > screenHeight)
+            WriteLocalSetting("WindowHeight", "550");
+
+        await Task.Delay(10);
+    }
+
+
 
     private async Task SetAppVersion()
     {
@@ -207,7 +239,7 @@ public class SplashViewModel : ObservableObject
         AfterServerConnectionChecked();
     }
 
-    private void AfterServerConnectionChecked()
+    private async void AfterServerConnectionChecked()
     {
         if (!isEverythingOkay)
         {
@@ -224,9 +256,12 @@ public class SplashViewModel : ObservableObject
         }
         else
         {
+            await CheckSavedWindowPosition();
+
             mainWindow = new();
             mainWindow.Show();
             mainWindow.Hide();
+
 
             MainViewModel.StartInitialTasks();
         }
