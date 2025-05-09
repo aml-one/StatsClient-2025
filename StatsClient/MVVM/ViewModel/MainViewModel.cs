@@ -2388,6 +2388,24 @@ public class MainViewModel : ObservableObject
         {
             panNrDuplicatesList = value;
             RaisePropertyChanged(nameof(PanNrDuplicatesList));
+
+            if (PanNrDuplicatesList.Count > PanNrDuplicatesCount)
+            {
+                ShowWarningOfNewDuplicatedPanNumberUse();
+            }
+
+            PanNrDuplicatesCount = PanNrDuplicatesList.Count;
+        }
+    }
+    
+    private string panNrDuplicatesFontColor = "Red";
+    public string PanNrDuplicatesFontColor
+    {
+        get => panNrDuplicatesFontColor;
+        set
+        {
+            panNrDuplicatesFontColor = value;
+            RaisePropertyChanged(nameof(PanNrDuplicatesFontColor));
         }
     }
 
@@ -2546,7 +2564,7 @@ public class MainViewModel : ObservableObject
         ClickCommand = new RelayCommand(o => TestCommandMethod(o));
 
         GeneralTimer.Tick += GeneralTimer_Tick;
-        GeneralTimer.Interval = new TimeSpan(0, 0, 1);
+        GeneralTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
         GeneralTimer.Start();
 
         listUpdateTimer.Tick += ListUpdateTimer_Tick;
@@ -4997,7 +5015,13 @@ public class MainViewModel : ObservableObject
         //if (hours > 12)
         //    _ = 12;
 
-
+        if (PanNrDuplicatesList.Count > 0)
+        {
+            if (PanNrDuplicatesFontColor == "Red")
+                PanNrDuplicatesFontColor = "Yellow";
+            else
+                PanNrDuplicatesFontColor = "Red";
+        }
 
         // Run background tasks
         if (!bwBackgroundTasks.IsBusy && AppIsFullyLoaded)
@@ -5415,6 +5439,26 @@ public class MainViewModel : ObservableObject
     {
         PanNrDuplicatesList = await GetAllPanNrDuplicates();
     }
+
+    
+    
+    private void ShowWarningOfNewDuplicatedPanNumberUse()
+    {
+        Application.Current.Dispatcher.Invoke(new Action(async () =>
+        {
+            await BlinkWindow("red");
+            ShowNotificationMessage("Duplicated Pan Number found", $"Possible duplicate use of pan number found!", NotificationIcon.Warning);
+            ShowMessageBox("Duplicated Pan Number found", "Possible duplicate use of pan number found!", SMessageBoxButtons.Close, NotificationIcon.Warning, 300, _MainWindow);
+
+            var item = new System.Windows.Forms.NotifyIcon()
+            {
+                Visible = true,
+                Icon = System.Drawing.SystemIcons.Warning
+            };
+            item.ShowBalloonTip(40000, "", $"Possible duplicate use of pan number found!", System.Windows.Forms.ToolTipIcon.Warning);
+        }));
+    }
+
 
 
     private void ItemClicked(object obj)

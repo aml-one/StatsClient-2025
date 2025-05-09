@@ -2844,7 +2844,7 @@
                         <Grid Margin="1,0,1,2">
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="110" />
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition />
@@ -2859,13 +2859,14 @@
 
                             <core:OutlinedTextBlock Stroke="Black"
                                                     StrokePosition="Outside"
-                                                    FontSize="24"
+                                                    FontSize="28"
                                                     FontWeight="SemiBold"
                                                     Fill="#f25f08"
                                                     StrokeThickness="1"
                                                     Text="{Binding PanNr}"
-                                                    VerticalAlignment="Center"
+                                                    VerticalAlignment="Top"
                                                     HorizontalAlignment="Center"
+                                                    Margin="0,-5,0,0"
                                                     Grid.Row="0"
                                                     Grid.Column="0"
                                                     Grid.RowSpan="2" />
@@ -2875,17 +2876,13 @@
                                         Grid.Row="0">
                                 <TextBlock Text="Order 1:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#42ff48"
-                                                        StrokeThickness="1"
-                                                        Text="{Binding OrderID_1}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="5,0,15,0"
-                                                        />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#115500"
+                                           Text="{Binding OrderID_1}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,0,15,0" />
                             </StackPanel>
 
 
@@ -2894,17 +2891,13 @@
                                         Grid.Row="1">
                                 <TextBlock Text="Order 2:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#F2ff58"
-                                                        StrokeThickness="1"
-                                                        Text="{Binding OrderID_2}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="5,0,15,0"
-                                                        />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#551000"
+                                           Text="{Binding OrderID_2}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,0,15,0" />
                             </StackPanel>
 
 
@@ -2914,16 +2907,13 @@
                                         Grid.Row="0">
                                 <TextBlock Text="Customer:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#629f98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Customer_1}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="5,0,15,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#115500"
+                                           Text="{Binding Customer_1}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,0,15,0" />
 
                             </StackPanel>
 
@@ -2932,16 +2922,13 @@
                                         Grid.Row="1">
                                 <TextBlock Text="Customer:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#F2ff98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Customer_2}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="5,0,15,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#551000"
+                                           Text="{Binding Customer_2}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,0,15,0" />
                             </StackPanel>
 
 
@@ -2951,27 +2938,21 @@
                                         Grid.Row="0">
                                 <TextBlock Text="Pt:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#629f98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Patient_FirstName_1}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="5,0,10,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#115500"
+                                           Text="{Binding Patient_FirstName_1}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,0,10,0" />
 
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#629f98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Patient_LastName_1}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="0,0,15,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#115500"
+                                           Text="{Binding Patient_LastName_1}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="0,0,15,0" />
                             </StackPanel>
 
 
@@ -2982,27 +2963,21 @@
                                         Grid.Row="1">
                                 <TextBlock Text="Pt:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#F2ff98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Patient_FirstName_2}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="5,0,10,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#551000"
+                                           Text="{Binding Patient_FirstName_2}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,0,10,0" />
 
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#F2ff98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Patient_LastName_2}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="0,0,15,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#551000"
+                                           Text="{Binding Patient_LastName_2}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="0,0,15,0" />
                             </StackPanel>
 
 
@@ -3012,16 +2987,13 @@
                                         HorizontalAlignment="Right">
                                 <TextBlock Text="Created:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#629f98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Created_1}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Right"
-                                                        Margin="5,0,15,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#115500"
+                                           Text="{Binding Created_1}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Right"
+                                           Margin="5,0,15,0" />
                             </StackPanel>
 
 
@@ -3031,16 +3003,13 @@
                                         HorizontalAlignment="Right">
                                 <TextBlock Text="Created:"
                                            VerticalAlignment="Center" />
-                                <core:OutlinedTextBlock Stroke="Black"
-                                                        StrokePosition="Outside"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Fill="#F2ff98"
-                                                        StrokeThickness="0.85"
-                                                        Text="{Binding Created_2}"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Right"
-                                                        Margin="5,0,15,0" />
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#551000"
+                                           Text="{Binding Created_2}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Right"
+                                           Margin="5,0,15,0" />
                             </StackPanel>
 
 

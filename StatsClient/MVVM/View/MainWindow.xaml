@@ -2178,7 +2178,7 @@
                                               Background="#4C494F"
                                               BorderThickness="0"
                                               Grid.Row="1"
-                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden" />
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto" />
                                 </Grid>
 
 
@@ -3482,25 +3482,12 @@
                                 Margin="5,0,15,0"
                                 Visibility="{Binding PanNrDuplicatesList.Count, Converter={StaticResource ZeroToCollapsedConverter}}"
                                 d:Visibility="Visible">
-                        <TextBlock Text="{Binding PanNrDuplicatesList.Count}"
-                                   d:Text="8008"
-                                   Foreground="IndianRed"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,-6"
-                                   Cursor="Hand"
-                                   FontSize="26">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseDown">
-                                        <i:InvokeCommandAction Command="{Binding SwitchToPanNrDuplicatesTabCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                        </TextBlock>
-
+                        
                         <core:OutlinedTextBlock Stroke="Black"
                                                 StrokePosition="Outside"
                                                 FontSize="26"
                                                 FontWeight="SemiBold"
-                                                Fill="Red"
+                                                Fill="{Binding PanNrDuplicatesFontColor}"
                                                 StrokeThickness="0.85"
                                                 Text="{Binding PanNrDuplicatesList.Count}"
                                                 HorizontalAlignment="Center"
