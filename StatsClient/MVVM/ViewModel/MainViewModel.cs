@@ -94,6 +94,17 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ImortHistoryNotificationsWindow));
         }
     }
+    
+    private AvailablePanNumberNotifications? availablePanNumberNotificationsWindow = new();
+    public AvailablePanNumberNotifications AvailablePanNumberNotificationsWindow
+    {
+        get => availablePanNumberNotificationsWindow!;
+        set
+        {
+            availablePanNumberNotificationsWindow = value;
+            RaisePropertyChanged(nameof(AvailablePanNumberNotificationsWindow));
+        }
+    }
 
     private double multiplier = 1;
     public double Multiplier
@@ -2079,6 +2090,17 @@ public class MainViewModel : ObservableObject
         }
     }
 
+    private bool cbSettingShowAvailablePanCount = false;
+    public bool CbSettingShowAvailablePanCount
+    {
+        get => cbSettingShowAvailablePanCount;
+        set
+        {
+            cbSettingShowAvailablePanCount = value;
+            RaisePropertyChanged(nameof(CbSettingShowAvailablePanCount));
+        }
+    }
+    
     private bool cbSettingPanColorCheckWndwIsSnapped = false;
     public bool CbSettingPanColorCheckWndwIsSnapped
     {
@@ -2428,6 +2450,7 @@ public class MainViewModel : ObservableObject
 
     #region Settings Tab RelayCommands
     public RelayCommand CbSettingGlassyEffectCommand { get; set; }
+    public RelayCommand CbSettingShowAvailablePanCountCommand { get; set; }
     public RelayCommand CbSettingPanColorCheckWndwIsSnappedCommand { get; set; }
     public RelayCommand CbSettingStartAppMinimizedCommand { get; set; }
     //public RelayCommand CbSettingShowBottomInfoBarCommand { get; set; }
@@ -2658,6 +2681,7 @@ public class MainViewModel : ObservableObject
         #endregion Folder Subscription RelayCommands
 
         CbSettingGlassyEffectCommand = new RelayCommand(o => CbSettingGlassyEffectMethod());
+        CbSettingShowAvailablePanCountCommand = new RelayCommand(o => CbSettingShowAvailablePanCountMethod());
         CbSettingPanColorCheckWndwIsSnappedCommand = new RelayCommand(o => CbSettingPanColorCheckWndwIsSnappedMethod());
         CbSettingStartAppMinimizedCommand = new RelayCommand(o => CbSettingStartAppMinimizedMethod());
         //CbSettingShowBottomInfoBarCommand = new RelayCommand(o => CbSettingShowBottomInfoBarMethod());
@@ -5063,6 +5087,24 @@ public class MainViewModel : ObservableObject
     private void CbSettingGlassyEffectMethod()
     {
         WriteLocalSetting("GlassyEffect", CbSettingGlassyEffect.ToString());
+    }
+    
+    private void CbSettingShowAvailablePanCountMethod()
+    {
+        WriteLocalSetting("ShowAvailablePanCount", CbSettingShowAvailablePanCount.ToString());
+        if (CbSettingShowAvailablePanCount)
+        {
+            TurnOnNotificationSreeenForAvailablePanNumberCount();
+        }
+        else
+        {
+            AvailablePanNumberNotificationsWindow?.Hide();
+        }
+    }
+
+    private void TurnOnNotificationSreeenForAvailablePanNumberCount()
+    {
+        AvailablePanNumberNotificationsWindow?.Show();
     }
 
     private void CbSettingPanColorCheckWndwIsSnappedMethod()
@@ -7598,6 +7640,7 @@ public class MainViewModel : ObservableObject
             //ServerFriendlyNameHelper = DatabaseOperations.GetServerName();
 
             _ = bool.TryParse(ReadLocalSetting("GlassyEffect"), out bool GlassyEffect);
+            _ = bool.TryParse(ReadLocalSetting("ShowAvailablePanCount"), out bool ShowAvailablePanCount);
             _ = bool.TryParse(ReadLocalSetting("PanColorCheckWndwIsSnapped"), out bool PanColorCheckWndwIsSnapped);
             _ = bool.TryParse(ReadLocalSetting("StartAppMinimized"), out bool StartAppMinimized);
             //_ = bool.TryParse(ReadLocalSetting("ShowBottomInfoBar"), out bool showBottomInfoBar);
@@ -7629,6 +7672,10 @@ public class MainViewModel : ObservableObject
                 CbSettingIncludePendingDigiCasesInNewlyArrived = true;
 
             CbSettingGlassyEffect = GlassyEffect;
+            CbSettingShowAvailablePanCount = ShowAvailablePanCount;
+            if (CbSettingShowAvailablePanCount)
+                TurnOnNotificationSreeenForAvailablePanNumberCount();
+            
             CbSettingPanColorCheckWndwIsSnapped = PanColorCheckWndwIsSnapped;
             if (MainWindow.Instance is not null)
                 MainWindow.Instance.PancolorCheckWindowIsSnapped = PanColorCheckWndwIsSnapped;
@@ -7771,6 +7818,11 @@ public class MainViewModel : ObservableObject
                 Multiplier = sHeight / 1000;
 
                 ImportHistoryAnnouncementsViewModel.Instance.Multiplier = Multiplier;
+            }
+
+            if (CbSettingShowAvailablePanCount)
+            {
+                AvailablePanNumberNotificationsWindow?.Show();
             }
 
             await ReportClientLoginToDatabase(true);

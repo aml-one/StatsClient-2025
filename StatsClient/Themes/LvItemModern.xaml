@@ -2763,7 +2763,7 @@
         </Setter>
     </Style>
 
-    <!-- -->
+    <!-- LvImportHistoryAnnouncement -->
     <Style TargetType="ListViewItem"
            x:Key="LvImportHistoryAnnouncement">
         <Setter Property="Background"
@@ -2815,6 +2815,82 @@
                                                             Grid.Row="2" />
                                 </StackPanel>
                             </StackPanel>
+
+
+
+
+
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- LvAvailablePanNumberCountList -->
+    <Style TargetType="ListViewItem"
+           x:Key="LvAvailablePanNumberCountList">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="Item"
+                            BorderThickness="1">
+
+                        <Grid Margin="1,0,1,5">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+
+                            
+
+                            <core:OutlinedTextBlock Stroke="Black"
+                                                    StrokePosition="Outside"
+                                                    FontSize="{Binding NumberFontSize}"
+                                                    FontWeight="SemiBold"
+                                                    Fill="#42ff48"
+                                                    StrokeThickness="1"
+                                                    Text="{Binding Count}"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="15,0,15,0"
+                                                    Grid.Row="1" />
+
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,-30,0,0"
+                                        Grid.Row="2">
+
+                                <core:OutlinedTextBlock Stroke="Black"
+                                                        StrokePosition="Outside"
+                                                        FontSize="{Binding NamesFontSize}"
+                                                        FontWeight="SemiBold"
+                                                        Fill="#f2ff48"
+                                                        StrokeThickness="1"
+                                                        Text="{Binding FriendlyName}"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="15,0,15,0"
+                                                        Grid.Row="2" />
+                                <core:OutlinedTextBlock Stroke="Black"
+                                                        StrokePosition="Outside"
+                                                        FontSize="{Binding NamesFontSize}"
+                                                        FontWeight="SemiBold"
+                                                        Fill="#529f68"
+                                                        StrokeThickness="1"
+                                                        Text="{Binding ComputerName, StringFormat='[{0}]'}"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="5,0,15,0" />
+                            </StackPanel>
+
+
 
 
 

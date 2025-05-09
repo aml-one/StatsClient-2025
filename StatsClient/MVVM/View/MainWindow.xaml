@@ -2832,6 +2832,16 @@
                                                           Style="{StaticResource CircleCheckBox}"
                                                           Command="{Binding CbSettingShowDigiCasesIn3ShapeTodayCountCommand}"
                                                           Margin="0,6,5,0" />
+                                                
+                                                <CheckBox Content="Show available pan counts on screen"
+                                                          Foreground="Beige"
+                                                          VerticalAlignment="Top"
+                                                          HorizontalAlignment="Left"
+                                                          Cursor="Hand"
+                                                          IsChecked="{Binding CbSettingShowAvailablePanCount, Mode=TwoWay}"
+                                                          Style="{StaticResource CircleCheckBox}"
+                                                          Command="{Binding CbSettingShowAvailablePanCountCommand}"
+                                                          Margin="0,6,5,0" />
 
                                             </StackPanel>
 
@@ -3482,7 +3492,15 @@
                                 Margin="5,0,15,0"
                                 Visibility="{Binding PanNrDuplicatesList.Count, Converter={StaticResource ZeroToCollapsedConverter}}"
                                 d:Visibility="Visible">
-                        
+
+                        <d:TextBlock FontSize="26"
+                                     FontWeight="SemiBold"
+                                     d:Text="3"
+                                     Foreground="Red"
+                                     HorizontalAlignment="Center"
+                                     Margin="0,0,0,-6"
+                                     Cursor="Hand" />
+
                         <core:OutlinedTextBlock Stroke="Black"
                                                 StrokePosition="Outside"
                                                 FontSize="26"

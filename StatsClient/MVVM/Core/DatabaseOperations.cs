@@ -18,6 +18,45 @@ namespace StatsClient.MVVM.Core;
 public partial class DatabaseOperations
 {
 
+    public static async Task<List<AvailablePanCountModel>> GetBackAllAvailablePanNumberListCount(double NumberFontSize, double TitleFontSize, double NamesFontSize)
+    {
+        List<AvailablePanCountModel> list = [];
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT Count([Owner]), [Owner] FROM dbo.PMPanNumbers GROUP BY [Owner]";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                if (!list!.Where(x => x.ComputerName == reader["Owner"].ToString()).Any())
+                {
+                    if (int.TryParse(reader[0].ToString(), out int count))
+                        list.Add(new AvailablePanCountModel
+                        {
+                            Count = count,
+                            ComputerName = reader["Owner"].ToString(),
+                            FriendlyName = ReadComputerName(reader["Owner"].ToString()!),
+                            NumberFontSize = NumberFontSize,
+                            TitleFontSize = TitleFontSize,
+                            NamesFontSize = NamesFontSize,
+                        });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[" + ex.LineNumber() + "] (DataBaseOperations)" + ex.Message);
+            return list;
+        }
+
+        return list;
+    }
+
     public static string GetAgeByDate(string date)
     {
         if (DateTime.TryParse(date, out DateTime lastUpdate))
