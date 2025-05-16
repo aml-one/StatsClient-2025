@@ -39,6 +39,7 @@ using System.Security.Policy;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq;
 
 
 
@@ -94,7 +95,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ImortHistoryNotificationsWindow));
         }
     }
-    
+
     private AvailablePanNumberNotifications? availablePanNumberNotificationsWindow = new();
     public AvailablePanNumberNotifications AvailablePanNumberNotificationsWindow
     {
@@ -140,7 +141,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(ImportedCasesList));
         }
     }
-    
+
     private List<ImportHistoryModel> testImportHistoryList = [];
     public List<ImportHistoryModel> TestImportHistoryList
     {
@@ -489,7 +490,7 @@ public class MainViewModel : ObservableObject
             }
         }
     }
-    
+
     private int panNrDuplicatesCount = 0;
     public int PanNrDuplicatesCount
     {
@@ -969,6 +970,7 @@ public class MainViewModel : ObservableObject
                 fsNotificationTimer.Start();
         }
     }
+
 
     private string fsCustomNumber = "";
     public string FsCustomNumber
@@ -1583,7 +1585,18 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PrescriptionInconsistencys));
         }
     }
-    
+
+    private List<InconsistencyModel> ignoredPrescriptionInconsistencys = [];
+    public List<InconsistencyModel> IgnoredPrescriptionInconsistencys
+    {
+        get => ignoredPrescriptionInconsistencys;
+        set
+        {
+            ignoredPrescriptionInconsistencys = value;
+            RaisePropertyChanged(nameof(IgnoredPrescriptionInconsistencys));
+        }
+    }
+
     private List<InconsistencyModel> prescriptionWithNoInconsistencys = [];
     public List<InconsistencyModel> PrescriptionWithNoInconsistencys
     {
@@ -1594,7 +1607,29 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(PrescriptionWithNoInconsistencys));
         }
     }
-    
+
+    private bool inconsistencyPanelShows = false;
+    public bool InconsistencyPanelShows
+    {
+        get => inconsistencyPanelShows;
+        set
+        {
+            inconsistencyPanelShows = value;
+            RaisePropertyChanged(nameof(InconsistencyPanelShows));
+        }
+    }
+
+    private string ignoreInconsistencyOrderID = "";
+    public string IgnoreInconsistencyOrderID
+    {
+        get => ignoreInconsistencyOrderID;
+        set
+        {
+            ignoreInconsistencyOrderID = value;
+            RaisePropertyChanged(nameof(IgnoreInconsistencyOrderID));
+        }
+    }
+
     private double pmLastPrescriptionSize = 0;
     public double PmLastPrescriptionSize
     {
@@ -1650,7 +1685,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(LastUsedPanNumber));
         }
     }
-    
+
     private string lastUsedPanNumber_oneBefore = "";
     public string LastUsedPanNumber_oneBefore
     {
@@ -2122,7 +2157,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(CbSettingShowAvailablePanCount));
         }
     }
-    
+
     private bool cbSettingPanColorCheckWndwIsSnapped = false;
     public bool CbSettingPanColorCheckWndwIsSnapped
     {
@@ -2423,7 +2458,7 @@ public class MainViewModel : ObservableObject
             RaisePropertyChanged(nameof(OrderIssuesList));
         }
     }
-    
+
     private List<DuplicatePanNumberOrdersModel> panNrDuplicatesList = [];
     public List<DuplicatePanNumberOrdersModel> PanNrDuplicatesList
     {
@@ -2441,7 +2476,7 @@ public class MainViewModel : ObservableObject
             PanNrDuplicatesCount = PanNrDuplicatesList.Count;
         }
     }
-    
+
     private string panNrDuplicatesFontColor = "Red";
     public string PanNrDuplicatesFontColor
     {
@@ -2541,6 +2576,9 @@ public class MainViewModel : ObservableObject
     public RelayCommand GrabAPanNumberCommand { get; set; }
     public RelayCommand ClickOnPanNumberCommand { get; set; }
 
+    public RelayCommand InconsistencyItemClickedCommand { get; set; }
+    public RelayCommand CancelIgnoreInconsistencyOrderIDCommand { get; set; }
+    public RelayCommand HitIgnoreInconsistencyOrderIDCommand { get; set; }
 
 
 
@@ -2701,6 +2739,10 @@ public class MainViewModel : ObservableObject
         FsOpenFolderCommand = new RelayCommand(o => FsOpenFolder(o));
         FsTriggerUpdateRequestCommand = new RelayCommand(o => FsTriggerUpdateRequest());
         #endregion Folder Subscription RelayCommands
+
+        InconsistencyItemClickedCommand = new RelayCommand(o => InconsistencyItemClicked(o));
+        CancelIgnoreInconsistencyOrderIDCommand = new RelayCommand(o => CancelIgnoreInconsistencyOrderIDMethod());
+        HitIgnoreInconsistencyOrderIDCommand = new RelayCommand(o => HitIgnoreInconsistencyOrderIDMethod());
 
         CbSettingGlassyEffectCommand = new RelayCommand(o => CbSettingGlassyEffectMethod());
         CbSettingShowAvailablePanCountCommand = new RelayCommand(o => CbSettingShowAvailablePanCountMethod());
@@ -3030,7 +3072,7 @@ public class MainViewModel : ObservableObject
             _MainWindow.mainTabControl.SelectedItem = _MainWindow.applicationsTab;
         });
     }
-    
+
     private void SwitchToPanNrDuplicatesTab()
     {
         Application.Current.Dispatcher.Invoke(() =>
@@ -3377,10 +3419,37 @@ public class MainViewModel : ObservableObject
         }
     }
 
+
     #endregion FOLDER SUBSCRIPTION & PENDING DIGI CASES METHODS
 
 
     #region PRESCRIPTION MAKER METHODS
+
+    private void InconsistencyItemClicked(object obj)
+    {
+        try
+        {
+            string orderID = (string)obj;
+            IgnoreInconsistencyOrderID = orderID;
+            InconsistencyPanelShows = true;
+        }
+        catch (Exception ex)
+        {
+            AddDebugLine(ex);
+        }
+    }
+
+    private void CancelIgnoreInconsistencyOrderIDMethod()
+    {
+        IgnoreInconsistencyOrderID = "";
+        InconsistencyPanelShows = false;
+    }
+
+    private void HitIgnoreInconsistencyOrderIDMethod()
+    {
+        IgnoredPrescriptionInconsistencys.Add(PrescriptionInconsistencys.FirstOrDefault(x => x.OrderID == IgnoreInconsistencyOrderID)!);
+        InconsistencyPanelShows = false;
+    }
 
     private void PmAddNewPanNumber(object obj)
     {
@@ -4540,7 +4609,7 @@ public class MainViewModel : ObservableObject
                                     string photolocation = FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png";
                                     image.Save(photolocation, System.Drawing.Imaging.ImageFormat.Png);
                                     image.Dispose();
-                                    
+
                                     FinalFileNameWithPath = photolocation;
 
                                     // if after questionary we choose that the current prescription is the same as the last one, deleting the newly made paper and returning the used pan number as new
@@ -4855,7 +4924,7 @@ public class MainViewModel : ObservableObject
             else
             {
                 ShowNotificationMessage("Image was saved!", $"Prescription image successfully saved!", NotificationIcon.Success);
-                
+
                 await BlinkWindow("yellow");
             }
         }));
@@ -5110,7 +5179,7 @@ public class MainViewModel : ObservableObject
     {
         WriteLocalSetting("GlassyEffect", CbSettingGlassyEffect.ToString());
     }
-    
+
     private void CbSettingShowAvailablePanCountMethod()
     {
         WriteLocalSetting("ShowAvailablePanCount", CbSettingShowAvailablePanCount.ToString());
@@ -5497,15 +5566,15 @@ public class MainViewModel : ObservableObject
     {
         OrderIssuesList = await GetAllSentOutIssues();
     }
-    
-    
+
+
     private async void UpdatePanNrDuplicatesList()
     {
         PanNrDuplicatesList = await GetAllPanNrDuplicates();
     }
 
-    
-    
+
+
     private void ShowWarningOfNewDuplicatedPanNumberUse()
     {
         Application.Current.Dispatcher.Invoke(new Action(async () =>
@@ -7426,8 +7495,47 @@ public class MainViewModel : ObservableObject
 
             if (CbSettingModulePrescriptionMaker)
             {
-                PrescriptionInconsistencys = await GetPrescriptionInconsistencys();
-                PrescriptionWithNoInconsistencys = await GetPrescriptionWithNoInconsistencys();
+
+                List<InconsistencyModel> listGood = await GetPrescriptionWithNoInconsistencys();
+                List<InconsistencyModel> list = await GetPrescriptionInconsistencys();
+                try
+                {
+
+                    if (IgnoredPrescriptionInconsistencys.Count > 0)
+                    {
+                        foreach (var item in IgnoredPrescriptionInconsistencys)
+                        {
+                            list.Remove(list.FirstOrDefault(x => x.OrderID == item.OrderID)!);
+                        }
+                    }
+
+                    PrescriptionInconsistencys = list;
+
+
+                    if (IgnoredPrescriptionInconsistencys.Count > 0)
+                    {
+
+                        foreach (var item in IgnoredPrescriptionInconsistencys)
+                        {
+                            if (!listGood.Any(x => x.OrderID == item.OrderID))
+                            {
+                                InconsistencyModel model = new()
+                                {
+                                    OrderID = item.OrderID,
+                                    PanNumber = item.PanNumber,
+                                    Ignored = true
+                                };
+                                listGood.Add(model);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AddDebugLine(ex);
+                }
+
+                PrescriptionWithNoInconsistencys = listGood;
             }
         }));
 
@@ -7606,7 +7714,7 @@ public class MainViewModel : ObservableObject
             BuildingUpDates();
     }
 
-    
+
 
     private void BwGetSentOutIssues_DoWork(object? sender, DoWorkEventArgs e)
     {
@@ -7704,7 +7812,7 @@ public class MainViewModel : ObservableObject
             CbSettingShowAvailablePanCount = ShowAvailablePanCount;
             if (CbSettingShowAvailablePanCount)
                 TurnOnNotificationSreeenForAvailablePanNumberCount();
-            
+
             CbSettingPanColorCheckWndwIsSnapped = PanColorCheckWndwIsSnapped;
             if (MainWindow.Instance is not null)
                 MainWindow.Instance.PancolorCheckWindowIsSnapped = PanColorCheckWndwIsSnapped;
@@ -7928,7 +8036,7 @@ public class MainViewModel : ObservableObject
             }));
         }
         catch (Exception ex)
-        {   
+        {
             if (ex.Message.Contains("end of central directory record", StringComparison.CurrentCultureIgnoreCase))
             {
                 Application.Current.Dispatcher.Invoke(new Action(async () =>
@@ -8025,7 +8133,7 @@ public class MainViewModel : ObservableObject
 
             if (StartAutoUpdateCuzAppJustStarted && (remoteVersion - AppVersionDouble) > 10)
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
-            
+
             if (remoteVersion.ToString().EndsWith('0') || remoteVersion.ToString().EndsWith('5'))
                 Application.Current.Dispatcher.Invoke(new Action(StartProgramUpdate));
 

@@ -1870,34 +1870,63 @@
 
                                 <Grid Grid.Column="1"
                                       Grid.Row="0"
-                                      Grid.RowSpan="3"
+                                      Grid.RowSpan="4"
                                       Margin="4,0,0,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto"/>
                                         <RowDefinition />
+                                        <RowDefinition Height="240" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Text="Inconsistencys"
-                                               HorizontalAlignment="Right" />
 
-                                    <ListView Grid.Row="1"
+                                    <ListView Grid.Row="0"
                                               Background="#11FFFFFF"
                                               BorderThickness="0"
                                               AlternationCount="2"
                                               FontSize="13"
                                               ItemContainerStyle="{StaticResource LvItemPrescriptionInconsistencys}"
                                               ItemsSource="{Binding PrescriptionInconsistencys}" />
-                                    <ListView Grid.Row="2"
+                                    <ListView Grid.Row="1"
                                               Background="#11FFFFFF"
                                               FontSize="12"
                                               BorderThickness="0"
                                               AlternationCount="2"
                                               ItemContainerStyle="{StaticResource LvItemPrescriptionInconsistencys}"
                                               ItemsSource="{Binding PrescriptionWithNoInconsistencys}" />
+
+                                    <Border Grid.Row="0"
+                                            Grid.RowSpan="2"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            Background="#D5999999"
+                                            BorderBrush="Beige"
+                                            BorderThickness="1"
+                                            Padding="15"
+                                            d:Visibility="Visible"
+                                            Visibility="{Binding InconsistencyPanelShows, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding IgnoreInconsistencyOrderID}" 
+                                                       Foreground="LightYellow"
+                                                       FontSize="14"/>
+                                            <Grid Margin="0,15,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="10"/>
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <Button Content="Ignore"
+                                                        Height="30"
+                                                        Command="{Binding HitIgnoreInconsistencyOrderIDCommand}"/>
+                                                <Button Content="Cancel"
+                                                        Height="30"
+                                                        Grid.Column="2"
+                                                        Command="{Binding CancelIgnoreInconsistencyOrderIDCommand}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
                                 </Grid>
 
-
+                                
                             </Grid>
                         </TabItem>
 

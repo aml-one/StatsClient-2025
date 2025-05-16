@@ -10,12 +10,15 @@ public class IncostistencyToColorConverterConverter : IMultiValueConverter
     {
         if (!string.IsNullOrEmpty(values[0] as string) && !string.IsNullOrEmpty(values[1] as string))
             return (SolidColorBrush)new BrushConverter().ConvertFrom("#6de392")!;
+        
+        if (values[2] as bool? == true)
+            return (SolidColorBrush)new BrushConverter().ConvertFrom("#6dd9e3")!;
 
         if (values[0] as string == "")
             return (SolidColorBrush)new BrushConverter().ConvertFrom("#ffaacc")!;
         
         if (values[1] as string == "")
-            return (SolidColorBrush)new BrushConverter().ConvertFrom("#e3bc6d")!;
+            return (SolidColorBrush)new BrushConverter().ConvertFrom("#f0ec00")!;
         
 
         return Brushes.White;

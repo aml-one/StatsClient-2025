@@ -42,6 +42,8 @@
     <converters:Double12ToMultiplyConverter x:Key="Double12ToMultiplyConverter" />
     <converters:AgeSecondsToCollapsedVisibilityConverter x:Key="AgeSecondsToCollapsedVisibilityConverter" />
     <converters:IncostistencyToColorConverterConverter x:Key="IncostistencyToColorConverterConverter" />
+    <converters:IncostistencyToVisibilityVisibleConverterConverter x:Key="IncostistencyToVisibilityVisibleConverterConverter" />
+    <converters:IncostistencyToVisibilityCollapsedConverterConverter x:Key="IncostistencyToVisibilityCollapsedConverterConverter" />
 
 
     <!-- LvItemSimple -->
@@ -2929,15 +2931,16 @@
                             <TextBlock FontWeight="SemiBold"
                                        Text="{Binding PanNumber}"
                                        VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"
-                                       Margin="3,0,0,0"
+                                       HorizontalAlignment="Right"
+                                       Margin="3,0,15,0"
                                        x:Name="tbiPanNumber"
                                        Grid.Column="0">
                                 <TextBlock.Foreground>
-                                    <MultiBinding StringFormat=" {0}, {1}"
+                                    <MultiBinding StringFormat=" {0}, {1}, {2}"
                                                   Converter="{StaticResource IncostistencyToColorConverterConverter}">
                                         <Binding Path="PanNumber" />
                                         <Binding Path="OrderID" />
+                                        <Binding Path="Ignored" />
                                     </MultiBinding>
                                 </TextBlock.Foreground>
                             </TextBlock>
@@ -2948,15 +2951,56 @@
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Left"
                                        Margin="0,0,0,0"
+                                       Cursor="Hand"
                                        x:Name="tbiOrderID"
                                        Grid.Column="1">
                                 <TextBlock.Foreground>
-                                    <MultiBinding StringFormat=" {0}, {1}"
+                                    <MultiBinding StringFormat=" {0}, {1}, {2}"
                                                   Converter="{StaticResource IncostistencyToColorConverterConverter}">
                                         <Binding Path="PanNumber" />
                                         <Binding Path="OrderID" />
+                                        <Binding Path="Ignored" />
                                     </MultiBinding>
                                 </TextBlock.Foreground>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.InconsistencyItemClickedCommand, 
+                                                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                                        CommandParameter="{Binding OrderID}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <TextBlock.Visibility>
+                                    <MultiBinding StringFormat=" {0}, {1}, {2}"
+                                                  Converter="{StaticResource IncostistencyToVisibilityCollapsedConverterConverter}">
+                                        <Binding Path="PanNumber" />
+                                        <Binding Path="OrderID" />
+                                        <Binding Path="Ignored" />
+                                    </MultiBinding>
+                                </TextBlock.Visibility>
+                            </TextBlock>
+                            
+                            <TextBlock FontWeight="SemiBold"
+                                       Text="{Binding OrderID}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       Margin="0,0,0,0"
+                                       Grid.Column="1">
+                                <TextBlock.Foreground>
+                                    <MultiBinding StringFormat=" {0}, {1}, {2}"
+                                                  Converter="{StaticResource IncostistencyToColorConverterConverter}">
+                                        <Binding Path="PanNumber" />
+                                        <Binding Path="OrderID" />
+                                        <Binding Path="Ignored" />
+                                    </MultiBinding>
+                                </TextBlock.Foreground>
+                                <TextBlock.Visibility>
+                                    <MultiBinding StringFormat=" {0}, {1}, {2}"
+                                                  Converter="{StaticResource IncostistencyToVisibilityVisibleConverterConverter}">
+                                        <Binding Path="PanNumber" />
+                                        <Binding Path="OrderID" />
+                                        <Binding Path="Ignored" />
+                                    </MultiBinding>
+                                </TextBlock.Visibility>
                             </TextBlock>
 
                             <TextBlock FontWeight="SemiBold"
