@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using StatsClient.MVVM.Model;
 using StatsClient.MVVM.ViewModel;
+using Syncfusion.Windows.Shared;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -17,6 +18,88 @@ namespace StatsClient.MVVM.Core;
 
 public partial class DatabaseOperations
 {
+
+    public static async Task<List<InconsistencyModel>> GetPrescriptionInconsistencys()
+    {
+        List<InconsistencyModel> list = [];
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT OrderID, Prescriptions.PanNumber 
+                              FROM dbo.DigitalCasesToday DigiCases 
+                              FULL OUTER JOIN PrescriptionNumbers Prescriptions ON Prescriptions.PanNumber = DigiCases.PanNumber
+                              ORDER BY PanNumber ASC, OrderID ASC";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                string? orderID = reader["OrderID"].ToString();
+                string? panNumber = reader["PanNumber"].ToString();
+
+                orderID ??= "";
+                panNumber ??= "";
+
+                if(orderID == "" || panNumber == "")
+                    list.Add(new InconsistencyModel
+                    {
+                        OrderID = orderID,
+                        PanNumber = panNumber,
+                    });
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[" + ex.LineNumber() + "] (DataBaseOperations)" + ex.Message);
+            return list;
+        }
+
+        return list;
+    }
+    
+    public static async Task<List<InconsistencyModel>> GetPrescriptionWithNoInconsistencys()
+    {
+        List<InconsistencyModel> list = [];
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query = $@"SELECT OrderID, Prescriptions.PanNumber 
+                              FROM dbo.DigitalCasesToday DigiCases 
+                              FULL OUTER JOIN PrescriptionNumbers Prescriptions ON Prescriptions.PanNumber = DigiCases.PanNumber
+                              ORDER BY PanNumber ASC, OrderID ASC";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                string? orderID = reader["OrderID"].ToString();
+                string? panNumber = reader["PanNumber"].ToString();
+
+                orderID ??= "";
+                panNumber ??= "";
+
+                if(orderID != "" && panNumber != "")
+                    list.Add(new InconsistencyModel
+                    {
+                        OrderID = orderID,
+                        PanNumber = panNumber,
+                    });
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[" + ex.LineNumber() + "] (DataBaseOperations)" + ex.Message);
+            return list;
+        }
+
+        return list;
+    }
 
     public static async Task<List<AvailablePanCountModel>> GetBackAllAvailablePanNumberListCount(double NumberFontSize, double TitleFontSize, double NamesFontSize)
     {
@@ -81,7 +164,7 @@ public partial class DatabaseOperations
         }
         return "";
     }
-    
+
     public static double GetAgeByDateInSeconds(string date)
     {
         if (DateTime.TryParse(date, out DateTime lastUpdate))
@@ -102,7 +185,7 @@ public partial class DatabaseOperations
         string queryAddLastModify = @$"DELETE FROM dbo.ImportHistory WHERE OrderID LIKE '00000-%'";
         RunSQLCommandAsynchronously(queryAddLastModify, connectionString);
     }
-    
+
     public static async Task AddTestEntryToImportHistory()
     {
         string orderID = "00000-" + DateTime.Now.ToString("ss") + "-B1-JOHNDOE-DOCTOR-SYSTEM-SCR";
@@ -111,7 +194,7 @@ public partial class DatabaseOperations
         string ImportTime = DateTime.Now.ToString("h:mm tt");
         string OrderBy = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        
+
         string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
         string queryAddLastModify = @$"INSERT INTO dbo.ImportHistory (OrderID, DesignerID, FriendlyName, ImportPath, DateTime, ImportTime, Event, OrderBy) 
                                                    VALUES ('{orderID}', 'dsg', 'RandomDesigner', '', '{DateTimeStr}', '{ImportTime}', 'got designed by', '{OrderBy}')";
@@ -165,7 +248,7 @@ public partial class DatabaseOperations
 
         return importHistory;
     }
-    
+
     public static async Task<List<ExportHistoryModel>> GetBackExportHistory()
     {
         List<ExportHistoryModel> exportHistory = [];
@@ -489,7 +572,7 @@ public partial class DatabaseOperations
         }
         return "-1";
     }
-    
+
     public static async Task WriteDownLastCommandId(string id)
     {
         try
@@ -503,7 +586,7 @@ public partial class DatabaseOperations
         {
         }
     }
-    
+
     public static async Task ResetPingDifferenceInDatabaseOnClose()
     {
         try
@@ -535,7 +618,7 @@ public partial class DatabaseOperations
 
             string lastPingDifference = await GetLastReportTimeFromClientApp();
             string serverPing = ReadStatsSetting("ServerPing");
-                        
+
             string query = "";
             if (InitialReport)
                 query = @$"merge dbo.ClientStatus with(HOLDLOCK) as target
@@ -583,7 +666,7 @@ public partial class DatabaseOperations
             var memory = 0.0;
             using Process proc = Process.GetCurrentProcess();
             memory = proc.PrivateMemorySize64;
-            
+
             return memory;
         }
         catch (Exception ex)
@@ -592,7 +675,7 @@ public partial class DatabaseOperations
             return 0;
         }
     }
-    
+
     public static async Task<double> GetTotalMemoryInGiB()
     {
         try
@@ -606,7 +689,7 @@ public partial class DatabaseOperations
             return 0;
         }
     }
-    
+
     public static async Task<double> GetTotalMemoryInMiB()
     {
         try
@@ -788,7 +871,7 @@ public partial class DatabaseOperations
 
         return list;
     }
-    
+
     public static async Task<List<AccountInfoModel>> GetAccountInfoList(Dictionary<string, string> bgBorderColors)
     {
         List<AccountInfoModel> list = [];
@@ -877,7 +960,7 @@ public partial class DatabaseOperations
                 if (model.Crowns is not null)
                     _ = int.TryParse(model.Crowns, out crowns);
                 if (model.Abutments is not null)
-                _ = int.TryParse(model.Abutments, out abutments);
+                    _ = int.TryParse(model.Abutments, out abutments);
 
                 model.TotalUnits = (crowns + abutments).ToString();
                 model.Comment = reader["Comment"].ToString();
@@ -923,8 +1006,8 @@ public partial class DatabaseOperations
             using SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                list.Add(new DesignerModel 
-                { 
+                list.Add(new DesignerModel
+                {
                     DesignerID = reader["DesignerID"].ToString(),
                     FriendlyName = reader["FriendlyName"].ToString(),
                 });
@@ -973,8 +1056,8 @@ public partial class DatabaseOperations
             string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
             string query = @"SELECT Color, FriendlyName FROM dbo.PanColors";
 
-            using SqlConnection connection = new (connectionString);
-            SqlCommand command = new (query, connection);
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
             connection.Open();
 
             using SqlDataReader reader = command.ExecuteReader();
@@ -1021,7 +1104,7 @@ public partial class DatabaseOperations
         {
             string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
             string query = @$"DELETE FROM dbo.CustomerSuggestion WHERE CustomerName = '{customerName}' AND NewName = '{customerSuggestion}'";
-            
+
             RunSQLCommandAsynchronously(query, connectionString);
 
             return true;
@@ -1281,7 +1364,7 @@ public partial class DatabaseOperations
 
         }
     }
-    
+
     public static async Task UnLockOrderIn3Shape(string intOrderID)
     {
         try
@@ -1302,7 +1385,7 @@ public partial class DatabaseOperations
 
         }
     }
-    
+
     public static async Task CheckOutOrderIn3Shape(string intOrderID)
     {
         try
@@ -1421,7 +1504,7 @@ public partial class DatabaseOperations
                     ProcessStatusID = reader["ProcessStatusID"].ToString()!;
                     AltProcessStatusID = reader["AltProcessStatusID"].ToString()!;
                     WasSent = reader["WasSent"].ToString()!;
-                    
+
 
 
 
@@ -1556,7 +1639,7 @@ public partial class DatabaseOperations
 
 
                     string ModificationDate = reader["ModificationDate"].ToString()!;
-                    
+
                     string CacheMaterialName = reader["CacheMaterialName"].ToString()!.Replace("\"", "");
 
                     string LastModifiedComputerName = ReadComputerName(reader["UserID"].ToString()!);
@@ -1572,8 +1655,8 @@ public partial class DatabaseOperations
                         else
                             CaseStatusByManufacturer = "Miscellaneous";
                     }
-                    
-                        CaseStatus = CaseStatusByManufacturer;
+
+                    CaseStatus = CaseStatusByManufacturer;
 
 
                     if (Items.Contains("Abutment") &&
@@ -1601,45 +1684,45 @@ public partial class DatabaseOperations
                         ExtOrderID = "";
 
                     if ((string.IsNullOrEmpty(panNumber) && showCasesWithoutNumber) || !showCasesWithoutNumber)
-                    list.Add(new ThreeShapeOrdersModel
-                    {
-                        IntOrderID = reader["IntOrderID"].ToString(),
-                        Patient_FirstName = Patient_FirstName,
-                        Patient_LastName = Patient_LastName,
-                        Patient_RefNo = reader["Patient_RefNo"].ToString(),
-                        ExtOrderID = ExtOrderID,
-                        OrderComments = reader["OrderComments"].ToString(),
-                        Items = Items,
-                        OperatorName = reader["OperatorName"].ToString(),
-                        Customer = reader["Customer"].ToString(),
-                        ManufName = manufName,
-                        CacheMaterialName = CacheMaterialName,
-                        ScanSource = ScanSource,
-                        CacheMaxScanDate = CacheMaxScanDate,
-                        TraySystemType = reader["TraySystemType"].ToString(),
-                        MaxCreateDate = MaxCreateDate,
-                        MaxProcessStatusID = MaxProcessStatusID,
-                        ProcessStatusID = ProcessStatusID,
-                        AltProcessStatusID = AltProcessStatusID,
-                        ProcessLockID = ProcessLockID,
-                        WasSent = WasSent,
-                        ModificationDate = ModificationDate,
-                        ImageSource = ImageSource,
-                        ListViewGroup = "",
-                        PanColor = PanColor,
-                        PanColorName = PanColorName,
-                        CaseStatus = CaseStatus,
-                        PanNumber = panNumber,
-                        LastModificationForSorting = LastModificationForSorting,
-                        LastModifiedComputerName = LastModifiedComputerName,
-                        CreateDateForSorting = CreateDateForSorting,
-                        ScanSourceFriendlyName = ScanSourceFriendlyName,
-                        CacheMaxScanDateFriendly = CacheMaxScanDateFriendly,
-                        MaxCreateDateFriendly = MaxCreateDateFriendly,
-                        CaseStatusByManufacturer = CaseStatusByManufacturer,
-                        AlternateColoring = AlternateColoring,
-                        OriginalOrderID = reader["OriginalOrderID"].ToString()
-                    });
+                        list.Add(new ThreeShapeOrdersModel
+                        {
+                            IntOrderID = reader["IntOrderID"].ToString(),
+                            Patient_FirstName = Patient_FirstName,
+                            Patient_LastName = Patient_LastName,
+                            Patient_RefNo = reader["Patient_RefNo"].ToString(),
+                            ExtOrderID = ExtOrderID,
+                            OrderComments = reader["OrderComments"].ToString(),
+                            Items = Items,
+                            OperatorName = reader["OperatorName"].ToString(),
+                            Customer = reader["Customer"].ToString(),
+                            ManufName = manufName,
+                            CacheMaterialName = CacheMaterialName,
+                            ScanSource = ScanSource,
+                            CacheMaxScanDate = CacheMaxScanDate,
+                            TraySystemType = reader["TraySystemType"].ToString(),
+                            MaxCreateDate = MaxCreateDate,
+                            MaxProcessStatusID = MaxProcessStatusID,
+                            ProcessStatusID = ProcessStatusID,
+                            AltProcessStatusID = AltProcessStatusID,
+                            ProcessLockID = ProcessLockID,
+                            WasSent = WasSent,
+                            ModificationDate = ModificationDate,
+                            ImageSource = ImageSource,
+                            ListViewGroup = "",
+                            PanColor = PanColor,
+                            PanColorName = PanColorName,
+                            CaseStatus = CaseStatus,
+                            PanNumber = panNumber,
+                            LastModificationForSorting = LastModificationForSorting,
+                            LastModifiedComputerName = LastModifiedComputerName,
+                            CreateDateForSorting = CreateDateForSorting,
+                            ScanSourceFriendlyName = ScanSourceFriendlyName,
+                            CacheMaxScanDateFriendly = CacheMaxScanDateFriendly,
+                            MaxCreateDateFriendly = MaxCreateDateFriendly,
+                            CaseStatusByManufacturer = CaseStatusByManufacturer,
+                            AlternateColoring = AlternateColoring,
+                            OriginalOrderID = reader["OriginalOrderID"].ToString()
+                        });
                 }
             }
             catch (Exception)
@@ -1666,7 +1749,7 @@ public partial class DatabaseOperations
                                 ) AND i.MaxCreateDate > '{MainViewModel.Instance.DtYesterday} 17:00:00.001'
                                 
                             ";
-        
+
         string query = $@"select count(*) 
                             from 
                             ( 
@@ -1679,13 +1762,13 @@ public partial class DatabaseOperations
 
                             group by IntOrderID 
                             )  src;";
-        
+
         string connectionString = ConnectionStrFor3Shape();
         int result = 0;
         try
         {
-            using SqlConnection connection = new (connectionString);
-            SqlCommand command = new (query, connection);
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
             connection.Open();
             using SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -1700,30 +1783,30 @@ public partial class DatabaseOperations
 
         return result;
     }
-    
+
     public static int GetCurrentDigiPrescriptionCount()
     {
         _ = int.TryParse(ReadStatsSetting("CurrentDigiPrescriptionCount"), out int result);
         return result;
     }
-    
+
     public static string GetStatsServerStatus()
     {
         return ReadStatsSetting("StatsServerStatus");
     }
-    
+
     public static string GetBackFolderSubscriptionCountedEntries()
     {
         return ReadStatsSetting("fs_CountedEntries");
     }
-    
+
     public static string GetLastDatabaseUpdate()
     {
-        if(DateTime.TryParse(ReadStatsSetting("FolderWatcherLastUpdate"), out DateTime lastUpdate))
+        if (DateTime.TryParse(ReadStatsSetting("FolderWatcherLastUpdate"), out DateTime lastUpdate))
         {
             var diffInSeconds = (DateTime.Now - lastUpdate).TotalSeconds;
             TimeSpan time = TimeSpan.FromSeconds(diffInSeconds);
-            
+
             string displayTime = Math.Round(time.TotalMinutes).ToString();
 
             if (displayTime == "0")
@@ -1750,7 +1833,7 @@ public partial class DatabaseOperations
         {
             var diffInSeconds = (DateTime.Now - lastUpdate).TotalSeconds;
             TimeSpan time = TimeSpan.FromSeconds(diffInSeconds);
-            
+
             string displayTimeInMinutes = Math.Floor(time.TotalMinutes).ToString();
             string displayTimeInSeconds = Math.Round(time.TotalSeconds).ToString();
 
@@ -1765,7 +1848,7 @@ public partial class DatabaseOperations
         }
         return "Not long ago";
     }
-    
+
     public static bool CheckIfServerIsWritingDatabase()
     {
         _ = bool.TryParse(ReadStatsSetting("ServerIsWritingDatabase"), out bool result);
@@ -1868,7 +1951,7 @@ public partial class DatabaseOperations
                 {
                     Level = reader["Level"].ToString(),
                     OrderID = reader["OrderID"].ToString(),
-                    IssueDescription = reader["SkipReason"].ToString()!.Replace("&apos;","'"),
+                    IssueDescription = reader["SkipReason"].ToString()!.Replace("&apos;", "'"),
                     Color = reader["ForeColor"].ToString(),
                 });
             }
@@ -1879,7 +1962,7 @@ public partial class DatabaseOperations
         }
         return list;
     }
-    
+
     public static async Task<List<DuplicatePanNumberOrdersModel>> GetAllPanNrDuplicates()
     {
         List<DuplicatePanNumberOrdersModel> list = [];
@@ -1938,7 +2021,7 @@ public partial class DatabaseOperations
     }
 
 
-    
+
 
     public static string GetServerSiteName()
     {
@@ -2054,14 +2137,14 @@ public partial class DatabaseOperations
 
 
         string connectionString = ConnectionStrFor3Shape();
-        
-        ThreeShapeOrderInspectionModel threeShapeInspectModel = new ();
+
+        ThreeShapeOrderInspectionModel threeShapeInspectModel = new();
 
         try
         {
-            using (SqlConnection connection = new (connectionString))
+            using (SqlConnection connection = new(connectionString))
             {
-                SqlCommand command = new (queryString, connection);
+                SqlCommand command = new(queryString, connection);
                 connection.Open();
                 using SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -2151,7 +2234,7 @@ public partial class DatabaseOperations
                 _ = int.TryParse(panNumbr, out int pnNr);
                 color = GetPanColorByNumber(pnNr);
                 string[] rgb = color.Split('-');
-                
+
                 _ = int.TryParse(rgb[0], out int red);
                 _ = int.TryParse(rgb[1], out int green);
                 _ = int.TryParse(rgb[2], out int blue);
@@ -2188,11 +2271,11 @@ public partial class DatabaseOperations
                 if (red == 0 && green == 0 && blue == 0)
                     return "#FFFFFF";
 
-                Color PanColor = Color.FromArgb(red, green, blue);                    
+                Color PanColor = Color.FromArgb(red, green, blue);
                 string hex = "#" + PanColor.R.ToString("X2") + PanColor.G.ToString("X2") + PanColor.B.ToString("X2");
                 return hex;
             }
-            catch 
+            catch
             {
                 return "#FFFFFF";
             }
@@ -2660,7 +2743,7 @@ public partial class DatabaseOperations
             default: return "";
         }
     }
-    
+
     public static string CaseStatusSelect(string processStatusID, string scanSource, string processLockID)
     {
 
@@ -2834,7 +2917,7 @@ public partial class DatabaseOperations
         return text;
     }
 
-   
+
     public static bool IsServerBusy()
     {
         try
@@ -2895,7 +2978,7 @@ public partial class DatabaseOperations
         string XMLFile = GetServerFileDirectory() + OrderID + "\\" + OrderID + ".xml";
         if (File.Exists(XMLFile))
         {
-            XmlDocument doc = new ();
+            XmlDocument doc = new();
             doc.Load(XMLFile);
 
             XmlElement root = doc.DocumentElement!;
@@ -2991,8 +3074,8 @@ public partial class DatabaseOperations
             string connectionString = ConnectionStrToStatsDatabase();
             string query = @"SELECT COUNT(RuleName), RuleName FROM dbo.EWCatchedEmails GROUP BY RuleName";
 
-            using SqlConnection connection = new (connectionString);
-            SqlCommand command = new (query, connection);
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
             connection.Open();
 
             using SqlDataReader reader = command.ExecuteReader();
@@ -3087,14 +3170,14 @@ public partial class DatabaseOperations
                 string collected = "false";
                 if (reader["IsCollected"].ToString() == "1")
                     collected = "true";
-                
+
                 string processed = "false";
                 if (reader["IsProcessed"].ToString() == "1")
                     processed = "true";
-                list.Add(new ProcessedPanNumberModel() 
-                { 
-                    PanNumber = reader["PanNumber"].ToString(), 
-                    PostedTime = reader["PostedTime"].ToString(), 
+                list.Add(new ProcessedPanNumberModel()
+                {
+                    PanNumber = reader["PanNumber"].ToString(),
+                    PostedTime = reader["PostedTime"].ToString(),
                     IsCollected = collected,
                     IsProcessed = processed,
                 });
@@ -3105,7 +3188,7 @@ public partial class DatabaseOperations
         }
         return list;
     }
-    
+
     public static List<ProcessedPanNumberModel> GetAllPendingDigiNumbersInLast30Days()
     {
         List<ProcessedPanNumberModel> list = [];
@@ -3124,19 +3207,19 @@ public partial class DatabaseOperations
                 string collected = "false";
                 if (reader["IsCollected"].ToString() == "1")
                     collected = "true";
-                
+
                 string processed = "false";
                 if (reader["IsProcessed"].ToString() == "1")
                     processed = "true";
-                list.Add(new ProcessedPanNumberModel() 
-                { 
+                list.Add(new ProcessedPanNumberModel()
+                {
                     Id = reader["Id"].ToString(),
-                    PanNumber = reader["PanNumber"].ToString(), 
-                    PostedTime = reader["PostedTime"].ToString(), 
-                    ProcessedTime = reader["ProcessedTime"].ToString(), 
-                    PostedBy = reader["PostedBy"].ToString(), 
-                    ProcessedBy = reader["ProcessedBy"].ToString(), 
-                    Comment = reader["Comment"].ToString(), 
+                    PanNumber = reader["PanNumber"].ToString(),
+                    PostedTime = reader["PostedTime"].ToString(),
+                    ProcessedTime = reader["ProcessedTime"].ToString(),
+                    PostedBy = reader["PostedBy"].ToString(),
+                    ProcessedBy = reader["ProcessedBy"].ToString(),
+                    Comment = reader["Comment"].ToString(),
                     IsCollected = collected,
                     IsProcessed = processed,
                     PostedTimeForSorting = reader["PostedTime"].ToString(),
@@ -3148,7 +3231,7 @@ public partial class DatabaseOperations
         }
         return list;
     }
-    
+
     public static List<ProcessedPanNumberModel> GetAllNotCollectedNumbers()
     {
         List<ProcessedPanNumberModel> list = [];
@@ -3167,11 +3250,11 @@ public partial class DatabaseOperations
                 string collected = "false";
                 if (reader["IsCollected"].ToString() == "1")
                     collected = "true";
-                list.Add(new ProcessedPanNumberModel() 
-                { 
-                    PanNumber = reader["PanNumber"].ToString(), 
-                    PostedTime = reader["PostedTime"].ToString(), 
-                    IsCollected = collected 
+                list.Add(new ProcessedPanNumberModel()
+                {
+                    PanNumber = reader["PanNumber"].ToString(),
+                    PostedTime = reader["PostedTime"].ToString(),
+                    IsCollected = collected
                 });
             }
         }
@@ -3180,7 +3263,7 @@ public partial class DatabaseOperations
         }
         return list;
     }
-    
+
     public static List<FolderSubscriptionModel> GetFolderSubscriptions(string searchString)
     {
         List<FolderSubscriptionModel> list = [];
@@ -3248,7 +3331,7 @@ public partial class DatabaseOperations
             return ex.Message;
         }
     }
-    
+
     public static string RemovePanNumberFromAvailablePans(string number)
     {
         try
@@ -3265,7 +3348,7 @@ public partial class DatabaseOperations
             return ex.Message;
         }
     }
-    
+
     public static string SendSironaInfoToServer(string PanNumber, string PatientName, string SironaOrderNumber, string Type)
     {
         try
@@ -3284,7 +3367,7 @@ public partial class DatabaseOperations
             return ex.Message;
         }
     }
-    
+
     public static string AddNameToSentToList(string SendToName)
     {
         try
@@ -3302,7 +3385,7 @@ public partial class DatabaseOperations
             return ex.Message;
         }
     }
-    
+
     public static string RemoveNameFromSentToList(string SendToName)
     {
         try
@@ -3319,7 +3402,7 @@ public partial class DatabaseOperations
             return ex.Message;
         }
     }
-    
+
     public static List<string> GetAllSendToEnties()
     {
         List<string> list = [];
@@ -3348,7 +3431,7 @@ public partial class DatabaseOperations
 
         return list;
     }
-    
+
     public static string AddNewPanNumber(string number)
     {
         try
@@ -3378,7 +3461,7 @@ public partial class DatabaseOperations
             return ex.Message;
         }
     }
-    
+
 
     public static List<string> GetPanNumbers()
     {

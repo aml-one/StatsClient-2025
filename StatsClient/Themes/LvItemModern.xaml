@@ -41,6 +41,7 @@
     <converters:Double10ToMultiplyConverter x:Key="Double10ToMultiplyConverter" />
     <converters:Double12ToMultiplyConverter x:Key="Double12ToMultiplyConverter" />
     <converters:AgeSecondsToCollapsedVisibilityConverter x:Key="AgeSecondsToCollapsedVisibilityConverter" />
+    <converters:IncostistencyToColorConverterConverter x:Key="IncostistencyToColorConverterConverter" />
 
 
     <!-- LvItemSimple -->
@@ -2848,7 +2849,7 @@
                             </Grid.RowDefinitions>
 
 
-                            
+
 
                             <core:OutlinedTextBlock Stroke="Black"
                                                     StrokePosition="Outside"
@@ -2899,6 +2900,98 @@
 
                         </Grid>
                     </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- LvItemPrescriptionInconsistencys -->
+    <Style TargetType="ListViewItem"
+           x:Key="LvItemPrescriptionInconsistencys">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="IncostistencyBorder"
+                            BorderThickness="1">
+
+                        <Grid Margin="1,2,1,2">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+
+                            </Grid.ColumnDefinitions>
+
+
+                            <TextBlock FontWeight="SemiBold"
+                                       Text="{Binding PanNumber}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       Margin="3,0,0,0"
+                                       x:Name="tbiPanNumber"
+                                       Grid.Column="0">
+                                <TextBlock.Foreground>
+                                    <MultiBinding StringFormat=" {0}, {1}"
+                                                  Converter="{StaticResource IncostistencyToColorConverterConverter}">
+                                        <Binding Path="PanNumber" />
+                                        <Binding Path="OrderID" />
+                                    </MultiBinding>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+
+
+                            <TextBlock FontWeight="SemiBold"
+                                       Text="{Binding OrderID}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       Margin="0,0,0,0"
+                                       x:Name="tbiOrderID"
+                                       Grid.Column="1">
+                                <TextBlock.Foreground>
+                                    <MultiBinding StringFormat=" {0}, {1}"
+                                                  Converter="{StaticResource IncostistencyToColorConverterConverter}">
+                                        <Binding Path="PanNumber" />
+                                        <Binding Path="OrderID" />
+                                    </MultiBinding>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+
+                            <TextBlock FontWeight="SemiBold"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"
+                                       Margin="0,0,0,0"
+                                       Foreground="Yellow"
+                                       Text="Missing prescription!"
+                                       d:Visibility="Visible"
+                                       Visibility="{Binding PanNumber, Converter={StaticResource EmptyTextToVisibleConverter}}"
+                                       Grid.Column="2" />
+
+                            <TextBlock FontWeight="SemiBold"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"
+                                       Margin="0,0,0,0"
+                                       Foreground="Orange"
+                                       Text="Missing 3Shape Order!"
+                                       d:Visibility="Visible"
+                                       Visibility="{Binding OrderID, Converter={StaticResource EmptyTextToVisibleConverter}}"
+                                       Grid.Column="2" />
+
+
+
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex"
+                                 Value="1">
+                            <Setter TargetName="IncostistencyBorder"
+                                    Property="Background"
+                                    Value="#777" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

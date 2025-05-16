@@ -1573,6 +1573,28 @@ public class MainViewModel : ObservableObject
     }
 
 
+    private List<InconsistencyModel> prescriptionInconsistencys = [];
+    public List<InconsistencyModel> PrescriptionInconsistencys
+    {
+        get => prescriptionInconsistencys;
+        set
+        {
+            prescriptionInconsistencys = value;
+            RaisePropertyChanged(nameof(PrescriptionInconsistencys));
+        }
+    }
+    
+    private List<InconsistencyModel> prescriptionWithNoInconsistencys = [];
+    public List<InconsistencyModel> PrescriptionWithNoInconsistencys
+    {
+        get => prescriptionWithNoInconsistencys;
+        set
+        {
+            prescriptionWithNoInconsistencys = value;
+            RaisePropertyChanged(nameof(PrescriptionWithNoInconsistencys));
+        }
+    }
+    
     private double pmLastPrescriptionSize = 0;
     public double PmLastPrescriptionSize
     {
@@ -7401,6 +7423,12 @@ public class MainViewModel : ObservableObject
                 FsLastDatabaseUpdate = GetLastDatabaseUpdate();
 
             await Task.Run(LookForPendingTask);
+
+            if (CbSettingModulePrescriptionMaker)
+            {
+                PrescriptionInconsistencys = await GetPrescriptionInconsistencys();
+                PrescriptionWithNoInconsistencys = await GetPrescriptionWithNoInconsistencys();
+            }
         }));
 
         if (InfoTabActive)
@@ -7578,6 +7606,7 @@ public class MainViewModel : ObservableObject
             BuildingUpDates();
     }
 
+    
 
     private void BwGetSentOutIssues_DoWork(object? sender, DoWorkEventArgs e)
     {
