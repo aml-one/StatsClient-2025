@@ -40,6 +40,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 
@@ -986,6 +987,77 @@ public class MainViewModel : ObservableObject
     #endregion FOLDER SUBSCRIPTION & PENDING DIGI CASES PROPERTIES
 
 
+    #region COMMENT RULES IN SETTINGS PROPERTIES
+    private List<CommentRulesModel> commentRulesList = [];
+    public List<CommentRulesModel> CommentRulesList
+    {
+        get => commentRulesList;
+        set
+        {
+            commentRulesList = value;
+            RaisePropertyChanged(nameof(CommentRulesList));
+        }
+    }
+
+
+    private CommentRulesModel? selectedCommentRule = new();
+    public CommentRulesModel? SelectedCommentRule
+    {
+        get => selectedCommentRule;
+        set
+        {
+            selectedCommentRule = value;
+            RaisePropertyChanged(nameof(SelectedCommentRule));
+        }
+    }
+
+    private string cRNewRuleName = "";
+    public string CRNewRuleName
+    {
+        get => cRNewRuleName;
+        set
+        {
+            cRNewRuleName = value;
+            RaisePropertyChanged(nameof(CRNewRuleName));
+        }
+    }
+
+    private string cRNewCustomer = "";
+    public string CRNewCustomer
+    {
+        get => cRNewCustomer;
+        set
+        {
+            cRNewCustomer = value;
+            RaisePropertyChanged(nameof(CRNewCustomer));
+        }
+    }
+
+    private string cRNewCommentToBeInserted = "";
+    public string CRNewCommentToBeInserted
+    {
+        get => cRNewCommentToBeInserted;
+        set
+        {
+            cRNewCommentToBeInserted = value;
+            RaisePropertyChanged(nameof(CRNewCommentToBeInserted));
+        }
+    }
+
+    private string cRSelectedItemToBeContained = "";
+    public string CRSelectedItemToBeContained
+    {
+        get => cRSelectedItemToBeContained;
+        set
+        {
+            cRSelectedItemToBeContained = value;
+            RaisePropertyChanged(nameof(CRSelectedItemToBeContained));
+        }
+    }
+
+    #endregion COMMENT RULES IN SETTINGS PROPERTIES
+
+
     private List<string> customerSuggestionsCusNamesList = [];
     public List<string> CustomerSuggestionsCusNamesList
     {
@@ -1574,6 +1646,28 @@ public class MainViewModel : ObservableObject
         }
     }
 
+
+    private List<PMEventModel> prescriptionMakerEventsList = [];
+    public List<PMEventModel> PrescriptionMakerEventsList
+    {
+        get => prescriptionMakerEventsList;
+        set
+        {
+            prescriptionMakerEventsList = value;
+            RaisePropertyChanged(nameof(PrescriptionMakerEventsList));
+        }
+    }
+
+    private List<string> prescriptionMakerEventsListReversed = [];
+    public List<string> PrescriptionMakerEventsListReversed
+    {
+        get => prescriptionMakerEventsListReversed;
+        set
+        {
+            prescriptionMakerEventsListReversed = value;
+            RaisePropertyChanged(nameof(PrescriptionMakerEventsListReversed));
+        }
+    }
 
     private List<InconsistencyModel> prescriptionInconsistencys = [];
     public List<InconsistencyModel> PrescriptionInconsistencys
@@ -2580,7 +2674,11 @@ public class MainViewModel : ObservableObject
     public RelayCommand CancelIgnoreInconsistencyOrderIDCommand { get; set; }
     public RelayCommand HitIgnoreInconsistencyOrderIDCommand { get; set; }
 
-
+    #region COMMENT RULES IN SETTINGS
+    public RelayCommand AddNewCommentRuleCommand { get; set; }
+    public RelayCommand DeleteSelectedCommentRuleCommand { get; set; }
+    public RelayCommand CRCheckingRadioButtonCommand { get; set; }
+    #endregion COMMENT RULES IN SETTINGS
 
     public RelayCommand PcCheckPanColorCommand { get; set; }
 
@@ -2727,6 +2825,11 @@ public class MainViewModel : ObservableObject
 
         StatsServersComputerName = ReadStatsSetting("ServerComputerName");
 
+        #region COMMENT RULES IN SETTINGS
+        AddNewCommentRuleCommand = new RelayCommand(o => AddNewCommentRuleMethod());
+        DeleteSelectedCommentRuleCommand = new RelayCommand(o => DeleteSelectedCommentRuleMethod());
+        CRCheckingRadioButtonCommand = new RelayCommand(o => CRCheckingRadioButtonMethod(o));
+        #endregion COMMENT RULES IN SETTINGS
 
         #region Folder Subscription RelayCommands
         SelectTargetFolderCommand = new RelayCommand(o => SelectTargetFolder());
@@ -2942,6 +3045,17 @@ public class MainViewModel : ObservableObject
 
 
     #endregion Settings / Customer Suggestions Tab
+
+    #region Settings / Comment Rules Tab
+    private async void BuildCommentRuleList()
+    {
+        CommentRulesList = await GetCommentRulesList();
+    }
+
+    #endregion Settings / Comment Rules Tab
+
+
+
 
 
 
@@ -3448,7 +3562,50 @@ public class MainViewModel : ObservableObject
     private void HitIgnoreInconsistencyOrderIDMethod()
     {
         IgnoredPrescriptionInconsistencys.Add(PrescriptionInconsistencys.FirstOrDefault(x => x.OrderID == IgnoreInconsistencyOrderID)!);
+        AddOrderToIgnoredListLocalDB(PrescriptionInconsistencys.FirstOrDefault(x => x.OrderID == IgnoreInconsistencyOrderID)!.OrderID!);
         InconsistencyPanelShows = false;
+    }
+
+    private async Task FillUpIngnoredOrdersInInconsistencyList()
+    {
+        
+
+        List<InconsistencyModel> list = await GetBackAllOrderToBeIgnoredFromLocalDB();
+        foreach (var item in list)
+        {
+            if (IgnoredPrescriptionInconsistencys.Count > 0)
+            {
+                if (IgnoredPrescriptionInconsistencys[0] is null)
+                    IgnoredPrescriptionInconsistencys.RemoveAt(0);
+
+                try
+                {
+                    if (!IgnoredPrescriptionInconsistencys.Any(x => x.OrderID == item.OrderID))
+                    {
+                        IgnoredPrescriptionInconsistencys.Add(PrescriptionInconsistencys.FirstOrDefault(x => x.OrderID == item.OrderID)!);
+                    }
+                }
+                catch
+                {
+                }
+            }
+            else
+            {
+                try
+                {
+                    IgnoredPrescriptionInconsistencys.Add(PrescriptionInconsistencys.FirstOrDefault(x => x.OrderID == item.OrderID)!);
+                }
+                catch
+                {
+                }
+            }
+        }
+    }
+
+
+    private async void ReadBackAllEvent()
+    {
+        PrescriptionMakerEventsList = await GetBackAllEventFromLocalDB();
     }
 
     private void PmAddNewPanNumber(object obj)
@@ -3514,6 +3671,9 @@ public class MainViewModel : ObservableObject
             //might need to delete 04-09-2025
             if (NextPanNumberGlobal != "")
                 NextPanNumberGlobal = "";
+
+            AddEventToEventListLocalDB($"Grabbed a pan number: {LastUsedPanNumber}", "Yellow");
+            ReadBackAllEvent();
         }
     }
 
@@ -4112,6 +4272,14 @@ public class MainViewModel : ObservableObject
             {
                 IsItASConnectPrescription = true;
                 ASConnectOrderID = text.Substring(text.IndexOf("Order ID:"), 54).Replace("Order ID:", "").Replace("Medical License:\n", "").Replace(" ", "").Replace("\n", "").Replace("—", "").Replace("--", "").Trim();
+                ASConnectOrderID = GetNumbers(ASConnectOrderID);
+            }
+
+            // for Dexis case, getting the order id
+            if (text.Contains("CASE INFORMATION (", StringComparison.CurrentCultureIgnoreCase))
+            {
+                IsItASConnectPrescription = true;
+                ASConnectOrderID = text.Substring(text.IndexOf("CASE INFORMATION ("), 26).Replace("CASE INFORMATION (", "").Replace(")", "").Trim();
             }
             Debug.WriteLine(ASConnectOrderID);
         }
@@ -4216,6 +4384,11 @@ public class MainViewModel : ObservableObject
 
 
         IsItSironaPrescription = false;
+    }
+
+    private static string GetNumbers(string input)
+    {
+        return new string(input.Where(c => char.IsDigit(c)).ToArray());
     }
 
     private async void EditPDF(string FilePath, string NextPanNumber = "", bool MarkAsRush = false, bool MarkAsSentTo = false, string SentTo = "", bool MarkAsMissing = false, string MissingText = "")
@@ -4918,13 +5091,16 @@ public class MainViewModel : ObservableObject
             if (!File.Exists(FinalLocation + "\\" + DateTime.Now.ToString("MM-dd") + "\\" + NextPanNumber + ".png"))
             {
                 ShowNotificationMessage("Image was not saved!", $"There was no image saved of this prescription! Please check..", NotificationIcon.Error);
+                AddEventToEventListLocalDB($"Image was not saved! ({NextPanNumber})", "IndianRed");
+                ReadBackAllEvent();
                 SystemSounds.Beep.Play();
                 await BlinkWindow("red");
             }
             else
             {
                 ShowNotificationMessage("Image was saved!", $"Prescription image successfully saved!", NotificationIcon.Success);
-
+                AddEventToEventListLocalDB($"Prescription image successfully saved: {NextPanNumber}", "LightGreen");
+                ReadBackAllEvent();
                 await BlinkWindow("yellow");
             }
         }));
@@ -5402,6 +5578,54 @@ public class MainViewModel : ObservableObject
         }
         else
             ShowNotificationMessage("Customer suggestion", "The new suggestion was not added!", NotificationIcon.Error);
+    }
+
+    private void CRCheckingRadioButtonMethod(object obj)
+    {
+        CRSelectedItemToBeContained = (string)obj;
+    }
+
+    private async void DeleteSelectedCommentRuleMethod()
+    {
+        if (SelectedCommentRule is null)
+            return;
+
+        SMessageBoxResult result = ShowMessageBox("Question", $"Are you sure you want to delete the selected comment rule?", SMessageBoxButtons.YesNo, NotificationIcon.Warning, 15, MainWindow.Instance);
+        if (result == SMessageBoxResult.Yes)
+        {
+            if (await DeleteCommentRule(SelectedCommentRule))
+            {
+                ShowNotificationMessage("Comment rule", "Comment Rule is now deleted!", NotificationIcon.Success);
+                BuildCommentRuleList();
+                SelectedCommentRule = null;
+                SelectedCommentRule = new();
+            }
+            else
+                ShowNotificationMessage("Comment rule", "Comment Rule was not deleted!", NotificationIcon.Error);
+        }
+    }
+
+    private async void AddNewCommentRuleMethod()
+    {
+        if (string.IsNullOrEmpty(CRNewCustomer.Trim()) || string.IsNullOrEmpty(CRNewRuleName.Trim()) || string.IsNullOrEmpty(CRNewCommentToBeInserted.Trim()) || string.IsNullOrEmpty(CRSelectedItemToBeContained.Trim()))
+            return;
+
+        if (await AddNewCommentRule(CRNewRuleName.Trim(), CRNewCustomer.Trim(), CRNewCommentToBeInserted.Trim(), CRSelectedItemToBeContained))
+        {
+            CRNewCustomer = "";
+            CRNewRuleName = "";
+            CRNewCommentToBeInserted = "";
+            CRSelectedItemToBeContained = "";
+            SelectedCommentRule = null;
+            SelectedCommentRule = new();
+            BuildCommentRuleList();
+
+            ShowNotificationMessage("Comment Rule", "New comment rule added!", NotificationIcon.Success);
+        }
+        else
+            ShowNotificationMessage("Comment Rule", "The new comment rule was not added!", NotificationIcon.Error);
+
+        _MainWindow.crItemsRadioButtonEmpty.IsChecked = true;
     }
 
     private void CbSettingExtractIteroZipFilesMethod()
@@ -7505,7 +7729,8 @@ public class MainViewModel : ObservableObject
                     {
                         foreach (var item in IgnoredPrescriptionInconsistencys)
                         {
-                            list.Remove(list.FirstOrDefault(x => x.OrderID == item.OrderID)!);
+                            if (item is not null)
+                                list.Remove(list.FirstOrDefault(x => x.OrderID == item.OrderID)!);
                         }
                     }
 
@@ -7517,18 +7742,21 @@ public class MainViewModel : ObservableObject
 
                         foreach (var item in IgnoredPrescriptionInconsistencys)
                         {
-                            if (!listGood.Any(x => x.OrderID == item.OrderID))
-                            {
-                                InconsistencyModel model = new()
+                            if (item is not null)
+                                if (!listGood.Any(x => x.OrderID == item.OrderID))
                                 {
-                                    OrderID = item.OrderID,
-                                    PanNumber = item.PanNumber,
-                                    Ignored = true
-                                };
-                                listGood.Add(model);
-                            }
+                                    InconsistencyModel model = new()
+                                    {
+                                        OrderID = item.OrderID,
+                                        PanNumber = item.PanNumber,
+                                        Ignored = true
+                                    };
+                                    listGood.Add(model);
+                                }
                         }
                     }
+
+                    await FillUpIngnoredOrdersInInconsistencyList();
                 }
                 catch (Exception ex)
                 {
@@ -7554,6 +7782,18 @@ public class MainViewModel : ObservableObject
                 HealthReports = await Task.Run(GetHealthReportsAsync);
         }
 
+
+        if (DateTime.Now.Minute % 5 == 0)
+        {
+            BuildCommentRuleList();
+        }
+
+        // clear list once a day
+        if (DateTime.Now.Hour == 0 && DateTime.Now.Minute == 0 && DateTime.Now.Second < 6)
+        {
+            DeleteOldOrderToIgnoredListLocalDB();
+            DeleteOldPMEventsFromLocalDB();
+        }
 
         if (second % 5 == 0)
         {
@@ -7906,6 +8146,8 @@ public class MainViewModel : ObservableObject
 
             FillUpEmptyPanNumberPanel();
 
+            BuildCommentRuleList();
+
             if (CbSettingModuleAccountInfos)
                 GetAccountInfos();
 
@@ -7939,10 +8181,10 @@ public class MainViewModel : ObservableObject
 
             PmSendToList = GetAllSendToEnties();
 
-            if (isColorCheckWindowOpen)
+            if (isColorCheckWindowOpen && MainWindow.Instance is not null)
                 MainWindow.Instance.ShowHidePanColorCheckWindow();
 
-            if (StartAppMinimized)
+            if (StartAppMinimized && MainWindow.Instance is not null)
                 MainWindow.Instance.WindowState = WindowState.Minimized;
 
 
@@ -7963,6 +8205,14 @@ public class MainViewModel : ObservableObject
             }
 
             await ReportClientLoginToDatabase(true);
+
+            // deleting old entries from local database on startup
+            DeleteOldOrderToIgnoredListLocalDB();
+            DeleteOldPMEventsFromLocalDB();
+
+            ReadBackAllEvent();
+
+            await FillUpIngnoredOrdersInInconsistencyList();
         }));
     }
 
@@ -8031,6 +8281,8 @@ public class MainViewModel : ObservableObject
             Application.Current.Dispatcher.Invoke(new Action(async () =>
             {
                 ShowNotificationMessage("iTero Case Downloaded", $"There is a new Itero case placed into Export folder! Id: {LastIteroZipFileId}", NotificationIcon.Success, false);
+                AddEventToEventListLocalDB($"iTero Zip file downloaded: {LastIteroZipFileId}", "LightBlue");
+                ReadBackAllEvent();
                 SystemSounds.Beep.Play();
                 await BlinkWindow("green");
             }));
@@ -8042,6 +8294,8 @@ public class MainViewModel : ObservableObject
                 Application.Current.Dispatcher.Invoke(new Action(async () =>
                 {
                     ShowNotificationMessage("iTero Case Download Issue", $"There is a new Itero case downloaded but the file is CORRUPT! Please download it again! Id: {LastIteroZipFileId}", NotificationIcon.Error, false);
+                    AddEventToEventListLocalDB($"iTero Zip file issue: {LastIteroZipFileId}", "IndianRed");
+                    ReadBackAllEvent();
                     SystemSounds.Beep.Play();
                     await BlinkWindow("red");
                 }));

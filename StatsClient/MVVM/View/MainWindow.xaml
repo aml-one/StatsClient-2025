@@ -75,6 +75,8 @@
             <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converter:RemoveIDTagFromFrontConverter x:Key="RemoveIDTagFromFrontConverter" />
 
+            <converter:EmptyToCollapsedConverter x:Key="EmptyToCollapsedConverter" />
+            <converter:EmptyTextToCollapsedConverter x:Key="EmptyTextToCollapsedConverter" />
             <converter:EmptyToHiddenConverter x:Key="EmptyToHiddenConverter" />
             <converter:EmptyToVisibleConverter x:Key="EmptyToVisibleConverter" />
             <converter:EqualToHiddenConverter x:Key="EqualToHiddenConverter" />
@@ -1873,28 +1875,37 @@
                                       Grid.RowSpan="4"
                                       Margin="4,0,0,0">
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="20" />
                                         <RowDefinition Height="auto" />
                                         <RowDefinition />
                                         <RowDefinition Height="240" />
                                     </Grid.RowDefinitions>
 
+                                    <Border BorderBrush="#444"
+                                            BorderThickness="0,1,0,1"
+                                            Background="#666674">
+                                        <TextBlock Text="3Shape Orders &lt;-&gt; Used Pan Numbers"
+                                                   HorizontalAlignment="Center"
+                                                   Padding="4,0" />
+                                    </Border>
 
-                                    <ListView Grid.Row="0"
+                                    <ListView Grid.Row="1"
                                               Background="#11FFFFFF"
                                               BorderThickness="0"
                                               AlternationCount="2"
                                               FontSize="13"
                                               ItemContainerStyle="{StaticResource LvItemPrescriptionInconsistencys}"
                                               ItemsSource="{Binding PrescriptionInconsistencys}" />
-                                    <ListView Grid.Row="1"
+                                    <ListView Grid.Row="2"
                                               Background="#11FFFFFF"
                                               FontSize="12"
+                                              MinHeight="200"
                                               BorderThickness="0"
                                               AlternationCount="2"
                                               ItemContainerStyle="{StaticResource LvItemPrescriptionInconsistencys}"
                                               ItemsSource="{Binding PrescriptionWithNoInconsistencys}" />
 
-                                    <Border Grid.Row="0"
+                                    <Border Grid.Row="1"
                                             Grid.RowSpan="2"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
@@ -1905,28 +1916,53 @@
                                             d:Visibility="Visible"
                                             Visibility="{Binding InconsistencyPanelShows, Converter={StaticResource BoolToVisibilityConverter}}">
                                         <StackPanel>
-                                            <TextBlock Text="{Binding IgnoreInconsistencyOrderID}" 
+                                            <TextBlock Text="{Binding IgnoreInconsistencyOrderID}"
                                                        Foreground="LightYellow"
-                                                       FontSize="14"/>
+                                                       FontSize="14" />
                                             <Grid Margin="0,15,0,0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
-                                                    <ColumnDefinition Width="10"/>
+                                                    <ColumnDefinition Width="10" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
                                                 <Button Content="Ignore"
                                                         Height="30"
-                                                        Command="{Binding HitIgnoreInconsistencyOrderIDCommand}"/>
+                                                        MinWidth="80"
+                                                        Command="{Binding HitIgnoreInconsistencyOrderIDCommand}" />
                                                 <Button Content="Cancel"
                                                         Height="30"
+                                                        MinWidth="60"
                                                         Grid.Column="2"
-                                                        Command="{Binding CancelIgnoreInconsistencyOrderIDCommand}"/>
+                                                        Command="{Binding CancelIgnoreInconsistencyOrderIDCommand}" />
                                             </Grid>
                                         </StackPanel>
                                     </Border>
                                 </Grid>
 
-                                
+                                <Grid Grid.Row="3"
+                                      Margin="4,11,0,0"
+                                      Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="20" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Border BorderBrush="#444"
+                                            BorderThickness="0,1,0,1"
+                                            Background="#667466">
+                                        <TextBlock Text="Events"
+                                                   Padding="4,0"
+                                                   HorizontalAlignment="Center" />
+                                    </Border>
+
+                                    <ListView Grid.Row="1"
+                                              Background="#11AA8888"
+                                              BorderThickness="0"
+                                              AlternationCount="2"
+                                              FontSize="13"
+                                              ItemContainerStyle="{StaticResource LvItemPrescriptionMakerEventsList}"
+                                              ItemsSource="{Binding PrescriptionMakerEventsList}" />
+                                </Grid>
+
                             </Grid>
                         </TabItem>
 
@@ -2789,6 +2825,238 @@
                                                         Margin="0,10"
                                                         HorizontalAlignment="Left"
                                                         Command="{Binding AddNewCustomerSuggestionCommand}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </TabItem>
+
+                                    <TabItem Header="Comment Rules"
+                                             Style="{StaticResource applicationsTabItem}">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="40" />
+                                                <RowDefinition />
+                                                <RowDefinition Height="40" />
+                                            </Grid.RowDefinitions>
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="Comment Rule to Apply"
+                                                       VerticalAlignment="Bottom"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="6,0"
+                                                       FontSize="14" />
+
+
+
+                                            <ListBox Grid.Row="1"
+                                                     Margin="0,0,2,0"
+                                                     ItemsSource="{Binding CommentRulesList}"
+                                                     SelectedItem="{Binding SelectedCommentRule}"
+                                                     Foreground="Beige"
+                                                     MinWidth="150"
+                                                     Background="#444">
+                                                <ListBox.ItemContainerStyle>
+                                                    <Style TargetType="{x:Type ListBoxItem}">
+                                                        <Setter Property="Background"
+                                                                Value="Transparent" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                                    <Border BorderBrush="Gray"
+                                                                            BorderThickness="0,0,0,0.5"
+                                                                            Background="{TemplateBinding Background}">
+                                                                        <StackPanel Orientation="Horizontal"
+                                                                                    Margin="4">
+                                                                            <TextBlock Text="{Binding RuleName}"
+                                                                                       Cursor="Hand"
+                                                                                       Foreground="LightYellow"
+                                                                                       Padding="5,0,0,0" />
+                                                                            <TextBlock Text="rule applies to (dr)"
+                                                                                       Cursor="Hand"
+                                                                                       Foreground="#CCC"
+                                                                                       Padding="5,0,0,0" />
+                                                                            <TextBlock Text="{Binding Customer}"
+                                                                                       Cursor="Hand"
+                                                                                       Foreground="LightBlue"
+                                                                                       Padding="5,0,0,0" />
+                                                                            <TextBlock Text="'s cases with any"
+                                                                                       Cursor="Hand"
+                                                                                       Foreground="#CCC"
+                                                                                       Padding="0,0,0,0" />
+                                                                            <TextBlock Text="{Binding ItemsContains}"
+                                                                                       Cursor="Hand"
+                                                                                       Foreground="LightGreen"
+                                                                                       Padding="5,0,0,0" />
+                                                                            <TextBlock Text="setup. Adding comment:"
+                                                                                       Cursor="Hand"
+                                                                                       Foreground="#CCC"
+                                                                                       Padding="5,0,0,0" />
+                                                                            <TextBlock Text="{Binding ExtraText}"
+                                                                                       Cursor="Hand"
+                                                                                       Foreground="Beige"
+                                                                                       Padding="5,0,0,0" />
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ListBox.ItemContainerStyle>
+                                            </ListBox>
+
+
+
+                                            <Button Content="Delete selected rule"
+                                                    Grid.Row="2"
+                                                    Margin="0,5,3,5"
+                                                    Visibility="{Binding SelectedCommentRule.Customer, Converter={StaticResource EmptyToCollapsedConverter}}"
+                                                    Command="{Binding DeleteSelectedCommentRuleCommand}" />
+
+
+
+
+                                            <TextBlock Text="Create new rule"
+                                                       VerticalAlignment="Bottom"
+                                                       HorizontalAlignment="Left"
+                                                       Grid.Column="2"
+                                                       Margin="19,0"
+                                                       FontSize="14" />
+
+                                            <StackPanel Grid.Row="1"
+                                                        Grid.Column="2"
+                                                        Margin="20,10">
+                                                <TextBlock Text="Rule Name" />
+                                                <TextBox  Width="200"
+                                                          Text="{Binding CRNewRuleName}"
+                                                          Background="#555"
+                                                          Foreground="Beige"
+                                                          HorizontalAlignment="Left" />
+
+                                                <TextBlock Text="Customer (where rule needs to be applied)"
+                                                           Margin="0,10,0,0" />
+                                                <TextBlock Text="Exact match required! (Not case sensitive)"
+                                                           FontSize="10"
+                                                           Foreground="Yellow" />
+                                                <TextBox  Width="200"
+                                                          Text="{Binding CRNewCustomer}"
+                                                          Background="#555"
+                                                          Foreground="Beige"
+                                                          HorizontalAlignment="Left" />
+
+                                                <TextBlock Text="3Shape Order contains one of the following:"
+                                                           Margin="0,10,0,0" />
+                                                <RadioButton Content="Abutment"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="abutment" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+                                                <RadioButton Content="Crown"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="crown" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+                                                <RadioButton Content="Bridge"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="bridge" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+                                                <RadioButton Content="Veneer"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="veneer" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+                                                <RadioButton Content="Onlay"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="onlay" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+                                                <RadioButton Content="Inlay"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="inlay" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+                                                <RadioButton Content="Model"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="model" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+                                                <RadioButton Content="-"
+                                                             x:Name="crItemsRadioButtonEmpty"
+                                                             Visibility="Collapsed"
+                                                             GroupName="crItemsSet"
+                                                             Foreground="Beige">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Checked">
+                                                            <i:InvokeCommandAction Command="{Binding CRCheckingRadioButtonCommand}"
+                                                                                   CommandParameter="" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </RadioButton>
+
+                                                <TextBlock Text="Comment Section Info to be inserted"
+                                                           Margin="0,10,0,0" />
+                                                <TextBox  Width="400"
+                                                          Text="{Binding CRNewCommentToBeInserted}"
+                                                          Background="#555"
+                                                          Foreground="Beige"
+                                                          HorizontalAlignment="Left" />
+
+                                                <Button Content="Add new rule"
+                                                        Width="200"
+                                                        Margin="0,10"
+                                                        HorizontalAlignment="Left"
+                                                        Command="{Binding AddNewCommentRuleCommand}" />
+
+                                                <StackPanel Orientation="Horizontal"
+                                                            Margin="0,10">
+
+                                                    <TextBlock Text="Selected Rule:"
+                                                               FontSize="14"
+                                                               Visibility="{Binding SelectedCommentRule.Customer, Converter={StaticResource EmptyToCollapsedConverter}}" />
+                                                    <TextBlock Text="{Binding SelectedCommentRule.RuleName}"
+                                                               Foreground="Yellow"
+                                                               Margin="5,0,0,0"
+                                                               FontSize="14"
+                                                               Visibility="{Binding SelectedCommentRule.Customer, Converter={StaticResource EmptyTextToCollapsedConverter}}" />
+                                                </StackPanel>
                                             </StackPanel>
                                         </Grid>
                                     </TabItem>

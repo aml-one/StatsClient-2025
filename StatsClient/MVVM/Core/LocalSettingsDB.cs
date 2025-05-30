@@ -1,6 +1,8 @@
-﻿using System;
+﻿using StatsClient.MVVM.Model;
+using System;
 using System.Data.SQLite;
 using System.IO;
+using System.Windows.Media.Animation;
 
 namespace StatsClient.MVVM.Core
 {
@@ -25,6 +27,18 @@ namespace StatsClient.MVVM.Core
                 string sql = @"CREATE TABLE IF NOT EXISTS main.Settings (
                                  Name   TEXT PRIMARY KEY, 
                                 Value   TEXT
+                               ) WITHOUT ROWID;
+
+                               CREATE TABLE IF NOT EXISTS main.IgnoredOrders (
+                              OrderID   TEXT PRIMARY KEY, 
+                                 Date   TEXT
+                               ) WITHOUT ROWID;
+                
+                               CREATE TABLE IF NOT EXISTS main.PMEvents (
+                             EventStr   TEXT PRIMARY KEY, 
+                                Color   TEXT,
+                                 Date   TEXT,
+                              OrderBy   TEXT
                                ) WITHOUT ROWID;";
 
                 SQLiteCommand command = new (sql, m_dbConnection);
@@ -37,6 +51,157 @@ namespace StatsClient.MVVM.Core
             return "all good";
         }
         #endregion
+
+        #region event Table
+        public static string AddEventToEventListLocalDB(string eventStr, string eventColor = "White")
+        {
+            try
+            {
+                using SQLiteConnection m_dbConnection = new("Data Source=" + DataBasePath + ";Version=3;");
+                m_dbConnection.Open();
+
+                string sql = @$"INSERT INTO main.PMEvents (EventStr, Color, Date, OrderBy) VALUES ('{eventStr}', '{eventColor}', '{DateTime.Now:yyyy-MM-dd}', '{DateTime.Now:yyyyMMddHHmmss}');";
+
+                SQLiteCommand command = new(sql, m_dbConnection);
+                command.ExecuteNonQuery();
+                return "all good";
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+
+        public static string DeleteOldPMEventsFromLocalDB()
+        {
+            try
+            {
+                using SQLiteConnection m_dbConnection = new("Data Source=" + DataBasePath + ";Version=3;");
+                m_dbConnection.Open();
+
+                string sql = @$"DELETE FROM main.PMEvents WHERE Date < '{DateTime.Now:yyyy-MM-dd}';";
+
+                SQLiteCommand command = new(sql, m_dbConnection);
+                command.ExecuteNonQuery();
+                return "all good";
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+
+        public static async Task<List<PMEventModel>> GetBackAllEventFromLocalDB()
+        {
+            List<PMEventModel> list = [];
+
+            if (File.Exists(DataBasePath))
+            {
+                try
+                {
+                    using SQLiteConnection m_dbConnection = new("Data Source=" + DataBasePath + ";Version=3;");
+                    m_dbConnection.Open();
+                    string sql = @$"SELECT * FROM main.PMEvents WHERE Date = '{DateTime.Now:yyyy-MM-dd}' ORDER BY OrderBy DESC";
+                    SQLiteCommand command = new(sql, m_dbConnection);
+                    using SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        string time = reader["OrderBy"].ToString()!.Replace(DateTime.Now.ToString("yyyyMMdd"), "")[..4];
+
+                        if (time.StartsWith('0'))
+                            time = time[1..];
+
+                        list.Add(new PMEventModel
+                        {
+                            Color = reader["Color"].ToString(),
+                            EventStr = reader["EventStr"].ToString(),
+                            TimeStr = time,
+                        });
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            await Task.Delay(10);
+
+            return list;
+        }
+        #endregion event Table
+
+        #region IgnoredOrdersList Table
+        public static string AddOrderToIgnoredListLocalDB(string orderID)
+        {
+            try
+            {
+                using SQLiteConnection m_dbConnection = new("Data Source=" + DataBasePath + ";Version=3;");
+                m_dbConnection.Open();
+
+                string sql = @$"INSERT INTO main.IgnoredOrders (OrderID, Date) VALUES ('{orderID}', '{DateTime.Now:yyyy-MM-dd}');";
+
+                SQLiteCommand command = new(sql, m_dbConnection);
+                command.ExecuteNonQuery();
+                return "all good";
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+        
+        public static string DeleteOldOrderToIgnoredListLocalDB()
+        {
+            try
+            {
+                using SQLiteConnection m_dbConnection = new("Data Source=" + DataBasePath + ";Version=3;");
+                m_dbConnection.Open();
+
+                string sql = @$"DELETE FROM main.IgnoredOrders WHERE Date < '{DateTime.Now:yyyy-MM-dd}';";
+
+                SQLiteCommand command = new(sql, m_dbConnection);
+                command.ExecuteNonQuery();
+                return "all good";
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+
+        public static async Task<List<InconsistencyModel>> GetBackAllOrderToBeIgnoredFromLocalDB()
+        {
+            List<InconsistencyModel> list = [];
+
+            if (File.Exists(DataBasePath))
+            {
+                try
+                {
+                    using SQLiteConnection m_dbConnection = new("Data Source=" + DataBasePath + ";Version=3;");
+                    m_dbConnection.Open();
+                    string sql = @$"SELECT * FROM main.IgnoredOrders WHERE Date = '{DateTime.Now:yyyy-MM-dd}'";
+                    SQLiteCommand command = new(sql, m_dbConnection);
+                    using SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        list.Add(new InconsistencyModel
+                        {
+                            OrderID = reader["OrderID"].ToString()!,
+                            Ignored = true,
+                        });
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            await Task.Delay(10);
+
+            return list;
+        }
+        #endregion IgnoredOrdersList Table
+
 
         #region Write Local Settings with SQLite
         public static string WriteLocalSetting(string KeyName, string Value)
@@ -70,15 +235,13 @@ namespace StatsClient.MVVM.Core
             {
                 try
                 {
-                    using (SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=" + DataBasePath + ";Version=3;"))
-                    {
-                        m_dbConnection.Open();
-                        string sql = @"SELECT Value FROM main.Settings WHERE Name = '" + KeyName + @"'";
-                        SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-                        using (SQLiteDataReader reader = command.ExecuteReader())
-                            while (reader.Read())
-                                return (String)reader.GetValue(0);
-                    }
+                    using SQLiteConnection m_dbConnection = new("Data Source=" + DataBasePath + ";Version=3;");
+                    m_dbConnection.Open();
+                    string sql = @"SELECT Value FROM main.Settings WHERE Name = '" + KeyName + @"'";
+                    SQLiteCommand command = new(sql, m_dbConnection);
+                    using SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                        return (String)reader.GetValue(0);
                 }
                 catch
                 {

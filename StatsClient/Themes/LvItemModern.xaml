@@ -44,6 +44,7 @@
     <converters:IncostistencyToColorConverterConverter x:Key="IncostistencyToColorConverterConverter" />
     <converters:IncostistencyToVisibilityVisibleConverterConverter x:Key="IncostistencyToVisibilityVisibleConverterConverter" />
     <converters:IncostistencyToVisibilityCollapsedConverterConverter x:Key="IncostistencyToVisibilityCollapsedConverterConverter" />
+    <converters:EventColorToColorConverter x:Key="EventColorToColorConverter" />
 
 
     <!-- LvItemSimple -->
@@ -2966,7 +2967,7 @@
                                     <i:EventTrigger EventName="MouseDown">
                                         <i:InvokeCommandAction Command="{Binding DataContext.InconsistencyItemClickedCommand, 
                                                                          RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding OrderID}" />
+                                                               CommandParameter="{Binding OrderID}" />
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                                 <TextBlock.Visibility>
@@ -2978,7 +2979,7 @@
                                     </MultiBinding>
                                 </TextBlock.Visibility>
                             </TextBlock>
-                            
+
                             <TextBlock FontWeight="SemiBold"
                                        Text="{Binding OrderID}"
                                        VerticalAlignment="Center"
@@ -3032,6 +3033,80 @@
                         <Trigger Property="ItemsControl.AlternationIndex"
                                  Value="1">
                             <Setter TargetName="IncostistencyBorder"
+                                    Property="Background"
+                                    Value="#777" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- LvItemPrescriptionMakerEventsList -->
+    <Style TargetType="ListViewItem"
+           x:Key="LvItemPrescriptionMakerEventsList">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="EventBorder"
+                            BorderThickness="1">
+
+                        <Grid Margin="1,2,1,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal">
+
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="["
+                                           Foreground="WhiteSmoke"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="0"
+                                           FontSize="12">
+                                </TextBlock>
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="{Binding TimeStr}"
+                                           Foreground="LightYellow"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="1"
+                                           FontSize="12">
+                                </TextBlock>
+
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="]"
+                                           Foreground="WhiteSmoke"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Margin="0,0,0,0"
+                                           FontSize="12">
+                                </TextBlock>
+                            </StackPanel>
+
+                            <TextBlock FontWeight="SemiBold"
+                                       Text="{Binding EventStr}"
+                                       Foreground="{Binding Color, Converter={StaticResource EventColorToColorConverter}}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"
+                                       Margin="8,0,15,0"
+                                       FontSize="14"
+                                       x:Name="tbiPanNumber"
+                                       Grid.Column="1">
+                            </TextBlock>
+
+
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex"
+                                 Value="1">
+                            <Setter TargetName="EventBorder"
                                     Property="Background"
                                     Value="#777" />
                         </Trigger>

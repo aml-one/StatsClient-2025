@@ -790,6 +790,41 @@ public partial class DatabaseOperations
 
         return list;
     }
+    
+    public static async Task<List<CommentRulesModel>> GetCommentRulesList()
+    {
+        List<CommentRulesModel> list = [];
+
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string query;
+
+            query = @$"SELECT * FROM dbo.CommentRules ORDER BY Customer ASC";
+
+            using SqlConnection connection = new(connectionString);
+            SqlCommand command = new(query, connection);
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new CommentRulesModel
+                {
+                    Customer = reader["Customer"].ToString()!,
+                    RuleName = reader["RuleName"].ToString(),
+                    ItemsContains = reader["ItemsContains"].ToString()!,
+                    ExtraText = reader["ExtraText"].ToString()!,
+                });
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+
+        return list;
+    }
 
     public static async Task<List<DesignerUnitsModel>> GetDesignerUnitsModel()
     {
@@ -1175,6 +1210,42 @@ public partial class DatabaseOperations
         }
 
         return list;
+    }
+
+
+    public static async Task<bool> DeleteCommentRule(CommentRulesModel rule)
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string queryStr = $@"DELETE FROM dbo.CommentRules WHERE RuleName = '{rule.RuleName}' AND Customer = '{rule.Customer}' AND ItemsContains = '{rule.ItemsContains}' AND ExtraText = '{rule.ExtraText}';";
+
+            if (!string.IsNullOrEmpty(RunSQLCommandWithExpectedResult(queryStr, connectionString)))
+                return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    public static async Task<bool> AddNewCommentRule(string ruleName, string customer, string comment, string item)
+    {
+        try
+        {
+            string connectionString = await Task.Run(ConnectionStrToStatsDatabase);
+            string queryStr = $@"INSERT INTO dbo.CommentRules (RuleName, Customer, ItemsContains, ExtraText)
+                              VALUES ('{ruleName}','{customer}','{item}','{comment}')";
+
+            if (!string.IsNullOrEmpty(RunSQLCommandWithExpectedResult(queryStr, connectionString)))
+                return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+        return true;
     }
 
     public static async Task<bool> PanNumberIsValid(int panNumber)
